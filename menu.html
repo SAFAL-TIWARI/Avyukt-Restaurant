@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu | Avyukt Restaurant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/src/style.css">
+    <style>
+        .page-header {
+            padding-top: 7rem;
+            padding-bottom: 2rem;
+            background-color: var(--first-color);
+            color: #fff;
+            text-align: center;
+        }
+
+        .page-header__title {
+            color: var(--second-color);
+            font-size: var(--h1-font-size);
+        }
+
+        .menu-category {
+            margin-bottom: 3rem;
+        }
+
+        .menu-category__title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--first-color);
+            font-size: var(--h2-font-size);
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .menu-category__title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--second-color);
+        }
+
+        .menu-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media(min-width: 768px) {
+            .menu-list {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
+            }
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: #fff;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: .3s;
+        }
+
+        .menu-item:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-item__img {
+            width: 80px;
+            height: 80px;
+            border-radius: 0.5rem;
+            object-fit: cover;
+            background-color: #eee;
+            flex-shrink: 0;
+        }
+
+        .menu-item__content {
+            flex: 1;
+        }
+
+        .menu-item__header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.25rem;
+        }
+
+        .menu-item__name {
+            font-family: var(--title-font);
+            font-weight: var(--font-bold);
+            font-size: 1.1rem;
+            color: var(--title-color);
+        }
+
+        .menu-item__price {
+            font-weight: var(--font-bold);
+            color: var(--first-color);
+            white-space: nowrap;
+        }
+
+        .menu-item__desc {
+            font-size: 0.85rem;
+            color: var(--text-color-light);
+            line-height: 1.4;
+        }
+
+        .price-label {
+            font-size: 0.7rem;
+            color: #999;
+            font-weight: normal;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header" id="header" style="background-color: var(--body-color);">
+        <nav class="nav container">
+            <a href="/" class="nav__logo" style="color: var(--first-color);">Avyukt</a>
+            <div class="nav__menu" id="nav-menu">
+                <ul class="nav__list">
+                    <li class="nav__item"><a href="/" class="nav__link" style="color: var(--title-color);">Home</a></li>
+                    <li class="nav__item"><a href="/about.html" class="nav__link"
+                            style="color: var(--title-color);">About</a></li>
+                    <li class="nav__item"><a href="/menu.html" class="nav__link active-link"
+                            style="color: var(--first-color);">Menu</a></li>
+                    <li class="nav__item"><a href="/gallery.html" class="nav__link"
+                            style="color: var(--title-color);">Gallery</a></li>
+                    <li class="nav__item"><a href="/contact.html" class="nav__link"
+                            style="color: var(--title-color);">Contact</a></li>
+                </ul>
+                <div class="nav__close" id="nav-close">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </div>
+            </div>
+            <div class="nav__toggle" id="nav-toggle" style="color: var(--title-color);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main">
+        <section class="page-header">
+            <h1 class="page-header__title">Our Complete Menu</h1>
+            <p>Explore our wide range of authentic dishes</p>
+        </section>
+
+        <section class="section container">
+
+            <!-- INDIAN CUISINE -->
+            <div class="menu-category">
+                <h2 class="menu-category__title">Indian Cuisine</h2>
+                <div class="menu-list">
+                    <div class="menu-item">
+                        <img src="" alt="" class="menu-item__img">
+                        <div class="menu-item__content">
+                            <div class="menu-item__header">
+                                <span class="menu-item__name">Dum Aloo</span>
+                                <span class="menu-item__price">₹100 <span class="price-label">(Half)</span> / ₹160 <span
+                                        class="price-label">(Full)</span></span>
+                            </div>
+                            <p class="menu-item__desc">Spiced baby potatoes cooked in a rich, creamy gravy.</p>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <img src="" alt="" class="menu-item__img">
+                        <div class="menu-item__content">
+                            <div class="menu-item__header">
+                                <span class="menu-item__name">Stuffed Tomato</span>
+                                <span class="menu-item__price">₹100 / ₹160</span>
+                            </div>
+                            <p class="menu-item__desc">Whole tomatoes stuffed with paneer and spices.</p>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <img src="" alt="" class="menu-item__img">
+                        <div class="menu-item__content">
+                            <div class="menu-item__header">
+                                <span class="menu-item__name">Paneer Masala</span>
+                                <span class="menu-item__price">₹110 / ₹170</span>
+                            </div>
+                            <p class="menu-item__desc">Cottage cheese in a spicy onion-tomato gravy.</p>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <img src="" alt="" class="menu-item__img">
+                        <div class="menu-item__content">
+                            <div class="menu-item__header">
+                                <span class="menu-item__name">Butter Paneer Masala</span>
+                                <span class="menu-item__price">₹120 / ₹180</span>
+                            </div>
+                            <p class="menu-item__desc">Rich, creamy, and mildly sweet tomato gravy with butter.</p>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <img src="" alt="" class="menu-item__img">
+                        <div class="menu-item__content">
+                            <div class="menu-item__header">
+                                <span class="menu-item__name">Kadhai Paneer</span>
+                                <span class="menu-item__price">₹120 / ₹180</span>
+                            </div>
+                            <p class="menu-item__desc">Paneer cooked with bell peppers and freshly ground spices.</p>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <img src="" alt="" class="menu-item__img">
+                        <div class="menu-item__content">
+                            <div class="menu-item__header">
+                                <span class="menu-item__name">Paneer Tikka Masala</span>
+                                <span class="menu-item__price">₹140 / ₹200</span>
+                            </div>
+                            <p class="menu-item__desc">Grilled paneer cubes in a spicy tikka gravy.</p>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <img src="" alt="" class="menu-item__img">
+                        <div class="menu-item__content">
+                            <div class="menu-item__header">
+                                <span class="menu-item__name">Kaju Curry</span>
+                                <span class="menu-item__price">₹140 / ₹200</span>
+                            </div>
+                            <p class="menu-item__desc">Rich cashew nut curry.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CHINESE -->
+            <div class="menu-category">
+                <h2 class="menu-category__title">Chinese Delights</h2>
+                <div class="menu-list">
+                    <div class="menu-item">
+                        <img src="" alt="" class="menu-item__img">
+                        <div class="menu-item__content">
+                            <div class="menu-item__header">
+                                <span class="menu-item__name">Veg Noodles</span>
+                                <span class="menu-item__price">₹90</span>
+                            </div>
+                            <p class="menu-item__desc">Classic stir-fried noodles with veggies.</p>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <img src="" alt="" class="menu-item__img">
+                        <div class="menu-item__content">
+                            <div class="menu-item__header">
+                                <span class="menu-item__name">Veg Manchurian</span>
+                                <span class="menu-item__price">₹90</span>
+                            </div>
+                            <p class="menu-item__desc">Veg balls in spicy manchurian sauce.</p>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <img src="" alt="" class="menu-item__img">
+                        <div class="menu-item__content">
+                            <div class="menu-item__header">
+                                <span class="menu-item__name">Chilli Potato</span>
+                                <span class="menu-item__price">₹110</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <img src="" alt="" class="menu-item__img">
+                        <div class="menu-item__content">
+                            <div class="menu-item__header">
+                                <span class="menu-item__name">Paneer Dragon</span>
+                                <span class="menu-item__price">₹160</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SOUTH INDIAN -->
+            <div class="menu-category">
+                <h2 class="menu-category__title">South Indian</h2>
+                <div class="menu-list">
+                    <div class="menu-item">
+                        <img src="" alt="" class="menu-item__img">
+                        <div class="menu-item__content">
+                            <div class="menu-item__header">
+                                <span class="menu-item__name">Plain Dosa</span>
+                                <span class="menu-item__price">₹70 / ₹100</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <img src="/images/dosa.png" alt="Masala Dosa" class="menu-item__img">
+                        <div class="menu-item__content">
+                            <div class="menu-item__header">
+                                <span class="menu-item__name">Masala Dosa</span>
+                                <span class="menu-item__price">₹80 / ₹130</span>
+                            </div>
+                            <p class="menu-item__desc">Spiced potato filling.</p>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <img src="" alt="" class="menu-item__img">
+                        <div class="menu-item__content">
+                            <div class="menu-item__header">
+                                <span class="menu-item__name">Paneer Dosa</span>
+                                <span class="menu-item__price">₹100</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BREADS & TANDOOR -->
+            <div class="menu-category">
+                <h2 class="menu-category__title">Tandoor & Breads</h2>
+                <div class="menu-list">
+                    <div class="menu-item">
+                        <img src="" alt="" class="menu-item__img">
+                        <div class="menu-item__content">
+                            <div class="menu-item__header">
+                                <span class="menu-item__name">Butter Naan</span>
+                                <span class="menu-item__price">₹30</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <img src="" alt="" class="menu-item__img">
+                        <div class="menu-item__content">
+                            <div class="menu-item__header">
+                                <span class="menu-item__name">Garlic Naan</span>
+                                <span class="menu-item__price">₹40</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <img src="" alt="" class="menu-item__img">
+                        <div class="menu-item__content">
+                            <div class="menu-item__header">
+                                <span class="menu-item__name">Tandoori Roti</span>
+                                <span class="menu-item__price">₹12</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DESSERTS -->
+            <div class="menu-category">
+                <h2 class="menu-category__title">Desserts</h2>
+                <div class="menu-list">
+                    <div class="menu-item">
+                        <img src="/images/jamun.png" alt="Gulab Jamun" class="menu-item__img">
+                        <div class="menu-item__content">
+                            <div class="menu-item__header">
+                                <span class="menu-item__name">Gulab Jamun</span>
+                                <span class="menu-item__price">₹40/2pcs</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <img src="" alt="" class="menu-item__img">
+                        <div class="menu-item__content">
+                            <div class="menu-item__header">
+                                <span class="menu-item__name">Rasmalai</span>
+                                <span class="menu-item__price">₹70</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="footer section">
+        <div class="footer__container container grid">
+            <div class="footer__content">
+                <a href="/" class="footer__logo">Avyukt</a>
+                <p class="footer__description">Authentic Flavours. <br> Modern Ambience.</p>
+            </div>
+            <div class="footer__content">
+                <h3 class="footer__title">Quick Links</h3>
+                <ul class="footer__links">
+                    <li><a href="/about.html" class="footer__link">About Us</a></li>
+                    <li><a href="/menu.html" class="footer__link">Menu</a></li>
+                    <li><a href="/contact.html" class="footer__link">Reservations</a></li>
+                </ul>
+            </div>
+            <div class="footer__content">
+                <h3 class="footer__title">Socials</h3>
+                <ul class="footer__social">
+                    <li><a href="https://www.instagram.com/avyuktrestaurant2020/" target="_blank"
+                            class="footer__social-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                            </svg>
+                        </a></li>
+                    <li><a href="https://www.facebook.com/avyuktrestaurant/" target="_blank"
+                            class="footer__social-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                            </svg>
+                        </a></li>
+                </ul>
+            </div>
+        </div>
+        <p class="footer__copy">&#169; 2025 Avyukt Restaurant. All rights reserved.</p>
+    </footer>
+    <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>
