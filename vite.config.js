@@ -1,16 +1,18 @@
 import { defineConfig } from 'vite';
+import { resolve } from 'path';
 
 export default defineConfig({
-    root: '.',
+    root: 'public',
     build: {
-        outDir: 'dist',
+        outDir: '../dist',
+        emptyOutDir: true,
         rollupOptions: {
             input: {
-                main: 'index.html',
-                about: 'about.html',
-                menu: 'menu.html',
-                contact: 'contact.html',
-                gallery: 'gallery.html',
+                main: resolve(process.cwd(), 'public/index.html'),
+                about: resolve(process.cwd(), 'public/about.html'),
+                menu: resolve(process.cwd(), 'public/menu.html'),
+                contact: resolve(process.cwd(), 'public/contact.html'),
+                gallery: resolve(process.cwd(), 'public/gallery.html'),
             },
         },
     },
