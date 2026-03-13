@@ -7,6 +7,19 @@
     <title>Menu | Avyukt Restaurant</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link rel="shortcut icon" href="assets/favicon.png" type="image/png">
+    <meta name="description"
+        content="Avyukt Restaurant - Authentic Flavours, Modern Ambience. Experience the best Indian, Chinese, and Continental vegetarian cuisine." />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <meta name="author" content="Avyukt Restaurant">
+    <meta property="og:title" content="Avyukt Restaurant">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://avyukt-restaurant.vercel.app/">
+    <meta property="og:image" content="assets/preview.png">
+
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
         rel="stylesheet">
@@ -128,18 +141,20 @@
 <body>
     <header class="header" id="header" style="background-color: var(--body-color);">
         <nav class="nav container">
-            <a href="/" class="nav__logo" style="color: var(--first-color);">Avyukt</a>
+            <a href="index.html" class="nav__logo" style="color: var(--first-color);">Avyukt</a>
             <div class="nav__menu" id="nav-menu">
                 <ul class="nav__list">
-                    <li class="nav__item"><a href="/" class="nav__link" style="color: var(--title-color);">Home</a></li>
-                    <li class="nav__item"><a href="/about.html" class="nav__link"
+                    <li class="nav__item"><a href="index.html" class="nav__link"
+                            style="color: var(--title-color);">Home</a></li>
+                    <li class="nav__item"><a href="about.html" class="nav__link"
                             style="color: var(--title-color);">About</a></li>
-                    <li class="nav__item"><a href="/menu.html" class="nav__link active-link"
+                    <li class="nav__item"><a href="menu.html" class="nav__link active-link"
                             style="color: var(--first-color);">Menu</a></li>
-                    <li class="nav__item"><a href="/gallery.html" class="nav__link"
+                    <li class="nav__item"><a href="gallery.html" class="nav__link"
                             style="color: var(--title-color);">Gallery</a></li>
-                    <li class="nav__item"><a href="/contact.html" class="nav__link"
+                    <li class="nav__item"><a href="contact.html" class="nav__link"
                             style="color: var(--title-color);">Contact</a></li>
+                    <li class="nav__item"><a href="index.html#reservation" class="button button--small nav__button" style="color: #fff;">Book Table</a></li>
                 </ul>
                 <div class="nav__close" id="nav-close">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -391,20 +406,28 @@
     <footer class="footer section">
         <div class="footer__container container grid">
             <div class="footer__content">
-                <a href="/" class="footer__logo">Avyukt</a>
+                <a href="index.html" class="footer__logo">Avyukt</a>
                 <p class="footer__description">Authentic Flavours. <br> Modern Ambience.</p>
             </div>
             <div class="footer__content">
                 <h3 class="footer__title">Quick Links</h3>
                 <ul class="footer__links">
-                    <li><a href="/about.html" class="footer__link">About Us</a></li>
-                    <li><a href="/menu.html" class="footer__link">Menu</a></li>
-                    <li><a href="/contact.html" class="footer__link">Reservations</a></li>
+                    <li><a href="about.html" class="footer__link">About Us</a></li>
+                    <li><a href="menu.html" class="footer__link">Menu</a></li>
+                    <li><a href="gallery.html" class="footer__link">Gallery</a></li>
+                    <li><a href="contact.html" class="footer__link">Contact Us</a></li>
                 </ul>
             </div>
             <div class="footer__content">
                 <h3 class="footer__title">Socials</h3>
-                <ul class="footer__social">
+                <ul class="footer__social" style="margin-bottom: 1rem;">
+                    <li><a href="https://g.co/kgs/SxFrLp" target="_blank"
+                            class="footer__social-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 16 16"
+                                fill="currentColor">
+                                <path d="M15.545 6.558a9.42 9.42 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.689 7.689 0 0 1 5.352 2.082l-2.284 2.284A4.347 4.347 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.304a4.792 4.792 0 0 0 0 3.063h.003c.635 1.893 2.405 3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.702 3.702 0 0 0 1.599-2.431H8v-3.08h7.545z"></path>
+                            </svg>
+                        </a></li>
                     <li><a href="https://www.instagram.com/avyuktrestaurant2020/" target="_blank"
                             class="footer__social-link">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -423,10 +446,14 @@
                                 <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
                             </svg>
                         </a></li>
+                    <li><a href="https://www.swiggy.com/city/vidisha/avyukt-restaurant-sanchi-road-baripura-rest317832?source=sharing" target="_blank"
+                            class="footer__social-link">
+                            <img src="assets/swiggy.png" alt="Swiggy" width="24" height="24" style="display: block;">
+                        </a></li>
                 </ul>
             </div>
         </div>
-        <p class="footer__copy">&#169; 2025 Avyukt Restaurant. All rights reserved.</p>
+        <p class="footer__copy">&#169; 2026 Avyukt Restaurant. All rights reserved.</p>
     </footer>
     <script type="module" src="../src/main.js"></script>
 </body>

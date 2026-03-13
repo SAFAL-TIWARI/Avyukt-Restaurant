@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Avyukt Restaurant | Authentic & Modern</title>
-    <link rel="shortcut icon" href="/public/assets/favicon.png" type="image/png">
+    <link rel="shortcut icon" href="assets/favicon.png" type="image/png">
     <meta name="description"
         content="Avyukt Restaurant - Authentic Flavours, Modern Ambience. Experience the best Indian, Chinese, and Continental vegetarian cuisine." />
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,7 +15,7 @@
     <meta property="og:title" content="Avyukt Restaurant">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://avyukt-restaurant.vercel.app/">
-    <meta property="og:image" content="/public/assets/preview.png">
+    <meta property="og:image" content="assets/preview.png">
 
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
@@ -26,15 +26,16 @@
 <body>
     <header class="header" id="header">
         <nav class="nav container">
-            <a href="#" class="nav__logo">Avyukt</a>
+            <a href="index.html" class="nav__logo">Avyukt</a>
 
             <div class="nav__menu" id="nav-menu">
                 <ul class="nav__list">
-                    <li class="nav__item"><a href="/" class="nav__link active-link">Home</a></li>
-                    <li class="nav__item"><a href="/about.html" class="nav__link">About</a></li>
-                    <li class="nav__item"><a href="/menu.html" class="nav__link">Menu</a></li>
-                    <li class="nav__item"><a href="/gallery.html" class="nav__link">Gallery</a></li>
-                    <li class="nav__item"><a href="/contact.html" class="nav__link">Contact</a></li>
+                    <li class="nav__item"><a href="index.html" class="nav__link active-link">Home</a></li>
+                    <li class="nav__item"><a href="about.html" class="nav__link">About</a></li>
+                    <li class="nav__item"><a href="menu.html" class="nav__link">Menu</a></li>
+                    <li class="nav__item"><a href="gallery.html" class="nav__link">Gallery</a></li>
+                    <li class="nav__item"><a href="contact.html" class="nav__link">Contact</a></li>
+                    <li class="nav__item"><a href="#reservation" class="button button--small nav__button">Book Table</a></li>
                 </ul>
                 <div class="nav__close" id="nav-close">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -45,16 +46,13 @@
                 </div>
             </div>
 
-            <div class="nav__buttons">
-                <a href="#reservation" class="button button--small">Book Table</a>
-                <div class="nav__toggle" id="nav-toggle">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="3" y1="12" x2="21" y2="12"></line>
-                        <line x1="3" y1="6" x2="21" y2="6"></line>
-                        <line x1="3" y1="18" x2="21" y2="18"></line>
-                    </svg>
-                </div>
+            <div class="nav__toggle" id="nav-toggle">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
             </div>
         </nav>
     </header>
@@ -63,7 +61,7 @@
         <!-- HERO -->
         <section class="hero" id="home">
             <div class="hero__bg">
-                <img src="/assets/hero.png" alt="Avyukt Restaurant Signature Dish">
+                <img src="assets/hero.jpeg" alt="Avyukt Restaurant Signature Dish">
                 <div class="hero__overlay"></div>
             </div>
             <div class="hero__container container">
@@ -74,11 +72,90 @@
                         Experience a symphony of taste with our exquisite North Indian, Chinese, and Fusion cuisine in a
                         warm, inviting atmosphere.
                     </p>
-                    <div class="hero__buttons">
-                        <a href="/menu.html" class="button">View Menu</a>
-                        <a href="/contact.html" class="button button--ghost">Reserve a Table</a>
+                    <div class="hero__search">
+                        <input type="text" placeholder="Search for restaurant, cuisine or a dish"
+                            class="hero__search-input">
+                        <button class="button hero__search-button" aria-label="Search">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                        </button>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <!-- QUICK ACTIONS -->
+        <section class="quick-actions container">
+            <div class="quick-actions__container grid">
+                <a href="#" class="quick-actions__card">
+                    <div class="quick-actions__img-placeholder">Order Online Image</div>
+                    <div class="quick-actions__data">
+                        <h3 class="quick-actions__title">Order Online</h3>
+                        <p class="quick-actions__description">Stay home and order to your door</p>
+                    </div>
+                </a>
+                <a href="#" class="quick-actions__card">
+                    <div class="quick-actions__img-placeholder">Dining Image</div>
+                    <div class="quick-actions__data">
+                        <h3 class="quick-actions__title">Dining</h3>
+                        <p class="quick-actions__description">View the city's favourite dining venues</p>
+                    </div>
+                </a>
+                <a href="#" class="quick-actions__card">
+                    <div class="quick-actions__img-placeholder">Offers Image</div>
+                    <div class="quick-actions__data">
+                        <h3 class="quick-actions__title">Avyukt Pro</h3>
+                        <p class="quick-actions__description">Explore exclusive offers and discounts</p>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- CATEGORIES -->
+        <section class="categories section container" id="categories">
+            <div class="section__header" style="text-align: left;">
+                <h2 class="section__title" style="text-align: left;">What's on your mind?</h2>
+                <style>
+                    .categories .section__title::after {
+                        left: 0;
+                        right: auto;
+                        margin: 0;
+                    }
+                </style>
+            </div>
+            <div class="categories__slider">
+                <a href="#" class="categories__item">
+                    <div class="categories__img-placeholder">North Indian</div>
+                    <span class="categories__name">North Indian</span>
+                </a>
+                <a href="#" class="categories__item">
+                    <div class="categories__img-placeholder">Chinese</div>
+                    <span class="categories__name">Chinese</span>
+                </a>
+                <a href="#" class="categories__item">
+                    <div class="categories__img-placeholder">Pizza</div>
+                    <span class="categories__name">Pizza</span>
+                </a>
+                <a href="#" class="categories__item">
+                    <div class="categories__img-placeholder">Burger</div>
+                    <span class="categories__name">Burger</span>
+                </a>
+                <a href="#" class="categories__item">
+                    <div class="categories__img-placeholder">Rolls</div>
+                    <span class="categories__name">Rolls</span>
+                </a>
+                <a href="#" class="categories__item">
+                    <div class="categories__img-placeholder">Desserts</div>
+                    <span class="categories__name">Desserts</span>
+                </a>
+                <a href="#" class="categories__item">
+                    <div class="categories__img-placeholder">Beverages</div>
+                    <span class="categories__name">Beverages</span>
+                </a>
             </div>
         </section>
 
@@ -86,7 +163,7 @@
         <section class="about section" id="about">
             <div class="about__container container grid">
                 <div class="about__img">
-                    <img src="/assets/interior.jpeg" alt="Avyukt Interior">
+                    <img src="assets/images/interior.jpeg" alt="Avyukt Interior">
                 </div>
                 <div class="about__data">
                     <span class="section__subtitle">Our Story</span>
@@ -142,7 +219,7 @@
                     <!-- Item 1 -->
                     <article class="menu__card">
                         <div class="menu__img-wrapper">
-                            <img src="/assets/paneer.png" alt="Paneer Tikka Masala" class="menu__img">
+                            <img src="assets/paneer.jpeg" alt="Paneer Tikka Masala" class="menu__img">
                         </div>
                         <div class="menu__data">
                             <h3 class="menu__title">Paneer Tikka Masala</h3>
@@ -158,7 +235,7 @@
                     <!-- Item 2 -->
                     <article class="menu__card">
                         <div class="menu__img-wrapper">
-                            <img src="/assets/noodles.png" alt="Veg Hakka Noodles" class="menu__img">
+                            <img src="assets/noodles.jpeg" alt="Veg Hakka Noodles" class="menu__img">
                         </div>
                         <div class="menu__data">
                             <h3 class="menu__title">Veg Hakka Noodles</h3>
@@ -174,7 +251,7 @@
                     <!-- Item 3 -->
                     <article class="menu__card">
                         <div class="menu__img-wrapper">
-                            <img src="/assets/dosa.png" alt="Masala Dosa" class="menu__img">
+                            <img src="assets/dosa.jpeg" alt="Masala Dosa" class="menu__img">
                         </div>
                         <div class="menu__data">
                             <h3 class="menu__title">Masala Dosa</h3>
@@ -189,7 +266,7 @@
                     <!-- Item 4 -->
                     <article class="menu__card">
                         <div class="menu__img-wrapper">
-                            <img src="/assets/jamun.png" alt="Gulab Jamun" class="menu__img">
+                            <img src="assets/jamun.jpeg" alt="Gulab Jamun" class="menu__img">
                         </div>
                         <div class="menu__data">
                             <h3 class="menu__title">Gulab Jamun</h3>
@@ -206,7 +283,7 @@
                 </div>
 
                 <div class="menu__view-more">
-                    <a href="/menu.html" class="button button--ghost">View Full Menu</a>
+                    <a href="menu.html" class="button button--ghost">View Full Menu</a>
                 </div>
             </div>
         </section>
@@ -225,7 +302,8 @@
                     <div class="reservation__info">
                         <div class="reservation__info-item">
                             <h3>Location</h3>
-                            <p>123 Food Street, Culinary District, Your City</p>
+                            <p>Hotel Grand Ashok, 3rd Floor, Kundan Complex Shehnai Garden,
+Vidisha - 464001, Madhya Pradesh, India</p>
                         </div>
                         <div class="reservation__info-item">
                             <h3>Hours</h3>
@@ -233,7 +311,7 @@
                         </div>
                         <div class="reservation__info-item">
                             <h3>Contact</h3>
-                            <p>+91 98765 43210</p>
+                            <p>+91 8319670523</p>
                         </div>
                     </div>
                 </div>
@@ -262,6 +340,8 @@
             </div>
         </section>
 
+       
+
         <!-- FOOTER -->
         <footer class="footer section">
             <div class="footer__container container grid">
@@ -273,16 +353,35 @@
                 <div class="footer__content">
                     <h3 class="footer__title">Quick Links</h3>
                     <ul class="footer__links">
-                        <li><a href="/about.html" class="footer__link">About Us</a></li>
-                        <li><a href="/menu.html" class="footer__link">Menu</a></li>
-                        <li><a href="/gallery.html" class="footer__link">Gallery</a></li>
-                        <li><a href="/contact.html" class="footer__link">Contact Us</a></li>
+                        <li><a href="about.html" class="footer__link">About Us</a></li>
+                        <li><a href="menu.html" class="footer__link">Menu</a></li>
+                        <li><a href="gallery.html" class="footer__link">Gallery</a></li>
+                        <li><a href="contact.html" class="footer__link">Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer__content">
+                    <h3 class="footer__title">About Avyukt</h3>
+                    <ul class="footer__links">
+                        <li><a href="about.html" class="footer__link">Who We Are</a></li>
+                        <li><a href="#" class="footer__link">Blog</a></li>
+                        <li><a href="#" class="footer__link">Work With Us</a></li>
+                        <li><a href="#" class="footer__link">Investor Relations</a></li>
+                        <li><a href="#" class="footer__link">Report Fraud</a></li>
+                        <li><a href="contact.html" class="footer__link">Contact Us</a></li>
                     </ul>
                 </div>
 
                 <div class="footer__content">
                     <h3 class="footer__title">Socials</h3>
-                    <ul class="footer__social">
+                    <ul class="footer__social" style="margin-bottom: 1rem;">
+                        <li><a href="https://g.co/kgs/SxFrLp" target="_blank"
+                                class="footer__social-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 16 16"
+                                    fill="currentColor">
+                                    <path d="M15.545 6.558a9.42 9.42 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.689 7.689 0 0 1 5.352 2.082l-2.284 2.284A4.347 4.347 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.304a4.792 4.792 0 0 0 0 3.063h.003c.635 1.893 2.405 3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.702 3.702 0 0 0 1.599-2.431H8v-3.08h7.545z"></path>
+                                </svg>
+                            </a></li>
                         <li><a href="https://www.instagram.com/avyuktrestaurant2020/" target="_blank"
                                 class="footer__social-link">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -292,6 +391,9 @@
                                     <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
                                     <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
                                 </svg>
+                            </a></li><li><a href="https://wa.me/918319670523?text=Message%20from%20Avyukt%20Restaurant" target="_blank"
+                                class="footer__social-link">
+                                <img src="assets/whatsapp.png" alt="Whatsapp" width="24" height="24" style="display: block;">
                             </a></li>
                         <li><a href="https://www.facebook.com/avyuktrestaurant/" target="_blank"
                                 class="footer__social-link">
@@ -301,10 +403,50 @@
                                     <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
                                 </svg>
                             </a></li>
+                            
+                            
+                        <li><a href="https://www.swiggy.com/city/vidisha/avyukt-restaurant-sanchi-road-baripura-rest317832?source=sharing" target="_blank"
+                                class="footer__social-link">
+                                <img src="assets/swiggy.png" alt="Swiggy" width="24" height="24" style="display: block;">
+                            </a></li>
                     </ul>
                 </div>
             </div>
-            <p class="footer__copy">&#169; 2025 Avyukt Restaurant. All rights reserved.</p>
+
+            <!-- Accordion / Expanded Area -->
+            <div class="footer__expanded container grid"
+                style="margin-top: 3rem; padding-top: 3rem; border-top: 1px solid #333;">
+                <div class="footer__content" style="grid-column: 1 / -1; margin-bottom: 2rem;">
+                    <h3 class="footer__title" style="margin-bottom: 1.5rem;">Explore Options Near Me</h3>
+                    <div class="footer__accordions"
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+                        <div class="footer__accordion">
+                            <a href="#" class="footer__link"
+                                style="background-color: #222; padding: 1rem; border-radius: 0.5rem; border: 1px solid #444; text-align: center;">Popular
+                                Cuisines</a>
+                        </div>
+                        <div class="footer__accordion">
+                            <a href="#" class="footer__link"
+                                style="background-color: #222; padding: 1rem; border-radius: 0.5rem; border: 1px solid #444; text-align: center;">Popular
+                                Restaurant Types</a>
+                        </div>
+                        <div class="footer__accordion">
+                            <a href="#" class="footer__link"
+                                style="background-color: #222; padding: 1rem; border-radius: 0.5rem; border: 1px solid #444; text-align: center;">Top
+                                Restaurant Chains</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="footer__content" style="grid-column: 1 / -1;">
+                     <h3 class="footer__title">Cities We Deliver To</h3>
+                     <ul class="footer__cities-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem;">
+                         <li><a href="#" class="footer__link">Delhi NCR</a></li>
+                
+                     </ul>
+                 </div> -->
+            </div>
+
+            <p class="footer__copy" style="margin-top: 3rem;">&#169; 2026 Avyukt Restaurant. All rights reserved.</p>
         </footer>
 
     </main>

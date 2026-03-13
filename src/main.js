@@ -66,3 +66,64 @@ function scrollHeader() {
     if (this.scrollY >= 80) nav.classList.add('scroll-header'); else nav.classList.remove('scroll-header')
 }
 window.addEventListener('scroll', scrollHeader)
+
+/* LIGHTBOX GALLERY */
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightbox-img');
+const lightboxClose = document.getElementById('lightbox-close');
+const galleryGrid = document.querySelector('.gallery-grid');
+
+function initLightbox() {
+    const galleryItems = document.querySelectorAll('.gallery__img');
+    if (lightbox && galleryItems) {
+        galleryItems.forEach(img => {
+            img.addEventListener('click', () => {
+                lightbox.classList.add('show');
+                lightboxImg.src = img.src;
+            });
+        });
+    }
+}
+
+if (lightboxClose) {
+    lightboxClose.addEventListener('click', () => {
+        lightbox.classList.remove('show');
+    });
+}
+
+if (lightbox) {
+    // Close when clicking outside image
+    lightbox.addEventListener('click', (e) => {
+        if (e.target !== lightboxImg) {
+            lightbox.classList.remove('show');
+        }
+    });
+}
+
+// DYNAMIC GALLERY LOADING
+if (galleryGrid) {
+    galleryGrid.innerHTML = ''; // Clear placeholder content
+
+    // Use Vite's import.meta.glob to dynamically import all images from the folder
+    const images = import.meta.glob('../public/assets/images/*.{jpeg,jpg,png,gif,webp}', { eager: true, import: 'default' });
+
+    for (const path in images) {
+        const item = document.createElement('div');
+        item.className = 'gallery__item';
+        
+        const img = document.createElement('img');
+        img.src = images[path];
+        img.alt = 'Avyukt Restaurant Gallery';
+        img.className = 'gallery__img';
+        img.loading = 'lazy';
+        
+        item.appendChild(img);
+        galleryGrid.appendChild(item);
+    }
+    
+    // Initialize lightbox after images are dynamically added
+    initLightbox();
+} else {
+    // Init lightbox on pages where gallery grid doesn't exist but images might
+    initLightbox();
+}
