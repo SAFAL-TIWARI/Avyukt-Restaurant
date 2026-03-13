@@ -54,7 +54,7 @@ const Contact = () => {
           </div>
 
           {/* Reservation Form */}
-          <div className="bg-zinc-900/40 backdrop-blur-md border border-white/10 p-8 lg:p-12 rounded-[2.5rem] shadow-2xl relative overflow-hidden group">
+          <div className="bg-zinc-900/40 backdrop-blur-md border border-white/10 p-8 lg:p-12 rounded-[2.5rem] shadow-2xl relative overflow-hidden group text-sm">
             <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/10 rounded-full blur-3xl group-hover:bg-secondary/20 transition-colors"></div>
             
             <form className="relative space-y-6">
