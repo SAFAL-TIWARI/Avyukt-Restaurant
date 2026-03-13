@@ -128,23 +128,13 @@ const Hero = () => {
   };
 
   return (
-    <section id="home" className="relative min-h-screen h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Image and Overlay */}
-      <div className="absolute inset-0 z-0">
-        <img 
-          src="/assets/hero.jpeg" 
-          alt="Avyukt Restaurant Hero" 
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-black/70"></div>
-      </div>
-      
+    <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden bg-transparent">
       <div className="container relative z-10 text-center text-white pt-20 px-4">
-        <span className="block font-title italic text-xl lg:text-3xl text-secondary mb-4 drop-shadow-md">
+        <span className="block font-title italic text-xl lg:text-3xl text-secondary mb-4 drop-shadow-md animate-fade-in-up">
           Welcome to Avyukt
         </span>
-        <h1 className="text-4xl lg:text-7xl mb-6 leading-tight drop-shadow-lg text-white">
-          Authentic Flavours.<br /> Modern Ambience.
+        <h1 className="text-4xl lg:text-7xl mb-6 leading-tight drop-shadow-lg text-white font-serif">
+          Authentic Flavours.<br /> <span className="text-secondary italic">Modern</span> Ambience.
         </h1>
         <p className="text-sm lg:text-lg mb-10 max-w-2xl mx-auto opacity-90 drop-shadow-md">
           Experience a symphony of taste with our exquisite North Indian, Chinese, and Fusion cuisine in a warm, inviting atmosphere.
@@ -153,9 +143,9 @@ const Hero = () => {
         <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-center gap-4">
           {/* Location Selector */}
           <div className="relative w-full md:w-auto md:min-w-[320px]" ref={suggestionRef}>
-            <div className="flex items-center bg-white dark:bg-zinc-900 rounded-2xl px-5 py-4 shadow-2xl cursor-text transition-transform hover:scale-[1.01] focus-within:ring-2 focus-within:ring-primary/50">
+            <div className="flex items-center bg-white/10 backdrop-blur-md border border-white/20 dark:bg-zinc-900/40 rounded-2xl px-5 py-4 shadow-2xl cursor-text transition-all hover:bg-white/20 focus-within:ring-2 focus-within:ring-primary/50">
               <MapPin 
-                className={`mr-3 shrink-0 cursor-pointer transition-colors ${isLocating ? 'text-primary animate-pulse' : 'text-orange-600 hover:text-primary'}`} 
+                className={`mr-3 shrink-0 cursor-pointer transition-colors ${isLocating ? 'text-primary animate-pulse' : 'text-secondary hover:text-primary'}`} 
                 size={24} 
                 onClick={getCurrentLocation}
               />
@@ -165,12 +155,12 @@ const Hero = () => {
                 onChange={(e) => setLocationQuery(e.target.value)}
                 onFocus={() => setShowSuggestions(true)}
                 placeholder="Enter your delivery location"
-                className="flex-1 bg-transparent border-none outline-none text-gray-800 dark:text-white placeholder:text-gray-400 text-sm md:text-base text-left truncate"
+                className="flex-1 bg-transparent border-none outline-none text-white placeholder:text-gray-300 text-sm md:text-base text-left truncate"
               />
               {isLoading || isLocating ? (
-                <Loader2 className="text-gray-400 animate-spin shrink-0" size={20} />
+                <Loader2 className="text-gray-300 animate-spin shrink-0" size={20} />
               ) : (
-                <ChevronDown className="text-gray-500 shrink-0" size={20} />
+                <ChevronDown className="text-gray-300 shrink-0" size={20} />
               )}
             </div>
 
@@ -186,7 +176,7 @@ const Hero = () => {
                       <Navigation size={18} className="text-primary" />
                     </div>
                     <div className="text-left">
-                      <p className="text-sm font-bold text-primary">Use current location</p>
+                      <p className="text-sm font-bold text-primary text-left">Use current location</p>
                       <p className="text-xs text-gray-500 dark:text-gray-400">Using GPS / Network</p>
                     </div>
                   </li>
@@ -208,11 +198,6 @@ const Hero = () => {
                       </li>
                     );
                   })}
-                  {locationQuery.length > 2 && suggestions.length === 0 && !isLoading && (
-                    <li className="px-5 py-4 text-center text-sm text-gray-500">
-                      No results found for "{locationQuery}"
-                    </li>
-                  )}
                 </ul>
               </div>
             )}
@@ -220,16 +205,16 @@ const Hero = () => {
 
           {/* Food Search Input */}
           <div className="relative w-full md:flex-1 max-w-2xl" ref={foodSearchRef}>
-            <div className="flex items-center bg-white dark:bg-zinc-900 rounded-2xl px-5 py-4 shadow-2xl transition-transform hover:scale-[1.01] focus-within:ring-2 focus-within:ring-primary/50">
+            <div className="flex items-center bg-white/10 backdrop-blur-md border border-white/20 dark:bg-zinc-900/40 rounded-2xl px-5 py-4 shadow-2xl transition-all hover:bg-white/20 focus-within:ring-2 focus-within:ring-primary/50">
               <input 
                 type="text"
                 value={foodQuery}
                 onChange={(e) => setFoodQuery(e.target.value)}
                 onFocus={() => foodQuery.length > 0 && setShowFoodResults(true)} 
                 placeholder="Search for Dish, item or more" 
-                className="flex-1 bg-transparent border-none outline-none text-gray-800 dark:text-white placeholder:text-gray-400 text-sm md:text-base"
+                className="flex-1 bg-transparent border-none outline-none text-white placeholder:text-gray-300 text-sm md:text-base"
               />
-              <Search className="text-gray-400 shrink-0 hover:text-primary transition-colors cursor-pointer" size={22} />
+              <Search className="text-gray-300 shrink-0 hover:text-primary transition-colors cursor-pointer" size={22} />
             </div>
 
             {/* Food Search Results Dropdown */}
@@ -257,23 +242,11 @@ const Hero = () => {
                           </div>
                         </li>
                       ))}
-                      <li 
-                        onClick={() => { setShowFoodResults(false); navigate('/menu'); }}
-                        className="px-5 py-3 text-center text-sm font-semibold text-primary hover:bg-primary/5 cursor-pointer transition-colors border-t border-gray-100 dark:border-zinc-800"
-                      >
-                        View full menu →
-                      </li>
                     </>
                   ) : (
                     <li className="px-5 py-4 text-center">
                       <UtensilsCrossed size={24} className="mx-auto text-gray-300 dark:text-gray-600 mb-2" />
                       <p className="text-sm text-gray-500">No dishes found for "{foodQuery}"</p>
-                      <button 
-                        onClick={() => { setShowFoodResults(false); navigate('/menu'); }}
-                        className="mt-2 text-xs font-semibold text-primary hover:underline"
-                      >
-                        Browse full menu
-                      </button>
                     </li>
                   )}
                 </ul>

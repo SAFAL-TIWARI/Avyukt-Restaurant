@@ -36,11 +36,11 @@ const Menu = () => {
   ];
 
   return (
-    <section id="menu" className="section bg-white dark:bg-zinc-900 transition-colors duration-300">
+    <section id="menu" className="section bg-transparent transition-colors duration-300">
       <div className="container">
         <div className="text-center mb-12">
-          <span className="section-subtitle">Specialities</span>
-          <h2 className="section-title dark:text-white">Our Featured Menu</h2>
+          <span className="section-subtitle text-secondary font-semibold">Specialities</span>
+          <h2 className="section-title text-white">Our Featured Menu</h2>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -51,7 +51,7 @@ const Menu = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
               viewport={{ once: true }}
-              className="bg-body dark:bg-zinc-800 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 group flex flex-col h-full"
+              className="bg-zinc-900/40 backdrop-blur-md border border-white/10 rounded-3xl overflow-hidden shadow-2xl hover:shadow-primary/20 transition-all duration-300 group flex flex-col h-full"
             >
               <div className="h-56 overflow-hidden relative">
                 <img 
@@ -64,8 +64,8 @@ const Menu = () => {
                 </div>
               </div>
               <div className="p-6 flex flex-col flex-grow">
-                <h3 className="text-xl font-bold mb-2 dark:text-gray-100">{item.title}</h3>
-                <p className="text-text dark:text-gray-400 text-sm mb-6 flex-grow">
+                <h3 className="text-xl font-bold mb-2 text-white">{item.title}</h3>
+                <p className="text-gray-300 text-sm mb-6 flex-grow">
                   {item.description}
                 </p>
                 <AddToCartButton item={item} />
@@ -75,7 +75,7 @@ const Menu = () => {
         </div>
 
         <div className="text-center mt-12">
-          <Link to="/menu" className="btn btn-secondary dark:text-white">
+          <Link to="/menu" className="btn btn-secondary text-white shadow-lg shadow-secondary/20">
             View Full Menu
           </Link>
         </div>
