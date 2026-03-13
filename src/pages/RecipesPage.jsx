@@ -10,7 +10,7 @@ const recipes = [
     time: "90 min",
     serves: "4-6",
     difficulty: "Advanced",
-    image: "/assets/recipes/biryani.png",
+    image: "/assets/recipes/biryani.jpeg",
     category: "Main Course",
     ingredients: [
       "1kg Long grain Basmati Rice",
@@ -29,7 +29,7 @@ const recipes = [
     time: "120 min",
     serves: "2",
     difficulty: "Expert",
-    image: "/assets/recipes/thali.png",
+    image: "/assets/recipes/thali.jpeg",
     category: "Experience",
     ingredients: [
       "Selection of 3 House Curries",
@@ -48,7 +48,7 @@ const recipes = [
     time: "40 min",
     serves: "3-4",
     difficulty: "Medium",
-    image: "/assets/recipes/paneer.png",
+    image: "/assets/recipes/paneer.jpeg",
     category: "Main Course",
     ingredients: [
       "500g Fresh Malai Paneer",
@@ -67,7 +67,7 @@ const recipes = [
     time: "60 min",
     serves: "6-8",
     difficulty: "Medium",
-    image: "/assets/recipes/jamun.png",
+    image: "/assets/recipes/jamun.jpeg",
     category: "Dessert",
     ingredients: [
       "500g Khoya (Mawa)",

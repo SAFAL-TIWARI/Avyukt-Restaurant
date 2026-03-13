@@ -59,7 +59,7 @@ const Menu = () => {
                   alt={item.title} 
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
-                <div className="absolute top-4 right-4 bg-secondary text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
+                <div className="absolute top-4 right-4 bg-primary/90 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
                   {item.price}
                 </div>
               </div>
