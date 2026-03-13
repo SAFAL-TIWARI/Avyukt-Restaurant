@@ -57,4 +57,4 @@ Follow these instructions to get the project up and running on your local machin
 - `npm run preview`: Locally previews the production build.
 
 ---
-© 2025 Avyukt Restaurant. All rights reserved.
+© 2026 Avyukt Restaurant. All rights reserved.

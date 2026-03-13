@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;1,600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+  body {
+    @apply font-body bg-body text-text leading-relaxed antialiased;
+    overflow-x: hidden;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-title text-title font-bold;
+  }
+}
+
+@layer components {
+  .section {
+    @apply py-20 lg:py-28;
+  }
+  .container {
+    @apply max-w-5xl mx-auto px-6 lg:px-8;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center px-8 py-4 rounded-xl font-medium transition-all duration-300 cursor-pointer active:scale-95;
+  }
+  .btn-primary {
+    @apply bg-primary text-white hover:bg-primary-dark shadow-lg hover:shadow-primary/20;
+  }
+  .btn-secondary {
+    @apply border-2 border-secondary bg-transparent text-title hover:bg-secondary hover:text-white;
+  }
+  .section-title {
+    @apply text-3xl lg:text-4xl text-center relative pb-4 mb-4;
+  }
+  .section-title::after {
+    content: '';
+    @apply absolute bottom-0 left-1/2 -translate-x-1/2 w-16 h-1 bg-secondary;
+  }
+  .section-subtitle {
+    @apply block text-xs lg:text-sm text-secondary text-center font-bold uppercase tracking-widest mb-2;
+  }
+}
