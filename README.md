@@ -1,60 +1,80 @@
 # Avyukt Restaurant 🍽️
 
-> **Authentic Flavours. Modern Ambience.**
-> Experience the best Indian, Chinese, and Continental vegetarian cuisine.
+**Authentic Flavours, Modern Ambience.**  
+Experience the finest Indian, Chinese, and Continental vegetarian cuisine through our premium digital portal.
 
-## 📖 Overview
+[![Live Preview](https://img.shields.io/badge/Live-Preview-brightgreen?style=for-the-badge&logo=vercel)](https://avyukt-restaurant.vercel.app/)
+[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
+[![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 
-**Avyukt Restaurant** is a modern, responsive website designed to showcase a premium dining experience. Built with performance and aesthetics in mind, it invites visitors to explore the menu, discover the restaurant's story, and easily make table reservations.
+---
 
 ## ✨ Features
 
-- **Responsive Design**: A seamless browsing experience optimized for mobile, tablet, and desktop devices.
-- **Interactive Menu**: Highlights specialities like Paneer Tikka Masala and Veg Hakka Noodles with appetizing visuals.
-- **Online Reservation**: A user-friendly form allows guests to book tables directly from the website.
-- **Gallery Showcase**: A dedicated section featuring the restaurant's elegant interior and culinary creations.
-- **Modern UI/UX**: Clean layout, smooth animations, and sophisticated typography using Inter and Playfair Display fonts.
+- 📖 **Interactive Page-Flip Menu**: A realistic, premium digital menu experience.
+- 🥗 **Chef's Recipes**: Explore exclusive vegetarian recipes from our specialized chefs.
+- 📅 **Easy Reservations**: Quick and intuitive table booking system.
+- 🛒 **Smart Cart & Persistence**: Seamless ordering experience with localized state management.
+- 🔐 **Secure-Feel Auth**: Integrated mock authentication for a realistic user journey.
+- 📱 **Fully Responsive**: Optimized for every device, from mobile to desktop.
+- 🗺️ **Location Intelligence**: Integrated Photon API for smart location suggestions.
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: HTML5, CSS3, JavaScript (ES6+ is used for interactivity).
-- **Build Tool**: [Vite](https://vitejs.dev/) - Utilizing Vite for a lightning-fast development environment and optimized production builds.
-- **Styling**: Custom CSS with modern layout techniques (Grid & Flexbox).
-- **Icons**: SVG icons for crisp visuals on any display.
+- **Frontend**: React 19 (Hooks, Context API)
+- **Tooling**: Vite (Next-generation frontend tool)
+- **Styling**: Tailwind CSS & Modern Vanilla CSS
+- **Animations**: Framer Motion & CSS Micro-animations
+- **Visuals**: Lucide React Icons & Recharts for data visualization
+- **Deployment**: Vercel
+
+## 📁 Project Structure
+
+```text
+Avyukt Restaurant/
+├── src/
+│   ├── components/     # Reusable UI components (Header, Footer, Menu, etc.)
+│   ├── pages/          # Full page views (Home, Recipes, Profile, etc.)
+│   ├── context/        # Global state (Auth, Cart)
+│   ├── assets/         # Images, icons, and static fonts
+│   └── main.jsx        # App entry point
+├── public/             # Static public assets
+└── tailwind.config.js  # Styling configuration
+```
 
 ## 🚀 Getting Started
 
-Follow these instructions to get the project up and running on your local machine.
+Follow these steps to run the project locally:
 
-### Prerequisites
-
-- [Node.js](https://nodejs.org/) (version 14 or higher recommended)
-- npm (Node Package Manager)
-
-### Installation
-
-1. **Clone the repository**
+1. **Clone the repository**:
    ```bash
    git clone https://github.com/SAFAL-TIWARI/Avyukt-Restaurant.git
    cd Avyukt-Restaurant
    ```
 
-2. **Install dependencies**
+2. **Install dependencies**:
    ```bash
    npm install
    ```
 
-3. **Start the development server**
+3. **Start the development server**:
    ```bash
    npm run dev
    ```
-   The application will be available at `http://localhost:5173`.
 
-## 📜 Scripts
-
-- `npm run dev`: Starts the development server with hot module replacement.
-- `npm run build`: Compiles and minifies the application for production deployment.
-- `npm run preview`: Locally previews the production build.
+4. **Build for production**:
+   ```bash
+   npm run build
+   ```
 
 ---
-© 2026 Avyukt Restaurant. All rights reserved.
+
+## 🌐 Live Preview
+
+The website is live and hosted on Vercel:  
+👉 **[Visit Avyukt Restaurant](https://avyukt-restaurant.vercel.app/)**
+
+---
+
+ <div align="center"><b>Made with ❤️ for Avyukt Restaurant</b></div>
