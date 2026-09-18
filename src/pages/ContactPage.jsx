@@ -1,8 +1,66 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Phone, Mail, Instagram, Facebook, Send } from 'lucide-react';
+import { MapPin, Phone, Mail, Send, CheckCircle2, AlertCircle, ShieldCheck, User } from 'lucide-react';
+import api from '../services/api';
+import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 
 const ContactPage = () => {
+  const { user, isLoggedIn } = useAuth();
+  const { toast } = useToast();
+
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    message: '',
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+
+  useEffect(() => {
+    if (isLoggedIn && user) {
+      setFormData(prev => ({
+        ...prev,
+        name: user.name || '',
+        email: user.email || '',
+        phone: user.phone || '',
+      }));
+    }
+  }, [isLoggedIn, user]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.name || !formData.email || !formData.message) {
+      setErrorMsg('Please fill in your name, email, and inquiry message.');
+      return;
+    }
+    setLoading(true);
+    setErrorMsg('');
+    try {
+      const payload = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone || '',
+        message: formData.message,
+        isAnonymous: !isLoggedIn,
+        userId: isLoggedIn ? (user?.uid || 'user') : 'guest',
+      };
+
+      await api.submitContact(payload);
+      setSubmitted(true);
+      setFormData({ name: '', email: '', phone: '', message: '' });
+      toast.success('Your message has been received by our management team!', 'Message Dispatched');
+    } catch (err) {
+      setErrorMsg(err.message || 'Failed to send message.');
+      toast.error('Failed to send message.', 'Submission Error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -56,24 +114,93 @@ const ContactPage = () => {
 
         {/* Contact Form */}
         <div className="bg-body dark:bg-zinc-900 p-8 lg:p-12 rounded-[3rem] shadow-2xl relative">
-          <h2 className="text-3xl font-title font-bold dark:text-white mb-8">Send a Message</h2>
-          <form className="space-y-6">
-            <div className="space-y-2">
-              <label className="text-sm font-bold dark:text-gray-200 ml-1">Your Name</label>
-              <input type="text" className="w-full bg-white dark:bg-zinc-800 border-none rounded-2xl p-4 outline-none ring-2 ring-transparent focus:ring-primary transition-all dark:text-white" placeholder="John Doe" />
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-3xl font-title font-bold dark:text-white">Send a Message</h2>
+            
+            
+          </div>
+
+          {submitted ? (
+            <div className="py-12 text-center">
+              <div className="w-16 h-16 bg-emerald-500/10 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CheckCircle2 size={36} />
+              </div>
+              <h3 className="text-2xl font-bold font-title text-title dark:text-white mb-2">Message Sent!</h3>
+              <p className="text-xs text-text/60 dark:text-white/60 mb-6">
+                Thank you for contacting Avyukt Restaurant. We have received your message and will respond promptly.
+              </p>
+              <button
+                onClick={() => setSubmitted(false)}
+                className="bg-primary text-white px-6 py-2.5 rounded-full text-xs font-bold hover:bg-primary-dark transition-colors"
+              >
+                Send Another Message
+              </button>
             </div>
-            <div className="space-y-2">
-              <label className="text-sm font-bold dark:text-gray-200 ml-1">Email Address</label>
-              <input type="email" className="w-full bg-white dark:bg-zinc-800 border-none rounded-2xl p-4 outline-none ring-2 ring-transparent focus:ring-primary transition-all dark:text-white" placeholder="john@example.com" />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-bold dark:text-gray-200 ml-1">Message</label>
-              <textarea rows="4" className="w-full bg-white dark:bg-zinc-800 border-none rounded-2xl p-4 outline-none ring-2 ring-transparent focus:ring-primary transition-all dark:text-white" placeholder="Tell us something..."></textarea>
-            </div>
-            <button type="button" className="btn btn-primary w-full py-4 gap-3">
-              Send Message <Send size={20} />
-            </button>
-          </form>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {errorMsg && (
+                <div className="p-3 bg-red-500/10 border border-red-500/20 text-red-600 rounded-xl text-xs flex items-center gap-2">
+                  <AlertCircle size={15} />
+                  <span>{errorMsg}</span>
+                </div>
+              )}
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold uppercase tracking-wider dark:text-gray-300 ml-1">Your Name</label>
+                <input 
+                  type="text" 
+                  required
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="w-full bg-white dark:bg-zinc-800 border-none rounded-2xl p-3.5 outline-none ring-2 ring-transparent focus:ring-primary transition-all dark:text-white text-xs" 
+                  placeholder="John Doe" 
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold uppercase tracking-wider dark:text-gray-300 ml-1">Email Address</label>
+                <input 
+                  type="email" 
+                  required
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className="w-full bg-white dark:bg-zinc-800 border-none rounded-2xl p-3.5 outline-none ring-2 ring-transparent focus:ring-primary transition-all dark:text-white text-xs" 
+                  placeholder="john@example.com" 
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold uppercase tracking-wider dark:text-gray-300 ml-1">Phone Number (Optional)</label>
+                <input 
+                  type="tel" 
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  className="w-full bg-white dark:bg-zinc-800 border-none rounded-2xl p-3.5 outline-none ring-2 ring-transparent focus:ring-primary transition-all dark:text-white text-xs" 
+                  placeholder="1234567890" 
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold uppercase tracking-wider dark:text-gray-300 ml-1">Message</label>
+                <textarea 
+                  rows="4" 
+                  required
+                  value={formData.message}
+                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  className="w-full bg-white dark:bg-zinc-800 border-none rounded-2xl p-3.5 outline-none ring-2 ring-transparent focus:ring-primary transition-all dark:text-white text-xs resize-none" 
+                  placeholder="Tell us about your event, query, or catering request..."
+                />
+              </div>
+
+              <button 
+                type="submit" 
+                disabled={loading}
+                className="btn btn-primary w-full py-4 gap-3 text-xs uppercase tracking-wider font-bold mt-2"
+              >
+                {loading ? 'Sending...' : 'Send Message'} <Send size={16} />
+              </button>
+            </form>
+          )}
         </div>
       </div>
     </motion.div>

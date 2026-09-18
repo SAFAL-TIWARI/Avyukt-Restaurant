@@ -55,7 +55,7 @@ const HelpPage = () => {
     : faqs;
 
   return (
-    <div className="min-h-screen pt-32 pb-20 px-4 bg-gray-50 dark:bg-zinc-950 transition-colors duration-300">
+    <div className="min-h-screen pt-32 pb-20 px-4 bg-body dark:bg-zinc-950 transition-colors duration-300">
       <div className="max-w-4xl mx-auto">
         {/* Hero Header */}
         <motion.div
@@ -63,23 +63,23 @@ const HelpPage = () => {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
-          <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary mx-auto mb-6">
+          <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary mx-auto mb-6 shadow-sm">
             <HelpCircle size={32} />
           </div>
           <h1 className="text-4xl font-title font-bold text-title dark:text-white mb-3">How can we help?</h1>
-          <p className="text-text/60 dark:text-white/60 max-w-md mx-auto mb-8">
-            Search our FAQ or browse by topic below. We're here to help!
+          <p className="text-text/70 dark:text-white/60 max-w-md mx-auto mb-8">
+            Search our FAQ or browse by topic below. We're here to assist your royal dining experience!
           </p>
 
           {/* Search Bar */}
           <div className="relative max-w-xl mx-auto">
-            <Search size={20} className="absolute left-5 top-1/2 -translate-y-1/2 text-text/30 dark:text-white/30" />
+            <Search size={20} className="absolute left-5 top-1/2 -translate-y-1/2 text-text/40 dark:text-white/40" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search for help topics..."
-              className="w-full pl-14 pr-6 py-4 bg-white dark:bg-zinc-900 rounded-2xl border border-black/5 dark:border-white/10 outline-none focus:border-primary focus:shadow-lg focus:shadow-primary/10 transition-all text-title dark:text-white placeholder:text-text/30"
+              placeholder="Search for help topics, refunds, delivery..."
+              className="w-full pl-14 pr-6 py-4 bg-white dark:bg-zinc-900 rounded-2xl border border-amber-950/10 dark:border-white/10 outline-none focus:border-primary focus:shadow-lg focus:shadow-primary/10 transition-all text-title dark:text-white placeholder:text-text/40 shadow-sm"
             />
           </div>
         </motion.div>
@@ -95,7 +95,7 @@ const HelpPage = () => {
             <Link
               key={link.label}
               to={link.path}
-              className={`p-5 rounded-2xl border text-center hover:scale-[1.03] hover:shadow-lg transition-all ${link.color}`}
+              className={`p-5 rounded-2xl border text-center hover:scale-[1.03] hover:shadow-lg transition-all shadow-sm ${link.color}`}
             >
               <div className="flex justify-center mb-3">{link.icon}</div>
               <p className="font-bold text-sm mb-1">{link.label}</p>
@@ -113,8 +113,8 @@ const HelpPage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 * catIdx }}
             >
-              <h2 className="text-sm font-bold text-text/40 dark:text-white/40 uppercase tracking-wider mb-4 ml-2">{category.category}</h2>
-              <div className="bg-white dark:bg-zinc-900 rounded-3xl border border-black/5 dark:border-white/10 overflow-hidden divide-y divide-black/5 dark:divide-white/5">
+              <h2 className="text-sm font-bold text-text/60 dark:text-white/40 uppercase tracking-wider mb-4 ml-2">{category.category}</h2>
+              <div className="bg-white dark:bg-zinc-900 rounded-3xl border border-amber-950/10 dark:border-white/10 shadow-sm overflow-hidden divide-y divide-amber-950/5 dark:divide-white/5">
                 {category.questions.map((faq, idx) => {
                   const faqId = `${catIdx}-${idx}`;
                   const isOpen = openFaq === faqId;
@@ -122,10 +122,10 @@ const HelpPage = () => {
                     <div key={idx}>
                       <button
                         onClick={() => setOpenFaq(isOpen ? null : faqId)}
-                        className="w-full flex items-center justify-between p-5 text-left hover:bg-primary/[0.02] transition-colors"
+                        className="w-full flex items-center justify-between p-5 text-left hover:bg-primary/[0.03] transition-colors"
                       >
                         <span className={`font-bold text-sm pr-4 ${isOpen ? 'text-primary' : 'text-title dark:text-white'}`}>{faq.q}</span>
-                        {isOpen ? <ChevronUp size={18} className="text-primary flex-shrink-0" /> : <ChevronDown size={18} className="text-text/30 dark:text-white/30 flex-shrink-0" />}
+                        {isOpen ? <ChevronUp size={18} className="text-primary flex-shrink-0" /> : <ChevronDown size={18} className="text-text/40 dark:text-white/40 flex-shrink-0" />}
                       </button>
                       <AnimatePresence>
                         {isOpen && (
@@ -136,7 +136,7 @@ const HelpPage = () => {
                             transition={{ duration: 0.25 }}
                             className="overflow-hidden"
                           >
-                            <p className="px-5 pb-5 text-sm text-text/60 dark:text-white/50 leading-relaxed">{faq.a}</p>
+                            <p className="px-5 pb-5 text-sm text-text/70 dark:text-white/60 leading-relaxed">{faq.a}</p>
                           </motion.div>
                         )}
                       </AnimatePresence>
@@ -148,7 +148,7 @@ const HelpPage = () => {
           ))}
 
           {filteredFaqs.length === 0 && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16 bg-white dark:bg-zinc-900 rounded-3xl border border-amber-950/10 dark:border-white/10">
               <HelpCircle size={40} className="text-primary/30 mx-auto mb-4" />
               <h3 className="text-xl font-title font-bold text-title dark:text-white mb-2">No results found</h3>
               <p className="text-text/60 dark:text-white/60 text-sm">Try a different search term or browse the categories above.</p>
@@ -161,22 +161,22 @@ const HelpPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="mt-14 bg-primary/5 border border-primary/10 rounded-3xl p-8 text-center"
+          className="mt-14 bg-primary/5 border border-primary/20 rounded-3xl p-8 text-center shadow-sm"
         >
           <h3 className="text-xl font-title font-bold text-title dark:text-white mb-2">Still need help?</h3>
           <p className="text-sm text-text/60 dark:text-white/60 mb-6 max-w-md mx-auto">
             Our support team is available daily from 10 AM – 11 PM. Reach out and we'll get back to you quickly.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <a href="tel:+919039121277" className="flex items-center gap-2 bg-white dark:bg-zinc-900 px-6 py-3 rounded-2xl border border-black/5 dark:border-white/10 text-sm font-bold text-title dark:text-white hover:border-primary/30 transition-all">
+            <a href="tel:+919039121277" className="flex items-center gap-2 bg-white dark:bg-zinc-900 px-6 py-3 rounded-2xl border border-amber-950/10 dark:border-white/10 text-sm font-bold text-title dark:text-white hover:border-primary/30 transition-all shadow-sm">
               <Phone size={16} className="text-primary" />
               Call Us
             </a>
-            <a href="mailto:rahul.baghel76@gmail.com" className="flex items-center gap-2 bg-white dark:bg-zinc-900 px-6 py-3 rounded-2xl border border-black/5 dark:border-white/10 text-sm font-bold text-title dark:text-white hover:border-primary/30 transition-all">
+            <a href="mailto:rahul.baghel76@gmail.com" className="flex items-center gap-2 bg-white dark:bg-zinc-900 px-6 py-3 rounded-2xl border border-amber-950/10 dark:border-white/10 text-sm font-bold text-title dark:text-white hover:border-primary/30 transition-all shadow-sm">
               <Mail size={16} className="text-primary" />
               Email Us
             </a>
-            <a href="https://wa.me/919039121277" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-white dark:bg-zinc-900 px-6 py-3 rounded-2xl border border-black/5 dark:border-white/10 text-sm font-bold text-title dark:text-white hover:border-primary/30 transition-all">
+            <a href="https://wa.me/919039121277" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-white dark:bg-zinc-900 px-6 py-3 rounded-2xl border border-amber-950/10 dark:border-white/10 text-sm font-bold text-title dark:text-white hover:border-primary/30 transition-all shadow-sm">
               <MessageCircle size={16} className="text-green-500" />
               WhatsApp
             </a>

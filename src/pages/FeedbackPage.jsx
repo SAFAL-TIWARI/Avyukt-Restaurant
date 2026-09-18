@@ -5,13 +5,17 @@ import {
   ThumbsUp, ChefHat, Truck, Sparkles,
   CheckCircle
 } from 'lucide-react';
+import api from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
 const FeedbackPage = () => {
+  const { user } = useAuth();
   const [rating, setRating] = useState(0);
   const [hoveredStar, setHoveredStar] = useState(0);
   const [selectedTags, setSelectedTags] = useState([]);
   const [feedbackText, setFeedbackText] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const feedbackTags = [
     { label: 'Great Food', icon: <ChefHat size={14} /> },
@@ -30,17 +34,32 @@ const FeedbackPage = () => {
     );
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (rating === 0) return;
-    setSubmitted(true);
+    setSubmitting(true);
+    try {
+      await api.submitFeedback({
+        rating,
+        tags: selectedTags,
+        feedbackText,
+        userId: user?.uid || 'guest',
+        userName: user?.name || 'Valued Guest',
+        userEmail: user?.email || '',
+      });
+      setSubmitted(true);
+    } catch (err) {
+      console.error('Failed to submit feedback:', err);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const ratingLabels = ['', 'Poor', 'Fair', 'Good', 'Very Good', 'Excellent'];
 
   if (submitted) {
     return (
-      <div className="min-h-screen pt-32 pb-20 px-4 flex items-center justify-center bg-gray-50 dark:bg-zinc-950 transition-colors">
+      <div className="min-h-screen pt-32 pb-20 px-4 flex items-center justify-center bg-body dark:bg-zinc-950 transition-colors">
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -75,7 +94,7 @@ const FeedbackPage = () => {
   }
 
   return (
-    <div className="min-h-screen pt-32 pb-20 px-4 bg-gray-50 dark:bg-zinc-950 transition-colors duration-300">
+    <div className="min-h-screen pt-32 pb-20 px-4 bg-body dark:bg-zinc-950 transition-colors duration-300">
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <motion.div
@@ -98,7 +117,7 @@ const FeedbackPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white dark:bg-zinc-900 rounded-[2.5rem] p-8 md:p-10 border border-black/5 dark:border-white/10 shadow-xl"
+          className="bg-white/90 dark:bg-zinc-900 rounded-[2.5rem] p-8 md:p-10 border border-amber-950/10 dark:border-white/10 shadow-xl backdrop-blur-sm"
         >
           {/* Star Rating */}
           <div className="text-center mb-10">

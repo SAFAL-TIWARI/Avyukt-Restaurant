@@ -45,3 +45,15 @@
     @apply block text-xs lg:text-sm text-secondary text-center font-bold uppercase tracking-widest mb-2;
   }
 }
+
+/* Hide scrollbars on desktop & mobile while maintaining scroll functionality */
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}

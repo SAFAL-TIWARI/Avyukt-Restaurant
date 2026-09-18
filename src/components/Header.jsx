@@ -3,7 +3,7 @@ import { NavLink, Link, useLocation } from 'react-router-dom';
 import { 
   Menu, X, Sun, Moon, User, ShoppingBag, 
   Bell, HelpCircle, MessageSquare, LogOut, 
-  LogIn, ClipboardList, ChevronDown, Calendar 
+  LogIn, ClipboardList, ChevronDown, Calendar, ShieldCheck 
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
@@ -12,7 +12,7 @@ import { useAuth } from '../context/AuthContext';
 
 const Header = () => {
   const { totalItems, totalPrice } = useCart();
-  const { user, isLoggedIn, logout } = useAuth();
+  const { user, isLoggedIn, isAdmin, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -57,9 +57,11 @@ const Header = () => {
     { name: 'Menu', path: '/menu' },
     { name: 'Gallery', path: '/gallery' },
     { name: 'Contact', path: '/contact' },
+    ...(isAdmin ? [{ name: 'Admin', path: '/admin' }] : []),
   ];
 
   const profileMenuItems = [
+    ...(isAdmin ? [{ name: 'Admin Portal', icon: <ShieldCheck size={18} className="text-amber-500" />, path: '/admin', highlight: true }] : []),
     { name: 'Profile', icon: <User size={18} />, path: '/profile' },
     { name: 'Book Table', icon: <Calendar size={18} />, path: '/#reservation' },
     { name: 'Orders', icon: <ClipboardList size={18} />, path: '/orders' },
@@ -76,22 +78,34 @@ const Header = () => {
       initial={{ opacity: 0, scale: 0.95, y: -10 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95, y: -10 }}
-      className={`absolute right-0 mt-2 w-64 bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-black/5 dark:border-white/10 overflow-hidden z-[60] ${
+      className={`absolute right-0 mt-2 w-64 bg-[#FFFDD0] dark:bg-zinc-900 rounded-2xl shadow-2xl border border-amber-950/20 dark:border-white/10 overflow-hidden z-[60] ${
         isMobile ? 'top-full mr-2' : ''
       }`}
     >
       {/* User Info - Only show if logged in */}
       {isLoggedIn && user && (
         <div className="p-4 border-b border-black/5 dark:border-white/10 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary overflow-hidden">
-            {user.avatar ? (
-              <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
-            ) : (
-              <User size={20} />
-            )}
+          <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary overflow-hidden border border-primary/20">
+            <img 
+              src={user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || user.email || 'User')}&background=800000&color=ffffff&bold=true&size=80&rounded=true`} 
+              alt={user.name || 'User'} 
+              className="w-full h-full object-cover"
+              referrerPolicy="no-referrer"
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'User')}&background=800000&color=ffffff&bold=true&size=80&rounded=true`;
+              }}
+            />
           </div>
           <div>
-            <p className="font-bold text-title dark:text-white leading-none">{user.name}</p>
+            <div className="flex items-center gap-2">
+              <p className="font-bold text-title dark:text-white leading-none">{user.name}</p>
+              {isAdmin && (
+                <span className="px-1.5 py-0.5 text-[9px] font-extrabold uppercase bg-amber-500/20 text-amber-500 border border-amber-500/40 rounded-md">
+                  ADMIN
+                </span>
+              )}
+            </div>
             <p className="text-xs text-text/60 dark:text-white/60 mt-1">{user.email}</p>
           </div>
         </div>
@@ -141,17 +155,30 @@ const Header = () => {
             Log Out
           </button>
         ) : (
-          <Link
-            to="/login"
-            onClick={() => {
-              setIsProfileOpen(false);
-              setIsOpen(false);
-            }}
-            className="w-full flex items-center gap-3 px-3 py-2 text-sm text-primary hover:bg-primary/5 rounded-xl transition-colors"
-          >
-            <LogIn size={18} />
-            Log In / Sign Up
-          </Link>
+          <div className="space-y-1">
+            <Link
+              to="/login"
+              onClick={() => {
+                setIsProfileOpen(false);
+                setIsOpen(false);
+              }}
+              className="w-full flex items-center gap-3 px-3 py-2 text-sm text-primary hover:bg-primary/5 rounded-xl transition-colors font-medium"
+            >
+              <LogIn size={18} />
+              Sign In
+            </Link>
+            {/* <Link
+              to="/signup"
+              onClick={() => {
+                setIsProfileOpen(false);
+                setIsOpen(false);
+              }}
+              className="w-full flex items-center gap-3 px-3 py-2 text-sm text-text/70 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 rounded-xl transition-colors font-medium"
+            >
+              <User size={18} />
+              Create Account
+            </Link> */}
+          </div>
         )}
       </div>
     </motion.div>
@@ -201,15 +228,31 @@ const Header = () => {
               <button 
                 id="profile-trigger"
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
-                className={`relative flex items-center gap-2 p-1.5 rounded-full transition-all ${
+                className={`relative flex items-center gap-2 p-1 rounded-full transition-all ${
                   isProfileOpen ? 'bg-primary/20 text-primary' : textColorClass
                 }`}
+                aria-label="User profile and menu"
               >
-                <div className={`p-1.5 rounded-full border-2 transition-colors ${
-                  isProfileOpen ? 'border-primary' : 'border-transparent'
-                }`}>
-                  <User size={20} />
-                </div>
+                {isLoggedIn && user ? (
+                  <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-primary/50 shadow-sm flex items-center justify-center bg-primary/10">
+                    <img
+                      src={user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || user.email || 'User')}&background=800000&color=ffffff&bold=true&size=72&rounded=true`}
+                      alt={user.name || 'User'}
+                      className="w-full h-full object-cover"
+                      referrerPolicy="no-referrer"
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'User')}&background=800000&color=ffffff&bold=true&size=72&rounded=true`;
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <div className={`p-1.5 rounded-full border-2 transition-colors ${
+                    isProfileOpen ? 'border-primary' : 'border-transparent'
+                  }`}>
+                    <User size={20} />
+                  </div>
+                )}
                 {totalItems > 0 && (
                   <motion.span 
                     initial={{ scale: 0 }}
@@ -256,9 +299,27 @@ const Header = () => {
             <button 
               id="profile-trigger-mobile"
               onClick={() => setIsProfileOpen(!isProfileOpen)}
-              className={`relative p-2 rounded-full transition-colors ${textColorClass} ${isProfileOpen ? 'bg-primary/20 text-primary' : ''}`}
+              className={`relative p-1 rounded-full transition-colors ${textColorClass} ${isProfileOpen ? 'bg-primary/20 text-primary' : ''}`}
+              aria-label="User profile and menu"
             >
-              <User size={24} />
+              {isLoggedIn && user ? (
+                <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-primary/50 shadow-sm flex items-center justify-center bg-primary/10">
+                  <img
+                    src={user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || user.email || 'User')}&background=800000&color=ffffff&bold=true&size=64&rounded=true`}
+                    alt={user.name || 'User'}
+                    className="w-full h-full object-cover"
+                    referrerPolicy="no-referrer"
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'User')}&background=800000&color=ffffff&bold=true&size=64&rounded=true`;
+                    }}
+                  />
+                </div>
+              ) : (
+                <div className="p-1">
+                  <User size={22} />
+                </div>
+              )}
               {totalItems > 0 && (
                 <motion.span 
                   initial={{ scale: 0 }}

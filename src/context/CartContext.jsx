@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import FlyingItemOverlay from '../components/FlyingItemOverlay';
+import { useAuth } from './AuthContext';
+import { useToast } from './ToastContext';
 
 const CartContext = createContext();
 
@@ -12,6 +14,9 @@ export const useCart = () => {
 };
 
 export const CartProvider = ({ children }) => {
+  const { isLoggedIn } = useAuth();
+  const { toast } = useToast();
+
   const [cartItems, setCartItems] = useState(() => {
     const savedCart = localStorage.getItem('avyukt_cart');
     if (savedCart) {
@@ -25,13 +30,18 @@ export const CartProvider = ({ children }) => {
   });
   const [flyingItem, setFlyingItem] = useState(null);
 
-  // Remove the mount-level useEffect that was loading cart
   // Save cart to localStorage on changes
   useEffect(() => {
     localStorage.setItem('avyukt_cart', JSON.stringify(cartItems));
   }, [cartItems]);
 
   const addToCart = (item, sourceRect) => {
+    // REQUIRE USER TO BE LOGGED IN BEFORE ADDING ITEMS
+    if (!isLoggedIn) {
+      toast.warning('Please sign in or create an account to add items to your cart.', 'Sign In Required');
+      return false;
+    }
+
     setCartItems(prevItems => {
       const existingItem = prevItems.find(i => i.id === item.id);
       if (existingItem) {
@@ -42,9 +52,12 @@ export const CartProvider = ({ children }) => {
       return [...prevItems, { ...item, quantity: 1 }];
     });
 
+    toast.success(`Added ${item.name} to your cart!`, 'Item Added');
+
     if (sourceRect) {
       triggerFlyAnimation(item, sourceRect);
     }
+    return true;
   };
 
   const removeFromCart = (itemId) => {
@@ -74,7 +87,6 @@ export const CartProvider = ({ children }) => {
   };
 
   const triggerFlyAnimation = (item, sourceRect) => {
-    // Priority: Desktop profile trigger, then mobile profile trigger
     const targetElement = document.getElementById('profile-trigger') || document.getElementById('profile-trigger-mobile');
     if (!targetElement) return;
 
@@ -93,7 +105,6 @@ export const CartProvider = ({ children }) => {
       }
     });
 
-    // Clear flying item after animation (approx 1s)
     setTimeout(() => {
       setFlyingItem(null);
     }, 1000);
