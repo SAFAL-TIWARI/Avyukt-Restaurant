@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Clock, Users, Flame, UtensilsCrossed, ChevronRight, Search, 
-  Plus, Trash2, Edit3, Save, Undo2, X, Check, ChefHat, Sparkles
+  Plus, Trash2, Edit3, Save, Undo2, X, Check, ChefHat, Sparkles,
+  List, LayoutGrid
 } from 'lucide-react';
-import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { db, doc, getDoc, setDoc } from '../firebase/config';
@@ -14,32 +14,11 @@ const INITIAL_RECIPES = [
  
 ];
 
-const CATEGORIES = ['All', 'Main Course', 'Dessert', 'Experience', 'Starters'];
-
 const RecipesPage = () => {
   const { isAdmin } = useAuth();
   const { addToast } = useToast();
-  const [searchParams, setSearchParams] = useSearchParams();
 
-  // Query parameter for active category
-  const urlCategory = searchParams.get('category');
-  const [selectedCategory, setSelectedCategory] = useState(urlCategory || 'All');
-
-  useEffect(() => {
-    if (urlCategory && CATEGORIES.includes(urlCategory)) {
-      setSelectedCategory(urlCategory);
-    }
-  }, [urlCategory]);
-
-  const handleCategoryChange = (cat) => {
-    setSelectedCategory(cat);
-    setSearchParams(prev => {
-      const p = new URLSearchParams(prev);
-      p.set('category', cat);
-      return p;
-    });
-  };
-
+  const [viewMode, setViewMode] = useState('grid');
   const [searchTerm, setSearchTerm] = useState('');
 
   // Recipes State with LocalStorage & Firestore fallback
@@ -95,15 +74,18 @@ const RecipesPage = () => {
   // Memoized and debounced recipe filtering
   const filteredRecipes = useMemo(() => {
     const cleanSearch = debouncedSearch.toLowerCase().trim();
+    if (!cleanSearch) return recipeList;
     return recipeList.filter(recipe => {
-      const matchesSearch = !cleanSearch ||
-        (recipe.title || '').toLowerCase().includes(cleanSearch) || 
-        (recipe.chef || '').toLowerCase().includes(cleanSearch) ||
-        (recipe.description || '').toLowerCase().includes(cleanSearch);
-      const matchesCategory = selectedCategory === 'All' || recipe.category === selectedCategory;
-      return matchesSearch && matchesCategory;
+      const titleMatch = (recipe.title || '').toLowerCase().includes(cleanSearch);
+      const chefMatch = (recipe.chef || '').toLowerCase().includes(cleanSearch);
+      const descMatch = (recipe.description || '').toLowerCase().includes(cleanSearch);
+      const categoryMatch = (recipe.category || '').toLowerCase().includes(cleanSearch);
+      const ingredientMatch = Array.isArray(recipe.ingredients)
+        ? recipe.ingredients.some(ing => (ing || '').toLowerCase().includes(cleanSearch))
+        : false;
+      return titleMatch || chefMatch || descMatch || categoryMatch || ingredientMatch;
     });
-  }, [recipeList, debouncedSearch, selectedCategory]);
+  }, [recipeList, debouncedSearch]);
 
   // Admin: Start Edit Mode
   const handleStartEdit = () => {
@@ -272,17 +254,71 @@ const RecipesPage = () => {
             Discover the secret recipes and preparation techniques behind Avyukt's signature royal dishes. Recreate master culinary magic at home!
           </motion.p>
         </div>
+      </section>
 
-        {/* Admin Controls Banner */}
-        {isAdmin && (
-          <div className="mb-6 flex items-center justify-end flex-wrap gap-3 bg-white/80 dark:bg-zinc-900/80 p-4 rounded-2xl border border-amber-950/10  dark:border-white/10 shadow-sm backdrop-blur-sm">
-            
+      {/* Control Bar: View Changer (Grid / List), Search & Admin Controls */}
+      <div className="sticky top-[88px] sm:top-[96px] z-30 mb-8 container px-4">
+        <div className="bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md rounded-2xl p-3 sm:p-4 border border-amber-950/10 dark:border-white/10 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-3">
+          
+          {/* Left: View Changer */}
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="text-xs font-bold text-text/60 dark:text-white/60 uppercase tracking-wider">View:</span>
+            <div className="flex items-center bg-gray-100 dark:bg-zinc-800 p-1 rounded-xl">
+              <button
+                onClick={() => setViewMode('list')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  viewMode === 'list'
+                    ? 'bg-primary text-white shadow-sm'
+                    : 'text-text/70 dark:text-white/70 hover:text-primary'
+                }`}
+                title="List View (Compact View)"
+              >
+                <List size={14} />
+                <span>List</span>
+              </button>
+              <button
+                onClick={() => setViewMode('grid')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  viewMode === 'grid'
+                    ? 'bg-primary text-white shadow-sm'
+                    : 'text-text/70 dark:text-white/70 hover:text-primary'
+                }`}
+                title="Grid View (Full Cards)"
+              >
+                <LayoutGrid size={14} />
+                <span>Grid</span>
+              </button>
+            </div>
+          </div>
 
-            <div className="flex items-center gap-2 flex-wrap">
+          {/* Center: Search Bar */}
+          <div className="relative flex-1 max-w-md w-full">
+            <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search recipes, chefs, ingredients..."
+              className="w-full pl-9 pr-8 py-2 bg-gray-100 dark:bg-zinc-800 text-title dark:text-white placeholder:text-text/40 dark:placeholder:text-white/40 text-xs rounded-xl border border-black/5 dark:border-white/5 focus:border-primary/40 focus:outline-none transition-all"
+            />
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm('')}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white p-0.5 rounded-full cursor-pointer"
+                title="Clear Search"
+              >
+                <X size={14} />
+              </button>
+            )}
+          </div>
+
+          {/* Right: Admin Management Controls */}
+          {isAdmin && (
+            <div className="flex items-center gap-2 flex-wrap shrink-0">
               {!isEditing ? (
                 <button
                   onClick={handleStartEdit}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-white font-bold text-xs shadow-md shadow-primary/20 hover:bg-primary-dark transition-all"
+                  className="flex items-center gap-1.5 px-3.5 py-2 bg-primary text-white font-bold text-xs rounded-xl hover:bg-primary-dark transition-all shadow-sm cursor-pointer"
                 >
                   <Edit3 size={14} />
                   <span>Edit Recipes</span>
@@ -290,294 +326,266 @@ const RecipesPage = () => {
               ) : (
                 <>
                   <button
-                    onClick={handleOpenAddModal}
-                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 text-white font-bold text-xs shadow-sm hover:bg-emerald-700 transition-all"
+                    onClick={handleCancelEdit}
+                    className="flex items-center gap-1.5 px-3 py-2 bg-gray-200 dark:bg-zinc-800 text-title dark:text-white font-bold text-xs rounded-xl hover:bg-gray-300 dark:hover:bg-zinc-700 transition-all shadow-sm cursor-pointer"
                   >
-                    <Plus size={14} />
-                    <span>Add Recipe</span>
+                    <X size={14} />
+                    <span>Cancel</span>
                   </button>
 
                   <button
                     onClick={handleSaveAll}
                     disabled={saving}
-                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary text-white font-bold text-xs shadow-sm hover:bg-primary-dark transition-all disabled:opacity-50"
+                    className="flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 text-white font-bold text-xs rounded-xl hover:bg-emerald-700 transition-all shadow-sm disabled:opacity-50 cursor-pointer"
                   >
                     <Save size={14} />
                     <span>{saving ? 'Saving...' : 'Save Changes'}</span>
                   </button>
 
                   <button
-                    onClick={handleCancelEdit}
-                    className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gray-100 dark:bg-zinc-800 text-text/70 dark:text-white/70 font-bold text-xs hover:bg-gray-200 dark:hover:bg-zinc-700 transition-all"
+                    onClick={handleOpenAddModal}
+                    className="flex items-center gap-1.5 px-3.5 py-2 bg-secondary text-title font-bold text-xs rounded-xl hover:bg-secondary/90 transition-all shadow-sm cursor-pointer"
                   >
-                    <Undo2 size={14} />
-                    <span>Cancel</span>
+                    <Plus size={14} />
+                    <span>Add Recipe</span>
                   </button>
                 </>
               )}
             </div>
-          </div>
-        )}
-
-        {/* Filters & Search Toolbar */}
-        <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-white dark:bg-zinc-900/90 p-4 md:p-5 rounded-3xl shadow-lg border border-amber-950/10 dark:border-white/10 backdrop-blur-md">
-          {/* Horizontal scrollbar for categories */}
-          <div className="flex gap-2 overflow-x-auto pb-1 md:pb-0 w-full md:w-auto no-scrollbar">
-            {CATEGORIES.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => handleCategoryChange(cat)}
-                className={`px-5 py-2 rounded-full text-xs font-bold transition-all whitespace-nowrap shrink-0 cursor-pointer ${
-                  selectedCategory === cat 
-                  ? 'bg-primary text-white shadow-md shadow-primary/20' 
-                  : 'bg-gray-100 dark:bg-zinc-800 text-text/70 dark:text-white/70 hover:bg-gray-200 dark:hover:bg-zinc-700'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-          
-          {/* Search Input */}
-          <div className="relative w-full md:w-80">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={17} />
-            <input 
-              type="text" 
-              placeholder="Search recipes, chefs, ingredients..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-11 pr-4 py-2.5 bg-gray-100 dark:bg-zinc-800 rounded-2xl border-none focus:ring-2 focus:ring-primary/20 text-xs md:text-sm text-title dark:text-white transition-all outline-none"
-            />
-          </div>
+          )}
         </div>
-      </section>
+      </div>
 
       {/* Recipes Showcase */}
       <section className="container px-4">
-        
-        {/* ======================================================== */}
-        {/* MOBILE VIEW (< md): Horizontal Small Cards as Requested */}
-        {/* ======================================================== */}
-        <div className="md:hidden space-y-3.5">
-          <AnimatePresence mode="popLayout">
-            {filteredRecipes.map((recipe) => (
-              <motion.div
-                key={recipe.id}
-                layout
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                className="bg-white dark:bg-zinc-900 rounded-3xl p-3 sm:p-4 border border-amber-950/10 dark:border-white/10 shadow-sm flex items-center gap-3.5 relative overflow-hidden group"
+        {filteredRecipes.length === 0 ? (
+          /* Empty State */
+          <div className="text-center py-16 bg-white/60 dark:bg-zinc-900/60 rounded-3xl border border-dashed border-amber-950/20 dark:border-white/10">
+            <UtensilsCrossed size={40} className="mx-auto text-primary/40 mb-3" />
+            <h3 className="text-xl font-title font-bold text-title dark:text-white mb-2">No recipes found</h3>
+            <p className="text-text/60 dark:text-white/60 text-xs sm:text-sm mb-4">
+              {searchTerm ? `No culinary recipes matched "${searchTerm}".` : 'No recipes currently available.'}
+            </p>
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm('')}
+                className="px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primary-dark transition-all cursor-pointer shadow-sm"
               >
-                {/* Small Thumbnail on Left */}
-                <div 
-                  onClick={() => setViewRecipeModal(recipe)}
-                  className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden shrink-0 relative bg-primary/10 cursor-pointer"
+                Clear Search
+              </button>
+            )}
+          </div>
+        ) : viewMode === 'grid' ? (
+          /* ======================================================== */
+          /* GRID VIEW: Responsive Cards                              */
+          /* ======================================================== */
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8">
+            <AnimatePresence mode="popLayout">
+              {filteredRecipes.map((recipe, index) => (
+                <motion.div
+                  key={recipe.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.3, delay: index * 0.04 }}
+                  className="group relative bg-white dark:bg-zinc-900 rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden shadow-xl border border-amber-950/10 dark:border-white/10 flex flex-col h-full hover:shadow-2xl transition-all"
                 >
-                  <img 
-                    src={recipe.image} 
-                    alt={recipe.title} 
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    onError={(e) => {
-                      e.currentTarget.onerror = null;
-                      e.currentTarget.src = '/assets/recipes/biryani.jpeg';
-                    }}
-                  />
-                  <span className="absolute bottom-1.5 left-1.5 px-2 py-0.5 text-[8px] font-extrabold uppercase rounded-md bg-black/70 text-white backdrop-blur-sm">
-                    {recipe.category}
-                  </span>
-                </div>
+                  {/* Image Container */}
+                  <div className="relative h-52 sm:h-64 overflow-hidden">
+                    <img 
+                      src={recipe.image} 
+                      alt={recipe.title}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = '/assets/recipes/biryani.jpeg';
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
+                    
+                    <div className="absolute top-4 left-4 sm:top-5 sm:left-5">
+                      <span className="px-3 py-1 sm:px-3.5 sm:py-1.5 bg-primary/90 text-white text-[10px] sm:text-xs font-bold rounded-full backdrop-blur-md uppercase tracking-wider shadow-md">
+                        {recipe.category}
+                      </span>
+                    </div>
 
-                {/* Info on Right */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between gap-1 mb-0.5">
-                    <h3 
-                      onClick={() => setViewRecipeModal(recipe)}
-                      className="font-bold text-sm text-title dark:text-white truncate cursor-pointer hover:text-primary transition-colors"
-                    >
-                      {recipe.title}
-                    </h3>
-
-                    {/* Admin Action Buttons */}
+                    {/* Admin Floating Controls */}
                     {isEditing && (
-                      <div className="flex items-center gap-1 shrink-0">
-                        <button 
+                      <div className="absolute top-4 right-4 sm:top-5 sm:right-5 flex items-center gap-2 bg-black/60 backdrop-blur-md p-1.5 rounded-2xl border border-white/20">
+                        <button
                           onClick={() => handleOpenEditModal(recipe)}
                           title="Edit Recipe"
-                          className="p-1.5 rounded-lg text-primary hover:bg-primary/10 transition-colors"
+                          className="p-1.5 sm:p-2 rounded-xl bg-white/20 text-white hover:bg-primary transition-colors cursor-pointer"
                         >
-                          <Edit3 size={13} />
+                          <Edit3 size={14} />
                         </button>
-                        <button 
+                        <button
                           onClick={() => handleDeleteRecipe(recipe.id)}
                           title="Delete Recipe"
-                          className="p-1.5 rounded-lg text-rose-500 hover:bg-rose-500/10 transition-colors"
+                          className="p-1.5 sm:p-2 rounded-xl bg-red-500/80 text-white hover:bg-red-600 transition-colors cursor-pointer"
                         >
-                          <Trash2 size={13} />
+                          <Trash2 size={14} />
                         </button>
                       </div>
                     )}
                   </div>
 
-                  <p className="text-[11px] text-secondary font-medium italic mb-1">
-                    by {recipe.chef}
-                  </p>
-
-                  <p className="text-xs text-text/60 dark:text-white/60 line-clamp-1 mb-2.5">
-                    {recipe.description}
-                  </p>
-
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-[10px] font-semibold text-text/50 dark:text-white/50">
-                      <span className="flex items-center gap-0.5">
-                        <Clock size={11} className="text-primary" /> {recipe.time}
-                      </span>
-                      <span>•</span>
-                      <span className="flex items-center gap-0.5">
-                        <Flame size={11} className="text-primary" /> {recipe.difficulty}
-                      </span>
+                  {/* Content */}
+                  <div className="p-5 sm:p-7 flex flex-col flex-grow">
+                    <div className="flex justify-between items-start mb-2 sm:mb-3">
+                      <div>
+                        <h3 
+                          onClick={() => setViewRecipeModal(recipe)}
+                          className="text-lg sm:text-2xl font-title font-bold text-title dark:text-white mb-1 group-hover:text-primary transition-colors cursor-pointer"
+                        >
+                          {recipe.title}
+                        </h3>
+                        <p className="text-secondary font-medium italic text-xs sm:text-sm">by {recipe.chef}</p>
+                      </div>
                     </div>
 
-                    <button 
-                      onClick={() => setViewRecipeModal(recipe)}
-                      className="text-xs font-bold text-primary hover:text-primary-dark flex items-center gap-0.5 transition-all"
-                    >
-                      <span>View</span>
-                      <ChevronRight size={13} />
-                    </button>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </div>
+                    <p className="text-text/70 dark:text-white/60 text-xs sm:text-sm mb-4 sm:mb-6 line-clamp-2 leading-relaxed">
+                      {recipe.description}
+                    </p>
 
-        {/* ======================================================== */}
-        {/* DESKTOP VIEW (>= md): Full Detailed Grid Cards           */}
-        {/* ======================================================== */}
-        <div className="hidden md:grid md:grid-cols-2 gap-8">
-          <AnimatePresence mode="popLayout">
-            {filteredRecipes.map((recipe, index) => (
-              <motion.div
-                key={recipe.id}
-                layout
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.3, delay: index * 0.05 }}
-                className="group relative bg-white dark:bg-zinc-900 rounded-[2.5rem] overflow-hidden shadow-xl border border-amber-950/10 dark:border-white/10 flex flex-col h-full hover:shadow-2xl transition-all"
-              >
-                {/* Image Container */}
-                <div className="relative h-64 overflow-hidden">
-                  <img 
-                    src={recipe.image} 
-                    alt={recipe.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    onError={(e) => {
-                      e.currentTarget.onerror = null;
-                      e.currentTarget.src = '/assets/recipes/biryani.jpeg';
-                    }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
-                  
-                  <div className="absolute top-5 left-5">
-                    <span className="px-3.5 py-1.5 bg-primary/90 text-white text-xs font-bold rounded-full backdrop-blur-md uppercase tracking-wider shadow-md">
+                    <div className="grid grid-cols-3 gap-2 sm:gap-4 py-3 sm:py-4 mb-4 sm:mb-6 border-y border-amber-950/10 dark:border-zinc-800">
+                      <div className="flex flex-col items-center gap-0.5 sm:gap-1">
+                        <Clock size={14} className="text-primary sm:w-4 sm:h-4" />
+                        <span className="text-[9px] sm:text-[10px] uppercase tracking-wider text-text/40 dark:text-white/40 font-bold">Time</span>
+                        <span className="text-[11px] sm:text-xs font-bold text-title dark:text-white">{recipe.time}</span>
+                      </div>
+                      <div className="flex flex-col items-center gap-0.5 sm:gap-1">
+                        <Users size={14} className="text-primary sm:w-4 sm:h-4" />
+                        <span className="text-[9px] sm:text-[10px] uppercase tracking-wider text-text/40 dark:text-white/40 font-bold">Serves</span>
+                        <span className="text-[11px] sm:text-xs font-bold text-title dark:text-white">{recipe.serves}</span>
+                      </div>
+                      <div className="flex flex-col items-center gap-0.5 sm:gap-1">
+                        <Flame size={14} className="text-primary sm:w-4 sm:h-4" />
+                        <span className="text-[9px] sm:text-[10px] uppercase tracking-wider text-text/40 dark:text-white/40 font-bold">Level</span>
+                        <span className="text-[11px] sm:text-xs font-bold text-title dark:text-white">{recipe.difficulty}</span>
+                      </div>
+                    </div>
+
+                    <div className="mt-auto flex items-center justify-between">
+                      <div className="flex items-center gap-1.5 sm:gap-2">
+                        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                          <UtensilsCrossed size={12} className="sm:w-3.5 sm:h-3.5" />
+                        </div>
+                        <span className="text-[11px] sm:text-xs font-bold text-text/60 dark:text-white/60">
+                          {Array.isArray(recipe.ingredients) ? recipe.ingredients.length : 4} Ingredients
+                        </span>
+                      </div>
+
+                      <button 
+                        onClick={() => setViewRecipeModal(recipe)}
+                        className="flex items-center gap-1.5 sm:gap-2 text-primary font-bold text-xs sm:text-sm hover:gap-2.5 transition-all cursor-pointer"
+                      >
+                        <span>View Recipe</span>
+                        <ChevronRight size={16} />
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+        ) : (
+          /* ======================================================== */
+          /* LIST VIEW: Horizontal Small Cards as in Past             */
+          /* ======================================================== */
+          <div className="space-y-3.5">
+            <AnimatePresence mode="popLayout">
+              {filteredRecipes.map((recipe) => (
+                <motion.div
+                  key={recipe.id}
+                  layout
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  className="bg-white dark:bg-zinc-900 rounded-3xl p-3 sm:p-4 border border-amber-950/10 dark:border-white/10 shadow-sm flex items-center gap-3.5 relative overflow-hidden group"
+                >
+                  {/* Small Thumbnail on Left */}
+                  <div 
+                    onClick={() => setViewRecipeModal(recipe)}
+                    className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden shrink-0 relative bg-primary/10 cursor-pointer"
+                  >
+                    <img 
+                      src={recipe.image} 
+                      alt={recipe.title} 
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = '/assets/recipes/biryani.jpeg';
+                      }}
+                    />
+                    <span className="absolute bottom-1.5 left-1.5 px-2 py-0.5 text-[8px] font-extrabold uppercase rounded-md bg-black/70 text-white backdrop-blur-sm">
                       {recipe.category}
                     </span>
                   </div>
 
-                  {/* Admin Floating Controls */}
-                  {isEditing && (
-                    <div className="absolute top-5 right-5 flex items-center gap-2 bg-black/60 backdrop-blur-md p-1.5 rounded-2xl border border-white/20">
-                      <button
-                        onClick={() => handleOpenEditModal(recipe)}
-                        title="Edit Recipe"
-                        className="p-2 rounded-xl bg-white/20 text-white hover:bg-primary transition-colors"
+                  {/* Info on Right */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-1 mb-0.5">
+                      <h3 
+                        onClick={() => setViewRecipeModal(recipe)}
+                        className="font-bold text-sm sm:text-base text-title dark:text-white truncate cursor-pointer hover:text-primary transition-colors"
                       >
-                        <Edit3 size={15} />
-                      </button>
-                      <button
-                        onClick={() => handleDeleteRecipe(recipe.id)}
-                        title="Delete Recipe"
-                        className="p-2 rounded-xl bg-red-500/80 text-white hover:bg-red-600 transition-colors"
-                      >
-                        <Trash2 size={15} />
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                {/* Content */}
-                <div className="p-7 flex flex-col flex-grow">
-                  <div className="flex justify-between items-start mb-3">
-                    <div>
-                      <h3 className="text-2xl font-title font-bold text-title dark:text-white mb-1 group-hover:text-primary transition-colors">
                         {recipe.title}
                       </h3>
-                      <p className="text-secondary font-medium italic text-sm">by {recipe.chef}</p>
-                    </div>
-                  </div>
 
-                  <p className="text-text/70 dark:text-white/60 text-sm mb-6 line-clamp-2 leading-relaxed">
-                    {recipe.description}
-                  </p>
+                      {/* Admin Action Buttons */}
+                      {isEditing && (
+                        <div className="flex items-center gap-1 shrink-0">
+                          <button 
+                            onClick={() => handleOpenEditModal(recipe)}
+                            title="Edit Recipe"
+                            className="p-1.5 rounded-lg text-primary hover:bg-primary/10 transition-colors cursor-pointer"
+                          >
+                            <Edit3 size={13} />
+                          </button>
+                          <button 
+                            onClick={() => handleDeleteRecipe(recipe.id)}
+                            title="Delete Recipe"
+                            className="p-1.5 rounded-lg text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer"
+                          >
+                            <Trash2 size={13} />
+                          </button>
+                        </div>
+                      )}
+                    </div>
 
-                  <div className="grid grid-cols-3 gap-4 py-4 mb-6 border-y border-amber-950/10 dark:border-zinc-800">
-                    <div className="flex flex-col items-center gap-1">
-                      <Clock size={16} className="text-primary" />
-                      <span className="text-[10px] uppercase tracking-wider text-text/40 dark:text-white/40 font-bold">Time</span>
-                      <span className="text-xs font-bold text-title dark:text-white">{recipe.time}</span>
-                    </div>
-                    <div className="flex flex-col items-center gap-1">
-                      <Users size={16} className="text-primary" />
-                      <span className="text-[10px] uppercase tracking-wider text-text/40 dark:text-white/40 font-bold">Serves</span>
-                      <span className="text-xs font-bold text-title dark:text-white">{recipe.serves}</span>
-                    </div>
-                    <div className="flex flex-col items-center gap-1">
-                      <Flame size={16} className="text-primary" />
-                      <span className="text-[10px] uppercase tracking-wider text-text/40 dark:text-white/40 font-bold">Level</span>
-                      <span className="text-xs font-bold text-title dark:text-white">{recipe.difficulty}</span>
-                    </div>
-                  </div>
+                    <p className="text-[11px] text-secondary font-medium italic mb-1">
+                      by {recipe.chef}
+                    </p>
 
-                  <div className="mt-auto flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                        <UtensilsCrossed size={14} />
+                    <p className="text-xs text-text/60 dark:text-white/60 line-clamp-1 mb-2.5">
+                      {recipe.description}
+                    </p>
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-[10px] font-semibold text-text/50 dark:text-white/50">
+                        <span className="flex items-center gap-0.5">
+                          <Clock size={11} className="text-primary" /> {recipe.time}
+                        </span>
+                        <span>•</span>
+                        <span className="flex items-center gap-0.5">
+                          <Flame size={11} className="text-primary" /> {recipe.difficulty}
+                        </span>
                       </div>
-                      <span className="text-xs font-bold text-text/60 dark:text-white/60">
-                        {Array.isArray(recipe.ingredients) ? recipe.ingredients.length : 4} Ingredients
-                      </span>
+
+                      <button 
+                        onClick={() => setViewRecipeModal(recipe)}
+                        className="text-xs font-bold text-primary hover:text-primary-dark flex items-center gap-0.5 transition-all cursor-pointer"
+                      >
+                        <span>View</span>
+                        <ChevronRight size={13} />
+                      </button>
                     </div>
-
-                    <button 
-                      onClick={() => setViewRecipeModal(recipe)}
-                      className="flex items-center gap-2 text-primary font-bold text-sm hover:gap-3 transition-all"
-                    >
-                      <span>View Recipe</span>
-                      <ChevronRight size={18} />
-                    </button>
                   </div>
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </div>
-
-        {/* Empty State */}
-        {filteredRecipes.length === 0 && (
-          <div className="text-center py-20 bg-white dark:bg-zinc-900 rounded-3xl border border-amber-950/10 dark:border-white/10">
-            <UtensilsCrossed size={40} className="mx-auto text-primary/40 mb-3" />
-            <h3 className="text-xl font-title font-bold text-title dark:text-white mb-2">No recipes found</h3>
-            <p className="text-text/60 dark:text-white/60 text-sm mb-4">Try adjusting your filters or search query.</p>
-            {selectedCategory !== 'All' && (
-              <button
-                onClick={() => handleCategoryChange('All')}
-                className="px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primary-dark transition-all"
-              >
-                View All Categories
-              </button>
-            )}
+                </motion.div>
+              ))}
+            </AnimatePresence>
           </div>
         )}
       </section>

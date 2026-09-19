@@ -170,7 +170,7 @@ const ContactPage = () => {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase tracking-wider dark:text-gray-300 ml-1">Phone Number (Optional)</label>
+                <label className="text-xs font-bold uppercase tracking-wider dark:text-gray-300 ml-1">Phone Number</label>
                 <input 
                   type="tel" 
                   value={formData.phone}

@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   User, Mail, Phone, MapPin, 
   CreditCard, Shield, LogOut,
   Edit2, Check, X, Plus, Trash2, Home, Briefcase, CheckCircle2, IndianRupee,
-  LocateFixed, Lock
+  LocateFixed, Lock, Search
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
@@ -63,6 +63,18 @@ const ProfilePage = () => {
   const [payments, setPayments] = useState([]);
   const [ordersCount, setOrdersCount] = useState(0);
   const [loadingPayments, setLoadingPayments] = useState(false);
+  const [paymentSearch, setPaymentSearch] = useState('');
+
+  const filteredPayments = useMemo(() => {
+    if (!paymentSearch.trim()) return payments;
+    const q = paymentSearch.toLowerCase().trim();
+    return payments.filter(p => 
+      (p.paymentId || p.id || '').toLowerCase().includes(q) ||
+      String(p.amount || '').toLowerCase().includes(q) ||
+      (p.method || '').toLowerCase().includes(q) ||
+      (p.status || '').toLowerCase().includes(q)
+    );
+  }, [payments, paymentSearch]);
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -224,10 +236,10 @@ const ProfilePage = () => {
   const savedAddressesList = (user?.savedAddresses || []).filter(a => a && a.id !== 'addr_default_1');
 
   const profileSections = [
-    { id: 'profile', name: 'Profile Info', icon: <User size={18} /> },
-    { id: 'address', name: 'Saved Addresses', icon: <MapPin size={18} /> },
-    { id: 'payment', name: 'Payments', icon: <CreditCard size={18} /> },
-    { id: 'security', name: 'Security', icon: <Shield size={18} /> },
+    { id: 'profile', name: 'Profile Info', icon: <User className="w-3.5 h-3.5 sm:w-4.5 sm:h-4.5" /> },
+    { id: 'address', name: 'Saved Addresses', icon: <MapPin className="w-3.5 h-3.5 sm:w-4.5 sm:h-4.5" /> },
+    { id: 'payment', name: 'Payments', icon: <CreditCard className="w-3.5 h-3.5 sm:w-4.5 sm:h-4.5" /> },
+    { id: 'security', name: 'Security', icon: <Shield className="w-3.5 h-3.5 sm:w-4.5 sm:h-4.5" /> },
   ];
 
   return (
@@ -264,32 +276,60 @@ const ProfilePage = () => {
                 {user?.role === 'admin' ? 'Restaurant Manager' : 'Customer'}
               </span>
 
-              {/* Navigation Tabs - Horizontal Scrollbar List Card for Mobile, Vertical List for Desktop */}
-              <div className="w-full overflow-x-auto no-scrollbar pt-4 border-t border-black/5 dark:border-white/10">
-                <div className="flex lg:flex-col gap-2 min-w-max lg:min-w-0 text-left pb-1 lg:pb-0">
-                  {profileSections.map((sec) => (
-                    <button
-                      key={sec.id}
-                      onClick={() => handleTabChange(sec.id)}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm transition-all shrink-0 whitespace-nowrap cursor-pointer ${
-                        activeTab === sec.id
-                          ? 'bg-primary text-white shadow-lg shadow-primary/25'
-                          : 'text-text/70 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-zinc-800 bg-gray-50/70 dark:bg-zinc-800/60 lg:bg-transparent lg:dark:bg-transparent border border-black/5 dark:border-white/5 lg:border-transparent'
-                      }`}
-                    >
-                      {sec.icon}
-                      <span>{sec.name}</span>
-                    </button>
-                  ))}
-
+              {/* Navigation Tabs - Desktop Only Vertical List */}
+              <div className="hidden lg:flex flex-col gap-2 pt-4 border-t border-black/5 dark:border-white/10 text-left">
+                {profileSections.map((sec) => (
                   <button
-                    onClick={logout}
-                    className="flex items-center gap-3 px-4 py-3 rounded-2xl text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 font-bold text-xs sm:text-sm transition-colors shrink-0 whitespace-nowrap bg-red-500/10 lg:bg-transparent border border-red-500/20 lg:border-transparent lg:mt-3 cursor-pointer"
+                    key={sec.id}
+                    onClick={() => handleTabChange(sec.id)}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-sm transition-all whitespace-nowrap cursor-pointer ${
+                      activeTab === sec.id
+                        ? 'bg-primary text-white shadow-lg shadow-primary/25'
+                        : 'text-text/70 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-zinc-800'
+                    }`}
                   >
-                    <LogOut size={18} />
-                    <span>Sign Out</span>
+                    {sec.icon}
+                    <span>{sec.name}</span>
                   </button>
-                </div>
+                ))}
+
+                <button
+                  onClick={logout}
+                  className="flex items-center gap-3 px-4 py-3 rounded-2xl text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 font-bold text-sm transition-colors mt-3 cursor-pointer"
+                >
+                  <LogOut className="w-4.5 h-4.5" />
+                  <span>Sign Out</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile Only: Sticky Sections Navigation Bar with clearance below navbar */}
+          <div className="lg:hidden sticky top-[80px] sm:top-[88px] z-30 -my-2 py-2.5 -mx-4 px-4 bg-body/95 dark:bg-zinc-950/95 backdrop-blur-md border-y border-black/5 dark:border-white/10 shadow-sm">
+            <div className="overflow-x-auto no-scrollbar">
+              <div className="flex gap-1.5 min-w-max text-left pb-0.5">
+                {profileSections.map((sec) => (
+                  <button
+                    key={sec.id}
+                    onClick={() => handleTabChange(sec.id)}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-xl font-bold text-[11px] sm:text-xs transition-all shrink-0 whitespace-nowrap cursor-pointer ${
+                      activeTab === sec.id
+                        ? 'bg-primary text-white shadow-md shadow-primary/25'
+                        : 'text-text/70 dark:text-white/70 bg-white/80 dark:bg-zinc-900/80 border border-black/5 dark:border-white/5'
+                    }`}
+                  >
+                    {sec.icon}
+                    <span>{sec.name}</span>
+                  </button>
+                ))}
+
+                <button
+                  onClick={logout}
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-red-500 font-bold text-[11px] sm:text-xs bg-red-500/10 border border-red-500/20 shrink-0 whitespace-nowrap cursor-pointer"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>Sign Out</span>
+                </button>
               </div>
             </div>
           </div>
@@ -544,9 +584,31 @@ const ProfilePage = () => {
               {/* TAB 3: PAYMENTS HISTORY (ACTIVE DB FETCHED) */}
               {activeTab === 'payment' && (
                 <div className="space-y-6">
-                  <div className="border-b border-black/5 dark:border-white/10 pb-6">
-                    <h2 className="text-2xl font-title font-bold text-title dark:text-white">Payment Transactions</h2>
-                    <p className="text-xs text-text/60 dark:text-white/60">Complete audit log of online and verified cash receipts</p>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-black/5 dark:border-white/10 pb-6">
+                    <div>
+                      <h2 className="text-2xl font-title font-bold text-title dark:text-white">Payment Transactions</h2>
+                      <p className="text-xs text-text/60 dark:text-white/60">Complete audit log of online and verified cash receipts</p>
+                    </div>
+
+                    {/* Search Bar for Payment Transactions */}
+                    <div className="relative w-full sm:w-64">
+                      <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text/40 dark:text-white/40" size={16} />
+                      <input
+                        type="text"
+                        value={paymentSearch}
+                        onChange={(e) => setPaymentSearch(e.target.value)}
+                        placeholder="Search payments..."
+                        className="w-full pl-9 pr-8 py-2 bg-gray-50 dark:bg-zinc-800/80 border border-black/5 dark:border-white/10 rounded-xl text-xs text-title dark:text-white placeholder:text-text/40 dark:placeholder:text-white/40 focus:outline-none focus:border-primary/40 transition-colors"
+                      />
+                      {paymentSearch && (
+                        <button
+                          onClick={() => setPaymentSearch('')}
+                          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text/40 hover:text-text dark:hover:text-white"
+                        >
+                          <X size={14} />
+                        </button>
+                      )}
+                    </div>
                   </div>
 
                   {loadingPayments ? (
@@ -559,9 +621,19 @@ const ProfilePage = () => {
                       <h3 className="text-lg font-bold text-title dark:text-white mb-1">No payment history</h3>
                       <p className="text-xs text-text/60 dark:text-white/60">Your completed food order payments and transaction slips will be recorded here.</p>
                     </div>
+                  ) : filteredPayments.length === 0 ? (
+                    <div className="text-center py-12 bg-gray-50 dark:bg-zinc-800/40 rounded-3xl border border-dashed border-black/10 dark:border-white/10">
+                      <p className="text-sm font-semibold text-text/70 dark:text-white/70">No payments found matching "{paymentSearch}"</p>
+                      <button
+                        onClick={() => setPaymentSearch('')}
+                        className="mt-2 text-xs font-bold text-primary hover:underline cursor-pointer"
+                      >
+                        Clear search
+                      </button>
+                    </div>
                   ) : (
                     <div className="space-y-4">
-                      {payments.map((p) => (
+                      {filteredPayments.map((p) => (
                         <div
                           key={p.paymentId || p.id}
                           className="bg-gray-50 dark:bg-zinc-800/50 p-5 rounded-3xl border border-black/5 dark:border-white/5 flex flex-col md:flex-row justify-between md:items-center gap-4 hover:border-primary/20 transition-all"

@@ -77,7 +77,7 @@ export const AuthProvider = ({ children }) => {
 
         const mergedAdmin = {
           uid: canonicalUid,
-          name: adminData?.name || userData.name || 'Avyukt Restaurant Admin',
+          name: adminData?.name || userData.name || 'Avyukt Restaurant Manager',
           email: adminEmail,
           role: 'admin',
           phone: (adminData?.phone || userData.phone || '9876543210').replace(/\D/g, '').slice(-10),
@@ -498,6 +498,34 @@ export const AuthProvider = ({ children }) => {
               updatedAt: new Date().toISOString()
             }, { merge: true });
           } catch (e) {}
+        }
+
+        // Sync new avatar and name to all user's submitted feedbacks in Firestore
+        if (updatedData.avatar) {
+          try {
+            const fbsToUpdate = new Set();
+            const q1 = query(collection(db, 'feedbacks'), where('userId', '==', targetUid));
+            const snap1 = await getDocs(q1);
+            snap1.forEach((d) => fbsToUpdate.add(d.id));
+
+            const emailToMatch = (merged.email || '').trim().toLowerCase();
+            if (emailToMatch) {
+              const q2 = query(collection(db, 'feedbacks'), where('userEmail', '==', emailToMatch));
+              const snap2 = await getDocs(q2);
+              snap2.forEach((d) => fbsToUpdate.add(d.id));
+            }
+
+            for (const fbId of fbsToUpdate) {
+              try {
+                await updateDoc(doc(db, 'feedbacks', fbId), {
+                  userAvatar: updatedData.avatar,
+                  ...(updatedData.name ? { userName: updatedData.name } : {})
+                });
+              } catch (e) {}
+            }
+          } catch (fbSyncErr) {
+            console.warn('Sync feedback avatar note:', fbSyncErr.message);
+          }
         }
       } catch (e) {
         console.warn('Firestore update warning:', e.message);

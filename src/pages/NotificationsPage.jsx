@@ -5,7 +5,7 @@ import {
   Info, CheckCircle2, Clock, Trash2, 
   BellOff, Sparkles, Copy, Check, RefreshCw,
   ChevronDown, ChevronUp, Flame, Megaphone,
-  CheckCheck, Utensils
+  CheckCheck, Utensils, Search, X
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
@@ -98,6 +98,7 @@ const NotificationsPage = () => {
   const [loading, setLoading] = useState(true);
   const [copiedCode, setCopiedCode] = useState(null);
   const [expandedOrders, setExpandedOrders] = useState({});
+  const [searchQuery, setSearchQuery] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -368,9 +369,33 @@ const NotificationsPage = () => {
   const unreadCount = notifications.filter(n => !n.read).length;
 
   const filteredCards = processedCards.filter((card) => {
-    if (filter === 'all') return true;
-    if (filter === 'unread') return !card.read;
-    return card.category === filter;
+    const matchesCategory = filter === 'all'
+      ? true
+      : filter === 'unread'
+        ? !card.read
+        : card.category === filter;
+
+    if (!matchesCategory) return false;
+
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase().trim();
+
+    if (card.isOrderGroup) {
+      const orderRef = (card.displayRef || '').toLowerCase();
+      const statusMatch = (card.status || '').toLowerCase().includes(q);
+      const itemsMatch = (card.items || []).some(item => 
+        (item.title || '').toLowerCase().includes(q) ||
+        (item.message || '').toLowerCase().includes(q) ||
+        (item.orderId || '').toLowerCase().includes(q)
+      );
+      return orderRef.includes(q) || statusMatch || itemsMatch;
+    } else {
+      const titleMatch = (card.title || '').toLowerCase().includes(q);
+      const msgMatch = (card.message || '').toLowerCase().includes(q);
+      const codeMatch = (card.code || '').toLowerCase().includes(q);
+      const catMatch = (card.category || '').toLowerCase().includes(q);
+      return titleMatch || msgMatch || codeMatch || catMatch;
+    }
   });
 
   const getCategoryCount = (catId) => {
@@ -524,19 +549,37 @@ const NotificationsPage = () => {
           </div>
         </div>
 
-        {/* Filter Toolbar: Professional Custom Dropdown & Quick Badges */}
-        <div className="mb-6 space-y-3">
+        {/* Sticky Filter & Search Toolbar with navbar clearance */}
+        <div className="sticky top-[88px] md:top-[96px] z-30 py-3 -mx-4 px-4 bg-body/95 dark:bg-zinc-950/95 backdrop-blur-md transition-all space-y-3 border-b border-black/5 dark:border-white/5 mb-6">
           
-          {/* Top Row: Professional Category Dropdown Selector */}
+          {/* Top Row: Search Bar & Count Pill */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            
-            
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text/40 dark:text-white/40" size={15} />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search notifications, orders, promos..."
+                className="w-full pl-9 pr-8 py-2 bg-white dark:bg-zinc-900 border border-black/5 dark:border-white/10 rounded-xl text-xs text-title dark:text-white placeholder:text-text/40 dark:placeholder:text-white/40 focus:outline-none focus:border-primary/40 transition-colors shadow-sm"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text/40 hover:text-text dark:hover:text-white cursor-pointer"
+                >
+                  <X size={14} />
+                </button>
+              )}
+            </div>
 
             {/* Quick Summary Pill for Current Selection */}
-            <div className="hidden sm:flex items-center gap-2 text-xs font-medium text-text/60 dark:text-white/60">
+            <div className="flex items-center gap-2 text-xs font-medium text-text/60 dark:text-white/60 shrink-0">
               <span>Showing:</span>
               <strong className="text-title dark:text-white font-bold">{selectedCategoryConfig.label}</strong>
-              <span>({filteredCards.length})</span>
+              <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold text-[11px]">
+                {filteredCards.length}
+              </span>
             </div>
           </div>
 
@@ -550,7 +593,7 @@ const NotificationsPage = () => {
                 <button
                   key={cat.id}
                   onClick={() => handleFilterChange(cat.id)}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-2 shrink-0 ${
+                  className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-2 shrink-0 cursor-pointer ${
                     isSelected
                       ? 'bg-primary text-white shadow-md shadow-primary/20'
                       : 'bg-white dark:bg-zinc-900 text-text/70 dark:text-white/70 border border-black/5 dark:border-white/10 hover:border-primary/30'
@@ -816,21 +859,30 @@ const NotificationsPage = () => {
                     <BellOff size={28} />
                   </div>
                   <h3 className="text-lg font-bold text-title dark:text-white mb-1">
-                    No notifications in this category
+                    {searchQuery ? 'No matching notifications' : 'No notifications in this category'}
                   </h3>
                   <p className="text-xs text-text/60 dark:text-white/60 max-w-sm mb-4">
-                    {filter === 'all'
-                      ? 'You are all caught up! As soon as you place a food order or the restaurant broadcasts exclusive chef specials and promo discounts, updates will appear here.'
-                      : `There are currently no active notifications under "${selectedCategoryConfig.label}".`}
+                    {searchQuery
+                      ? `We couldn't find any notification matching "${searchQuery}". Try a different search term or clear the filter.`
+                      : filter === 'all'
+                        ? 'You are all caught up! As soon as you place a food order or the restaurant broadcasts exclusive chef specials and promo discounts, updates will appear here.'
+                        : `There are currently no active notifications under "${selectedCategoryConfig.label}".`}
                   </p>
-                  {filter !== 'all' && (
+                  {searchQuery ? (
+                    <button
+                      onClick={() => setSearchQuery('')}
+                      className="px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primary-dark transition-colors shadow-md shadow-primary/20 cursor-pointer"
+                    >
+                      Clear Search
+                    </button>
+                  ) : filter !== 'all' ? (
                     <button
                       onClick={() => handleFilterChange('all')}
-                      className="px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primary-dark transition-colors shadow-md shadow-primary/20"
+                      className="px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primary-dark transition-colors shadow-md shadow-primary/20 cursor-pointer"
                     >
                       View All Notifications
                     </button>
-                  )}
+                  ) : null}
                 </motion.div>
               )}
             </AnimatePresence>

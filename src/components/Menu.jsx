@@ -35,6 +35,16 @@ const Menu = () => {
   const [newPrice, setNewPrice] = useState('');
   const [newDesc, setNewDesc] = useState('');
   const [newImage, setNewImage] = useState('');
+  const [addPosition, setAddPosition] = useState('end'); // 'start' or 'end'
+
+  // Edit Featured Item Modal State
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingItemId, setEditingItemId] = useState(null);
+  const [editTitle, setEditTitle] = useState('');
+  const [editPrice, setEditPrice] = useState('');
+  const [editDesc, setEditDesc] = useState('');
+  const [editImage, setEditImage] = useState('');
+  const [editPosition, setEditPosition] = useState(1);
 
   // Sync from Firestore
   useEffect(() => {
@@ -121,11 +131,11 @@ const Menu = () => {
       image: newImage.trim() || '/assets/paneer.jpeg'
     };
 
-    const updated = [...menuItems, newItem];
+    const updated = addPosition === 'start' ? [newItem, ...menuItems] : [...menuItems, newItem];
     setMenuItems(updated);
     addToast({
       title: 'Item Added (Unsaved)',
-      message: `"${newItem.title}" added to Featured Menu. Click "Save Changes" to publish.`,
+      message: `"${newItem.title}" added to Featured Menu (${addPosition === 'start' ? 'top/first position' : 'end'}). Click "Save Changes" to publish.`,
       type: 'success'
     });
 
@@ -133,13 +143,67 @@ const Menu = () => {
     setNewPrice('');
     setNewDesc('');
     setNewImage('');
+    setAddPosition('end');
     setShowAddModal(false);
+  };
+
+  const handleMoveItem = (index, direction) => {
+    const targetIdx = direction === 'prev' ? index - 1 : index + 1;
+    if (targetIdx < 0 || targetIdx >= menuItems.length) return;
+    const updated = [...menuItems];
+    const [moved] = updated.splice(index, 1);
+    updated.splice(targetIdx, 0, moved);
+    setMenuItems(updated);
   };
 
   const handleDeleteItem = (id, title) => {
     if (!window.confirm(`Delete "${title}" from featured menu?`)) return;
     const updated = menuItems.filter(item => item.id !== id);
     setMenuItems(updated);
+  };
+
+  const openEditModal = (item, index) => {
+    setEditingItemId(item.id);
+    setEditTitle(item.title || '');
+    const numPrice = String(item.price || '').replace(/[^0-9]/g, '');
+    setEditPrice(numPrice);
+    setEditDesc(item.description || '');
+    setEditImage(item.image || '');
+    setEditPosition(index + 1);
+    setShowEditModal(true);
+  };
+
+  const handleEditItemSubmit = (e) => {
+    e.preventDefault();
+    const cleanNum = parseInt(String(editPrice).replace(/[^0-9]/g, ''), 10);
+    if (!editTitle.trim() || isNaN(cleanNum) || cleanNum <= 0) {
+      addToast({ title: 'Invalid Price', message: 'Please enter a valid numeric price (e.g. 150).', type: 'warning' });
+      return;
+    }
+
+    const formattedPrice = `₹${cleanNum}`;
+    const updated = [...menuItems];
+    const currentIdx = updated.findIndex(i => i.id === editingItemId);
+    if (currentIdx !== -1) {
+      const [oldItem] = updated.splice(currentIdx, 1);
+      const updatedItem = {
+        ...oldItem,
+        title: editTitle.trim(),
+        price: formattedPrice,
+        description: editDesc.trim() || 'Prepared fresh with royal spices and culinary mastery.',
+        image: editImage.trim() || '/assets/paneer.jpeg'
+      };
+      const targetIdx = Math.max(0, Math.min(updated.length, (Number(editPosition) || 1) - 1));
+      updated.splice(targetIdx, 0, updatedItem);
+      setMenuItems(updated);
+    }
+
+    setShowEditModal(false);
+    addToast({
+      title: 'Dish Updated (Unsaved)',
+      message: `"${editTitle.trim()}" details & order updated. Click "Save Changes" to publish.`,
+      type: 'success'
+    });
   };
 
   const handleScroll = (direction) => {
@@ -271,15 +335,40 @@ const Menu = () => {
                 transition={{ delay: index * 0.05 }}
                 className="flex flex-col items-center text-center shrink-0 w-28 sm:w-44 bg-zinc-900/50 backdrop-blur-md p-2.5 sm:p-4 rounded-2xl sm:rounded-3xl border border-white/10 shadow-xl group relative"
               >
-                {/* Admin Delete Icon - ONLY when isEditingMenu */}
+                {/* Admin Edit, Reorder & Delete Icon - ONLY when isEditingMenu */}
                 {isAdmin && isEditingMenu && (
-                  <button
-                    onClick={() => handleDeleteItem(item.id, item.title)}
-                    className="absolute top-1.5 right-1.5 p-1 bg-red-500/80 hover:bg-red-600 text-white rounded-full transition-all shadow-md z-10 cursor-pointer"
-                    title="Delete item"
-                  >
-                    <Trash2 size={12} className="sm:w-3.5 sm:h-3.5" />
-                  </button>
+                  <div className="absolute top-1.5 right-1.5 flex items-center gap-0.5 bg-black/75 backdrop-blur-md rounded-full p-1 border border-white/10 shadow-md z-10">
+                    <button
+                      disabled={index === 0}
+                      onClick={() => handleMoveItem(index, 'prev')}
+                      className="p-1 text-gray-400 hover:text-white disabled:opacity-25 rounded-full transition-all cursor-pointer disabled:cursor-not-allowed"
+                      title="Move dish earlier"
+                    >
+                      <ChevronLeft size={12} className="sm:w-3.5 sm:h-3.5" />
+                    </button>
+                    <button
+                      disabled={index === menuItems.length - 1}
+                      onClick={() => handleMoveItem(index, 'next')}
+                      className="p-1 text-gray-400 hover:text-white disabled:opacity-25 rounded-full transition-all cursor-pointer disabled:cursor-not-allowed"
+                      title="Move dish later"
+                    >
+                      <ChevronRight size={12} className="sm:w-3.5 sm:h-3.5" />
+                    </button>
+                    <button
+                      onClick={() => openEditModal(item, index)}
+                      className="p-1 text-secondary hover:text-white hover:bg-white/10 rounded-full transition-all cursor-pointer"
+                      title="Edit dish details & order"
+                    >
+                      <Edit3 size={12} className="sm:w-3.5 sm:h-3.5" />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteItem(item.id, item.title)}
+                      className="p-1 text-red-400 hover:text-red-300 hover:bg-white/10 rounded-full transition-all cursor-pointer"
+                      title="Delete dish"
+                    >
+                      <Trash2 size={12} className="sm:w-3.5 sm:h-3.5" />
+                    </button>
+                  </div>
                 )}
 
                 {/* Circular Dish Image - reduced for mobile */}
@@ -307,7 +396,7 @@ const Menu = () => {
 
                 {/* Add To Cart Button with + or - */}
                 <div className="w-full flex justify-center">
-                  <AddToCartButton item={item} size="small" />
+                  <AddToCartButton item={{ ...item, name: item.name || item.title, title: item.title || item.name, desc: item.desc || item.description || '' }} size="small" />
                 </div>
               </motion.div>
             ))}
@@ -324,15 +413,40 @@ const Menu = () => {
                 viewport={{ once: true }}
                 className="shrink-0 md:shrink min-w-[210px] max-w-[230px] md:min-w-0 md:max-w-none bg-zinc-900/40 backdrop-blur-md border border-white/10 rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl hover:shadow-primary/20 transition-all duration-300 group flex flex-col h-full relative"
               >
-                {/* Admin Delete Icon - ONLY when isEditingMenu */}
+                {/* Admin Edit, Reorder & Delete Icon - ONLY when isEditingMenu */}
                 {isAdmin && isEditingMenu && (
-                  <button
-                    onClick={() => handleDeleteItem(item.id, item.title)}
-                    className="absolute top-3 left-3 p-1.5 bg-red-600/90 hover:bg-red-600 text-white rounded-full transition-all shadow-md z-10 cursor-pointer"
-                    title="Delete item"
-                  >
-                    <Trash2 size={14} className="sm:w-4 sm:h-4" />
-                  </button>
+                  <div className="absolute top-3 left-3 flex items-center gap-1 bg-black/75 backdrop-blur-md rounded-full p-1 border border-white/10 shadow-md z-10">
+                    <button
+                      disabled={index === 0}
+                      onClick={() => handleMoveItem(index, 'prev')}
+                      className="p-1 text-gray-400 hover:text-white disabled:opacity-25 rounded-full transition-all cursor-pointer disabled:cursor-not-allowed"
+                      title="Move dish earlier"
+                    >
+                      <ChevronLeft size={14} />
+                    </button>
+                    <button
+                      disabled={index === menuItems.length - 1}
+                      onClick={() => handleMoveItem(index, 'next')}
+                      className="p-1 text-gray-400 hover:text-white disabled:opacity-25 rounded-full transition-all cursor-pointer disabled:cursor-not-allowed"
+                      title="Move dish later"
+                    >
+                      <ChevronRight size={14} />
+                    </button>
+                    <button
+                      onClick={() => openEditModal(item, index)}
+                      className="p-1.5 text-secondary hover:text-white hover:bg-white/10 rounded-full transition-all cursor-pointer"
+                      title="Edit dish details & order"
+                    >
+                      <Edit3 size={14} className="sm:w-4 sm:h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteItem(item.id, item.title)}
+                      className="p-1.5 text-red-400 hover:text-red-300 hover:bg-white/10 rounded-full transition-all cursor-pointer"
+                      title="Delete dish"
+                    >
+                      <Trash2 size={14} className="sm:w-4 sm:h-4" />
+                    </button>
+                  </div>
                 )}
 
                 <div className="h-36 sm:h-56 overflow-hidden relative">
@@ -355,7 +469,7 @@ const Menu = () => {
                   <p className="text-gray-300 text-xs sm:text-sm mb-4 sm:mb-6 flex-grow line-clamp-2">
                     {item.description}
                   </p>
-                  <AddToCartButton item={item} />
+                  <AddToCartButton item={{ ...item, name: item.name || item.title, title: item.title || item.name, desc: item.desc || item.description || '' }} />
                 </div>
               </motion.article>
             ))}
@@ -403,7 +517,7 @@ const Menu = () => {
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-gray-400 block mb-1 uppercase tracking-wider">Price (₹, Numbers Only) *</label>
+                  <label className="text-xs font-bold text-gray-400 block mb-1 uppercase tracking-wider">Price (₹) *</label>
                   <div className="relative">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-secondary font-bold text-sm">₹</span>
                     <input
@@ -433,7 +547,7 @@ const Menu = () => {
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-gray-400 block mb-1 uppercase tracking-wider">Image URL (Optional)</label>
+                  <label className="text-xs font-bold text-gray-400 block mb-1 uppercase tracking-wider">Image URL </label>
                   <input
                     type="text"
                     placeholder="e.g. /assets/paneer.jpeg or https://..."
@@ -441,6 +555,34 @@ const Menu = () => {
                     onChange={(e) => setNewImage(e.target.value)}
                     className="w-full px-4 py-3 bg-zinc-800 rounded-xl text-white text-xs border border-transparent focus:border-secondary outline-none"
                   />
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold text-gray-400 block mb-1 uppercase tracking-wider">Placement Order</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setAddPosition('end')}
+                      className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                        addPosition === 'end'
+                          ? 'bg-secondary/20 border-secondary text-secondary'
+                          : 'bg-zinc-800 border-transparent text-gray-400'
+                      }`}
+                    >
+                      At the End (Right)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setAddPosition('start')}
+                      className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                        addPosition === 'start'
+                          ? 'bg-secondary/20 border-secondary text-secondary'
+                          : 'bg-zinc-800 border-transparent text-gray-400'
+                      }`}
+                    >
+                      At the Top (First)
+                    </button>
+                  </div>
                 </div>
 
                 <div className="flex gap-3 pt-2">
@@ -456,6 +598,133 @@ const Menu = () => {
                     className="flex-1 py-3 rounded-xl bg-secondary text-title font-bold text-xs hover:bg-secondary/90 shadow-lg shadow-secondary/20"
                   >
                     Add Dish
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Admin Edit Dish Modal */}
+      <AnimatePresence>
+        {showEditModal && (
+          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="bg-zinc-900 border border-white/10 rounded-3xl p-6 md:p-8 w-full max-w-md shadow-2xl relative"
+            >
+              <button
+                onClick={() => setShowEditModal(false)}
+                className="absolute top-5 right-5 text-gray-400 hover:text-white p-1 cursor-pointer"
+              >
+                <X size={20} />
+              </button>
+
+              <div className="flex items-center gap-2 mb-1">
+                <Edit3 className="text-secondary" size={20} />
+                <h3 className="text-xl font-title font-bold text-white">Edit Dish Details</h3>
+              </div>
+              <p className="text-xs text-gray-400 mb-6">Update dish details & order. Click "Save Changes" on the menu bar to publish.</p>
+
+              <form onSubmit={handleEditItemSubmit} className="space-y-4">
+                <div>
+                  <label className="text-xs font-bold text-gray-400 block mb-1 uppercase tracking-wider">Dish Name *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Royal Shahi Paneer"
+                    value={editTitle}
+                    onChange={(e) => setEditTitle(e.target.value)}
+                    className="w-full px-4 py-3 bg-zinc-800 rounded-xl text-white text-xs border border-transparent focus:border-secondary outline-none font-bold"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold text-gray-400 block mb-1 uppercase tracking-wider">Price (₹) *</label>
+                  <div className="relative">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-secondary font-bold text-sm">₹</span>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      required
+                      placeholder="e.g. 220"
+                      value={editPrice}
+                      onChange={(e) => setEditPrice(e.target.value.replace(/[^0-9]/g, ''))}
+                      onKeyDown={(e) => {
+                        if (['e', 'E', '+', '-', '.'].includes(e.key)) e.preventDefault();
+                      }}
+                      className="w-full pl-8 pr-4 py-3 bg-zinc-800 rounded-xl text-white text-xs border border-transparent focus:border-secondary outline-none font-bold"
+                    />
+                  </div>
+                </div>
+
+                {/* Position / Sequence Dropdown */}
+                <div>
+                  <label className="text-xs font-bold text-gray-400 block mb-1 uppercase tracking-wider">
+                    Position in Featured Menu (1 to {menuItems.length})
+                  </label>
+                  <select
+                    value={editPosition}
+                    onChange={(e) => setEditPosition(Number(e.target.value))}
+                    className="w-full px-4 py-3 bg-zinc-800 rounded-xl text-white text-xs border border-transparent focus:border-secondary outline-none font-bold cursor-pointer"
+                  >
+                    {menuItems.map((_, idx) => (
+                      <option key={idx} value={idx + 1}>
+                        Position {idx + 1} {idx === 0 ? '(First / Top)' : idx === menuItems.length - 1 ? '(Last / End)' : ''}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold text-gray-400 block mb-1 uppercase tracking-wider">Short Description</label>
+                  <textarea
+                    rows={3}
+                    placeholder="Describe flavor notes, ingredients, or cooking style..."
+                    value={editDesc}
+                    onChange={(e) => setEditDesc(e.target.value)}
+                    className="w-full px-4 py-3 bg-zinc-800 rounded-xl text-white text-xs border border-transparent focus:border-secondary outline-none resize-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold text-gray-400 block mb-1 uppercase tracking-wider">Image URL </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. /assets/paneer.jpeg or https://..."
+                    value={editImage}
+                    onChange={(e) => setEditImage(e.target.value)}
+                    className="w-full px-4 py-3 bg-zinc-800 rounded-xl text-white text-xs border border-transparent focus:border-secondary outline-none"
+                  />
+                  {editImage && (
+                    <div className="mt-2 flex items-center gap-2">
+                      <span className="text-[10px] text-gray-400">Preview:</span>
+                      <img
+                        src={editImage}
+                        alt="Preview"
+                        className="w-8 h-8 rounded-lg object-cover border border-white/10"
+                        onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowEditModal(false)}
+                    className="flex-1 py-3 rounded-xl bg-zinc-800 text-gray-300 font-bold text-xs hover:bg-zinc-700 cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 py-3 rounded-xl bg-secondary text-title font-bold text-xs hover:bg-secondary/90 shadow-lg shadow-secondary/20 cursor-pointer"
+                  >
+                    Update Dish
                   </button>
                 </div>
               </form>

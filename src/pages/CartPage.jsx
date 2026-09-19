@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Trash2, Plus, Minus, ShoppingBag, ArrowRight, 
   MapPin, CreditCard, Banknote, ShieldCheck, CheckCircle2, AlertCircle,
-  LocateFixed
+  LocateFixed, Search, X
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
@@ -19,6 +19,20 @@ const CartPage = () => {
 
   // Filter out any legacy dummy addresses
   const savedAddressesList = (user?.savedAddresses || []).filter(a => a && a.id !== 'addr_default_1');
+
+  // Search state for cart
+  const [cartSearchQuery, setCartSearchQuery] = useState('');
+
+  const filteredCartItems = useMemo(() => {
+    if (!cartSearchQuery.trim()) return cartItems;
+    const q = cartSearchQuery.toLowerCase().trim();
+    return cartItems.filter(item => {
+      const name = (item.name || item.title || '').toLowerCase();
+      const desc = (item.desc || item.description || '').toLowerCase();
+      const price = String(item.price || '').toLowerCase();
+      return name.includes(q) || desc.includes(q) || price.includes(q);
+    });
+  }, [cartItems, cartSearchQuery]);
 
   // Delivery Address Choice
   const [addressChoice, setAddressChoice] = useState(() => savedAddressesList.length > 0 ? 'saved' : 'manual');
@@ -107,7 +121,8 @@ const CartPage = () => {
         customerPhone: phone,
         items: cartItems.map(item => ({
           id: item.id,
-          name: item.name,
+          name: item.name || item.title || 'Delicious Dish',
+          title: item.title || item.name || 'Delicious Dish',
           price: parseInt(String(item.price).replace(/[^\d]/g, '')) || 0,
           quantity: item.quantity,
           image: item.image,
@@ -244,53 +259,117 @@ const CartPage = () => {
           
           {/* Cart Items List */}
           <div className="lg:w-2/3">
-            <h1 className="text-3xl font-title font-bold text-title dark:text-white mb-6">Shopping Cart ({totalItems} items)</h1>
-            
-            <div className="space-y-4 mb-8">
-              <AnimatePresence mode="popLayout">
-                {cartItems.map((item) => (
-                  <motion.div
-                    key={item.id}
-                    layout
-                    exit={{ x: -100, opacity: 0 }}
-                    className="bg-white dark:bg-zinc-900/50 backdrop-blur-md p-4 rounded-3xl border border-black/5 dark:border-white/10 flex items-center gap-4 shadow-sm"
-                  >
-                    <div className="w-20 h-20 rounded-2xl overflow-hidden flex-shrink-0 bg-gray-100 dark:bg-zinc-800">
-                      <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
-                    </div>
-                    
-                    <div className="flex-grow">
-                      <h3 className="text-base font-bold text-title dark:text-white">{item.name}</h3>
-                      <p className="text-xs text-text/60 dark:text-white/60 mb-1 line-clamp-1">{item.desc || item.description}</p>
-                      <p className="text-primary font-bold text-sm">{String(item.price).startsWith('₹') ? item.price : `₹${item.price}`}</p>
-                    </div>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+              <h1 className="text-2xl sm:text-3xl font-title font-bold text-title dark:text-white">
+                Shopping Cart ({totalItems} items)
+              </h1>
 
-                    <div className="flex flex-col items-end gap-2 pr-2">
-                      <button
-                        onClick={() => removeFromCart(item.id)}
-                        className="text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 p-1.5 rounded-xl transition-colors"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+              {/* Cart Search Bar */}
+              <div className="relative w-full sm:w-64">
+                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input
+                  type="text"
+                  value={cartSearchQuery}
+                  onChange={(e) => setCartSearchQuery(e.target.value)}
+                  placeholder="Search in cart..."
+                  className="w-full pl-8 pr-7 py-1.5 bg-white dark:bg-zinc-900 border border-black/10 dark:border-white/10 rounded-xl text-xs text-title dark:text-white placeholder:text-text/40 dark:placeholder:text-white/40 focus:outline-none focus:border-primary transition-all"
+                />
+                {cartSearchQuery && (
+                  <button
+                    onClick={() => setCartSearchQuery('')}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white p-0.5 rounded-full cursor-pointer"
+                    title="Clear Search"
+                  >
+                    <X size={13} />
+                  </button>
+                )}
+              </div>
+            </div>
+            
+            <div className="space-y-2.5 mb-8">
+              <AnimatePresence mode="popLayout">
+                {filteredCartItems.length === 0 ? (
+                  <div className="p-6 bg-white dark:bg-zinc-900/60 rounded-2xl border border-dashed border-black/10 dark:border-white/10 text-center">
+                    <p className="text-xs text-text/60 dark:text-white/60">No items match "{cartSearchQuery}"</p>
+                    <button
+                      onClick={() => setCartSearchQuery('')}
+                      className="mt-2 text-xs font-bold text-primary hover:underline cursor-pointer"
+                    >
+                      Show all items
+                    </button>
+                  </div>
+                ) : (
+                  filteredCartItems.map((item) => (
+                    <motion.div
+                      key={item.id}
+                      layout
+                      exit={{ x: -100, opacity: 0 }}
+                      className="bg-white dark:bg-zinc-900/60 backdrop-blur-md p-2.5 sm:p-3 rounded-2xl border border-black/5 dark:border-white/10 flex items-center gap-3 shadow-xs hover:border-black/10 dark:hover:border-white/20 transition-all"
+                    >
+                      {/* Compact Dish Thumbnail */}
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden shrink-0 bg-gray-100 dark:bg-zinc-800">
+                        <img 
+                          src={item.image || '/assets/paneer.jpeg'} 
+                          alt={item.name || item.title} 
+                          className="w-full h-full object-cover" 
+                          onError={(e) => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = '/assets/paneer.jpeg';
+                          }}
+                        />
+                      </div>
                       
-                      <div className="flex items-center gap-1 bg-gray-100 dark:bg-zinc-800 rounded-xl p-1">
+                      {/* Dish Details */}
+                      <div className="flex-grow min-w-0 pr-1">
+                        <h3 className="text-xs sm:text-sm font-bold text-title dark:text-white truncate" title={item.name || item.title}>
+                          {item.name || item.title || 'Delicious Dish'}
+                        </h3>
+                        {(item.desc || item.description) && (
+                          <p className="text-[11px] text-text/60 dark:text-white/60 line-clamp-1 leading-tight mb-0.5">
+                            {item.desc || item.description}
+                          </p>
+                        )}
+                        <div className="flex items-center gap-2">
+                          <span className="text-primary font-bold text-xs sm:text-sm">
+                            {String(item.price).startsWith('₹') ? item.price : `₹${item.price}`}
+                          </span>
+                          <span className="text-[10px] text-text/40 dark:text-white/40">
+                            • ₹{(parseInt(String(item.price).replace(/[^\d]/g, '')) || 0) * item.quantity} total
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Quantity & Remove controls - Compact horizontal pill */}
+                      <div className="flex items-center gap-2 shrink-0">
+                        <div className="flex items-center bg-gray-100 dark:bg-zinc-800 rounded-lg p-0.5">
+                          <button
+                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                            className="w-6 h-6 flex items-center justify-center rounded hover:bg-white dark:hover:bg-zinc-700 transition-colors text-text dark:text-white cursor-pointer"
+                            title="Decrease"
+                          >
+                            <Minus size={11} />
+                          </button>
+                          <span className="w-5 text-center text-xs font-bold text-title dark:text-white">{item.quantity}</span>
+                          <button
+                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                            className="w-6 h-6 flex items-center justify-center rounded hover:bg-white dark:hover:bg-zinc-700 transition-colors text-text dark:text-white cursor-pointer"
+                            title="Increase"
+                          >
+                            <Plus size={11} />
+                          </button>
+                        </div>
+
                         <button
-                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                          className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-white dark:hover:bg-zinc-700 transition-colors text-text dark:text-white"
+                          onClick={() => removeFromCart(item.id)}
+                          className="text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 p-1.5 rounded-lg transition-colors cursor-pointer"
+                          title="Remove item"
                         >
-                          <Minus size={12} />
-                        </button>
-                        <span className="w-6 text-center text-xs font-bold text-title dark:text-white">{item.quantity}</span>
-                        <button
-                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                          className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-white dark:hover:bg-zinc-700 transition-colors text-text dark:text-white"
-                        >
-                          <Plus size={12} />
+                          <Trash2 size={15} />
                         </button>
                       </div>
-                    </div>
-                  </motion.div>
-                ))}
+                    </motion.div>
+                  ))
+                )}
               </AnimatePresence>
             </div>
 

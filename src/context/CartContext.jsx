@@ -21,7 +21,15 @@ export const CartProvider = ({ children }) => {
     const savedCart = localStorage.getItem('avyukt_cart');
     if (savedCart) {
       try {
-        return JSON.parse(savedCart);
+        const parsed = JSON.parse(savedCart);
+        if (Array.isArray(parsed)) {
+          return parsed.map(item => ({
+            ...item,
+            name: item.name || item.title || 'Delicious Dish',
+            title: item.title || item.name || 'Delicious Dish',
+            desc: item.desc || item.description || '',
+          }));
+        }
       } catch (e) {
         console.error('Failed to parse cart from localStorage', e);
       }
@@ -42,20 +50,27 @@ export const CartProvider = ({ children }) => {
       return false;
     }
 
+    const normalizedItem = {
+      ...item,
+      name: item.name || item.title || 'Delicious Dish',
+      title: item.title || item.name || 'Delicious Dish',
+      desc: item.desc || item.description || '',
+    };
+
     setCartItems(prevItems => {
-      const existingItem = prevItems.find(i => i.id === item.id);
+      const existingItem = prevItems.find(i => i.id === normalizedItem.id);
       if (existingItem) {
         return prevItems.map(i => 
-          i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
+          i.id === normalizedItem.id ? { ...i, ...normalizedItem, quantity: i.quantity + 1 } : i
         );
       }
-      return [...prevItems, { ...item, quantity: 1 }];
+      return [...prevItems, { ...normalizedItem, quantity: 1 }];
     });
 
-    toast.success(`Added ${item.name} to your cart!`, 'Item Added');
+    toast.success(`Added ${normalizedItem.name} to your cart!`, 'Item Added');
 
     if (sourceRect) {
-      triggerFlyAnimation(item, sourceRect);
+      triggerFlyAnimation(normalizedItem, sourceRect);
     }
     return true;
   };

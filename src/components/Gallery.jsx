@@ -3,9 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 
 const Gallery = () => {
-  // Use Vite's magic to get images
-  const images = import.meta.glob('../assets/images/*.{jpeg,jpg,png,webp}', { eager: true, import: 'default' });
-  const imageList = Object.values(images);
+  // Dynamically discover all images in public/assets/images
+  const imageModules = import.meta.glob('/public/assets/images/*.{jpeg,jpg,png,webp}');
+  const imageList = Object.keys(imageModules).map((path) => path.replace(/^\/public/, ''));
 
   const [selectedImg, setSelectedImg] = useState(null);
 

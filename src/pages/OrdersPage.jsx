@@ -262,7 +262,7 @@ const OrdersPage = () => {
                       <div className="flex flex-wrap gap-2">
                         {order.items?.map((item, idx) => (
                           <span key={idx} className="px-3 py-1.5 bg-gray-50 dark:bg-zinc-800/60 rounded-xl text-xs text-text/70 dark:text-white/70 border border-black/5 dark:border-white/5">
-                            {item.quantity}x {item.name} (₹{item.price * item.quantity})
+                            {item.quantity}x {item.name || item.title || 'Delicious Dish'} (₹{item.price * item.quantity})
                           </span>
                         ))}
                       </div>

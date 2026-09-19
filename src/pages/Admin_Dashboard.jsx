@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Users, ShoppingBag, IndianRupee, Clock, 
@@ -6,7 +6,7 @@ import {
   Truck, Utensils, MessageSquare, Star, Mail, Lock, ShieldCheck,
   Megaphone, Send, Tag, Sparkles, Trash2, LayoutGrid, List,
   Edit3, Check, ChevronRight, Phone, RefreshCw, ChevronDown, Gift, Flame,
-  Reply, X
+  Reply, X, Search
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
@@ -90,6 +90,83 @@ const DashboardPage = () => {
   const [replyModalContact, setReplyModalContact] = useState(null);
   const [replyText, setReplyText] = useState('');
   const [replySending, setReplySending] = useState(false);
+
+  // Section Search States
+  const [orderSearch, setOrderSearch] = useState('');
+  const [resSearch, setResSearch] = useState('');
+  const [feedbackSearch, setFeedbackSearch] = useState('');
+  const [contactSearch, setContactSearch] = useState('');
+  const [broadcastSearch, setBroadcastSearch] = useState('');
+
+  const filteredOrders = useMemo(() => {
+    if (!orderSearch.trim()) return orders;
+    const q = orderSearch.toLowerCase().trim();
+    return orders.filter(o => {
+      const id = (o.id || '').toLowerCase();
+      const name = (o.customerName || '').toLowerCase();
+      const phone = (o.customerPhone || '').toLowerCase();
+      const email = (o.customerEmail || '').toLowerCase();
+      const addr = (o.deliveryAddress || '').toLowerCase();
+      const status = (o.orderStatus || '').toLowerCase();
+      const method = (o.paymentMethod || '').toLowerCase();
+      const items = (o.items || []).map(i => `${i.name || i.title || ''}`).join(' ').toLowerCase();
+      return id.includes(q) || name.includes(q) || phone.includes(q) || email.includes(q) || addr.includes(q) || status.includes(q) || method.includes(q) || items.includes(q);
+    });
+  }, [orders, orderSearch]);
+
+  const filteredReservations = useMemo(() => {
+    if (!resSearch.trim()) return reservations;
+    const q = resSearch.toLowerCase().trim();
+    return reservations.filter(r => {
+      const name = (r.name || '').toLowerCase();
+      const phone = (r.phone || '').toLowerCase();
+      const email = (r.email || '').toLowerCase();
+      const date = (r.date || '').toLowerCase();
+      const time = (r.time || '').toLowerCase();
+      const status = (r.status || '').toLowerCase();
+      const guests = String(r.guests || '').toLowerCase();
+      const occasion = (r.occasion || '').toLowerCase();
+      const table = String(r.tableNumber || '').toLowerCase();
+      return name.includes(q) || phone.includes(q) || email.includes(q) || date.includes(q) || time.includes(q) || status.includes(q) || guests.includes(q) || occasion.includes(q) || table.includes(q);
+    });
+  }, [reservations, resSearch]);
+
+  const filteredFeedbacks = useMemo(() => {
+    if (!feedbackSearch.trim()) return feedbacks;
+    const q = feedbackSearch.toLowerCase().trim();
+    return feedbacks.filter(f => {
+      const name = (f.name || '').toLowerCase();
+      const email = (f.email || '').toLowerCase();
+      const msg = (f.message || f.feedback || f.comments || '').toLowerCase();
+      const rating = String(f.rating || '').toLowerCase();
+      return name.includes(q) || email.includes(q) || msg.includes(q) || rating.includes(q);
+    });
+  }, [feedbacks, feedbackSearch]);
+
+  const filteredContacts = useMemo(() => {
+    if (!contactSearch.trim()) return contacts;
+    const q = contactSearch.toLowerCase().trim();
+    return contacts.filter(c => {
+      const name = (c.name || '').toLowerCase();
+      const email = (c.email || '').toLowerCase();
+      const phone = (c.phone || '').toLowerCase();
+      const subject = (c.subject || '').toLowerCase();
+      const message = (c.message || '').toLowerCase();
+      return name.includes(q) || email.includes(q) || phone.includes(q) || subject.includes(q) || message.includes(q);
+    });
+  }, [contacts, contactSearch]);
+
+  const filteredBroadcasts = useMemo(() => {
+    if (!broadcastSearch.trim()) return broadcasts;
+    const q = broadcastSearch.toLowerCase().trim();
+    return broadcasts.filter(b => {
+      const title = (b.title || '').toLowerCase();
+      const msg = (b.message || '').toLowerCase();
+      const code = (b.promoCode || '').toLowerCase();
+      const cat = (b.category || '').toLowerCase();
+      return title.includes(q) || msg.includes(q) || code.includes(q) || cat.includes(q);
+    });
+  }, [broadcasts, broadcastSearch]);
 
   useEffect(() => {
     const handleOutsideClick = (e) => {
@@ -678,10 +755,10 @@ const DashboardPage = () => {
         </div>
       )}
 
-        {/* Admin Navigation Tabs Bar - Horizontal scrollable without edge cutoff */}
-        <div className="w-full overflow-x-auto no-scrollbar pb-2 mb-6">
-          
-          <div className="flex gap-2 p-1.5 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm rounded-2xl border border-amber-950/10 dark:border-white/10 shadow-sm w-max min-w-full">
+        {/* Admin Navigation Tabs Bar - Sticky with gap below navbar */}
+        <div className="sticky top-[88px] md:top-[96px] z-30 w-full py-2 mb-6 bg-body/95 dark:bg-zinc-950/95 backdrop-blur-md rounded-2xl">
+          <div className="w-full overflow-x-auto no-scrollbar pb-1">
+            <div className="flex gap-2 p-1.5 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md rounded-2xl border border-amber-950/10 dark:border-white/10 shadow-md w-max min-w-full">
             {[
               { id: 'orders', label: `Orders (${orders.length})`, icon: <ShoppingBag size={15} /> },
               { id: 'reservations', label: `Table Bookings (${reservations.length})`, icon: <Calendar size={15} /> },
@@ -703,7 +780,7 @@ const DashboardPage = () => {
               </button>
             ))}
           </div>
-          
+          </div>
         </div>
         <div className="flex justify-end mb-4">
           {/* List / Grid View Switcher */}
@@ -740,6 +817,27 @@ const DashboardPage = () => {
         {/* TAB 1: LIVE ORDERS PIPELINE */}
         {adminTab === 'orders' && (
           <div>
+            {/* Orders Section Search Bar */}
+            <div className="relative mb-4 w-full">
+              <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                value={orderSearch}
+                onChange={(e) => setOrderSearch(e.target.value)}
+                placeholder="Search orders by ID, customer name, phone, item name, address, status..."
+                className="w-full pl-9 pr-8 py-2.5 bg-white/90 dark:bg-zinc-900/90 rounded-2xl border border-amber-950/10 dark:border-white/10 text-xs text-title dark:text-white placeholder:text-text/40 dark:placeholder:text-white/40 focus:outline-none focus:border-primary shadow-sm transition-all"
+              />
+              {orderSearch && (
+                <button
+                  onClick={() => setOrderSearch('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white p-0.5 rounded-full cursor-pointer"
+                  title="Clear Search"
+                >
+                  <X size={14} />
+                </button>
+              )}
+            </div>
+
             {loadingData && orders.length === 0 ? (
               <OrderCardSkeleton count={3} />
             ) : orders.length === 0 ? (
@@ -748,10 +846,20 @@ const DashboardPage = () => {
                 <h4 className="text-base font-bold text-title dark:text-white mb-1">No orders received yet</h4>
                 <p className="text-xs text-text/60 dark:text-white/60">New orders placed by customers stream directly onto this board in real time.</p>
               </div>
+            ) : filteredOrders.length === 0 ? (
+              <div className="bg-white/90 dark:bg-zinc-900/90 p-8 rounded-3xl text-center border border-dashed border-amber-950/20 dark:border-white/10">
+                <p className="text-xs text-text/60 dark:text-white/60">No orders match "{orderSearch}"</p>
+                <button
+                  onClick={() => setOrderSearch('')}
+                  className="mt-2 text-xs font-bold text-primary hover:underline cursor-pointer"
+                >
+                  Clear Search
+                </button>
+              </div>
             ) : viewMode === 'list' ? (
               /* LIST VIEW: Compact space-saving rows for mobile */
               <div className="space-y-2.5">
-                {orders.map((order) => {
+                {filteredOrders.map((order) => {
                   const isSettled = isOrderFullySettledOrDelivered(order);
                   const isExpanded = expandedOrderId === order.id;
                   return (
@@ -826,7 +934,7 @@ const DashboardPage = () => {
                           <div className="flex flex-wrap gap-1.5">
                             {order.items?.map((item, idx) => (
                               <span key={idx} className="px-2 py-0.5 bg-black/5 dark:bg-white/5 rounded text-[11px] text-text/80 dark:text-white/80">
-                                {item.quantity}x {item.name}
+                                {item.quantity}x {item.name || item.title || 'Item'} (₹{item.price})
                               </span>
                             ))}
                           </div>
@@ -856,7 +964,7 @@ const DashboardPage = () => {
             ) : (
               /* GRID VIEW: Full detailed cards */
               <div className="space-y-4">
-                {orders.map((order) => {
+                {filteredOrders.map((order) => {
                   const isSettled = isOrderFullySettledOrDelivered(order);
                   return (
                     <div
@@ -944,7 +1052,7 @@ const DashboardPage = () => {
                       <div className="flex flex-wrap gap-2 mb-4">
                         {order.items?.map((item, idx) => (
                           <span key={idx} className="px-3 py-1 bg-black/5 dark:bg-zinc-800 rounded-lg text-xs text-text/70 dark:text-white/70 font-medium">
-                            {item.quantity}x {item.name}
+                            {item.quantity}x {item.name || item.title || 'Item'} (₹{item.price})
                           </span>
                         ))}
                       </div>
@@ -992,16 +1100,47 @@ const DashboardPage = () => {
         {/* TAB 2: TABLE BOOKINGS */}
         {adminTab === 'reservations' && (
           <div>
+            {/* Reservations Section Search Bar */}
+            <div className="relative mb-4 w-full">
+              <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                value={resSearch}
+                onChange={(e) => setResSearch(e.target.value)}
+                placeholder="Search bookings by name, phone, email, date, status, guests, table #..."
+                className="w-full pl-9 pr-8 py-2.5 bg-white/90 dark:bg-zinc-900/90 rounded-2xl border border-amber-950/10 dark:border-white/10 text-xs text-title dark:text-white placeholder:text-text/40 dark:placeholder:text-white/40 focus:outline-none focus:border-primary shadow-sm transition-all"
+              />
+              {resSearch && (
+                <button
+                  onClick={() => setResSearch('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white p-0.5 rounded-full cursor-pointer"
+                  title="Clear Search"
+                >
+                  <X size={14} />
+                </button>
+              )}
+            </div>
+
             {reservations.length === 0 ? (
               <div className="bg-white/90 dark:bg-zinc-900/90 p-12 rounded-3xl text-center border border-amber-950/10 dark:border-white/10">
                 <Calendar size={36} className="text-primary mx-auto mb-3" />
                 <h4 className="text-base font-bold text-title dark:text-white mb-1">No reservations yet</h4>
                 <p className="text-xs text-text/60 dark:text-white/60">Requests submitted from the "Book a Table" section appear here.</p>
               </div>
+            ) : filteredReservations.length === 0 ? (
+              <div className="bg-white/90 dark:bg-zinc-900/90 p-8 rounded-3xl text-center border border-dashed border-amber-950/20 dark:border-white/10">
+                <p className="text-xs text-text/60 dark:text-white/60">No bookings match "{resSearch}"</p>
+                <button
+                  onClick={() => setResSearch('')}
+                  className="mt-2 text-xs font-bold text-primary hover:underline cursor-pointer"
+                >
+                  Clear Search
+                </button>
+              </div>
             ) : viewMode === 'list' ? (
               /* LIST VIEW: Compact Table Bookings */
               <div className="space-y-2.5">
-                {reservations.map((res) => {
+                {filteredReservations.map((res) => {
                   const currentInput = tableInputs[res.id] !== undefined ? tableInputs[res.id] : (res.tableNo || '');
                   const isConfirmed = res.status === 'Confirmed' || res.status === 'confirmed';
                   const isDeclined = res.status === 'Rejected' || res.status === 'rejected' || res.status === 'Declined' || res.status === 'declined';
@@ -1110,7 +1249,7 @@ const DashboardPage = () => {
             ) : (
               /* GRID VIEW: Detailed Table Bookings */
               <div className="space-y-4">
-                {reservations.map((res) => {
+                {filteredReservations.map((res) => {
                   const currentInput = tableInputs[res.id] !== undefined ? tableInputs[res.id] : (res.tableNo || '');
                   const isConfirmed = res.status === 'Confirmed' || res.status === 'confirmed';
                   const isDeclined = res.status === 'Rejected' || res.status === 'rejected' || res.status === 'Declined' || res.status === 'declined';
@@ -1250,16 +1389,47 @@ const DashboardPage = () => {
         {/* TAB 3: CUSTOMER FEEDBACKS */}
         {adminTab === 'feedbacks' && (
           <div>
+            {/* Feedbacks Section Search Bar */}
+            <div className="relative mb-4 w-full">
+              <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                value={feedbackSearch}
+                onChange={(e) => setFeedbackSearch(e.target.value)}
+                placeholder="Search feedbacks by customer name, rating, comment..."
+                className="w-full pl-9 pr-8 py-2.5 bg-white/90 dark:bg-zinc-900/90 rounded-2xl border border-amber-950/10 dark:border-white/10 text-xs text-title dark:text-white placeholder:text-text/40 dark:placeholder:text-white/40 focus:outline-none focus:border-primary shadow-sm transition-all"
+              />
+              {feedbackSearch && (
+                <button
+                  onClick={() => setFeedbackSearch('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white p-0.5 rounded-full cursor-pointer"
+                  title="Clear Search"
+                >
+                  <X size={14} />
+                </button>
+              )}
+            </div>
+
             {feedbacks.length === 0 ? (
               <div className="bg-white/90 dark:bg-zinc-900/90 p-12 rounded-3xl text-center border border-amber-950/10 dark:border-white/10">
                 <Star size={36} className="text-amber-500 mx-auto mb-3" />
                 <h4 className="text-base font-bold text-title dark:text-white mb-1">No customer feedback yet</h4>
                 <p className="text-xs text-text/60 dark:text-white/60">Customer reviews and ratings submitted from the Feedback page will display here.</p>
               </div>
+            ) : filteredFeedbacks.length === 0 ? (
+              <div className="bg-white/90 dark:bg-zinc-900/90 p-8 rounded-3xl text-center border border-dashed border-amber-950/20 dark:border-white/10">
+                <p className="text-xs text-text/60 dark:text-white/60">No feedbacks match "{feedbackSearch}"</p>
+                <button
+                  onClick={() => setFeedbackSearch('')}
+                  className="mt-2 text-xs font-bold text-primary hover:underline cursor-pointer"
+                >
+                  Clear Search
+                </button>
+              </div>
             ) : viewMode === 'list' ? (
               /* LIST VIEW: Compact Feedback rows */
               <div className="space-y-2">
-                {feedbacks.map((fb) => (
+                {filteredFeedbacks.map((fb) => (
                   <div
                     key={fb.id}
                     className="bg-white/90 dark:bg-zinc-900/90 p-3.5 rounded-2xl border border-amber-950/10 dark:border-white/10 shadow-sm flex items-center justify-between gap-3 text-xs"
@@ -1291,7 +1461,7 @@ const DashboardPage = () => {
             ) : (
               /* GRID VIEW: Rich Feedback cards */
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {feedbacks.map((fb) => (
+                {filteredFeedbacks.map((fb) => (
                   <div
                     key={fb.id}
                     className="bg-white/90 dark:bg-zinc-900/90 p-6 rounded-3xl border border-amber-950/10 dark:border-white/10 shadow-sm relative group"
@@ -1349,16 +1519,47 @@ const DashboardPage = () => {
         {/* TAB 4: CONTACT INQUIRIES */}
         {adminTab === 'contacts' && (
           <div>
+            {/* Inquiries Section Search Bar */}
+            <div className="relative mb-4 w-full">
+              <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                value={contactSearch}
+                onChange={(e) => setContactSearch(e.target.value)}
+                placeholder="Search inquiries by name, email, phone, subject, message..."
+                className="w-full pl-9 pr-8 py-2.5 bg-white/90 dark:bg-zinc-900/90 rounded-2xl border border-amber-950/10 dark:border-white/10 text-xs text-title dark:text-white placeholder:text-text/40 dark:placeholder:text-white/40 focus:outline-none focus:border-primary shadow-sm transition-all"
+              />
+              {contactSearch && (
+                <button
+                  onClick={() => setContactSearch('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white p-0.5 rounded-full cursor-pointer"
+                  title="Clear Search"
+                >
+                  <X size={14} />
+                </button>
+              )}
+            </div>
+
             {contacts.length === 0 ? (
               <div className="bg-white/90 dark:bg-zinc-900/90 p-12 rounded-3xl text-center border border-amber-950/10 dark:border-white/10">
                 <MessageSquare size={36} className="text-primary mx-auto mb-3" />
                 <h4 className="text-base font-bold text-title dark:text-white mb-1">No contact messages</h4>
                 <p className="text-xs text-text/60 dark:text-white/60">Queries submitted on the Contact page will route here.</p>
               </div>
+            ) : filteredContacts.length === 0 ? (
+              <div className="bg-white/90 dark:bg-zinc-900/90 p-8 rounded-3xl text-center border border-dashed border-amber-950/20 dark:border-white/10">
+                <p className="text-xs text-text/60 dark:text-white/60">No inquiries match "{contactSearch}"</p>
+                <button
+                  onClick={() => setContactSearch('')}
+                  className="mt-2 text-xs font-bold text-primary hover:underline cursor-pointer"
+                >
+                  Clear Search
+                </button>
+              </div>
             ) : viewMode === 'list' ? (
               /* LIST VIEW: Compact Inquiries */
               <div className="space-y-2">
-                {contacts.map((c) => (
+                {filteredContacts.map((c) => (
                   <div
                     key={c.id}
                     className="bg-white/90 dark:bg-zinc-900/90 p-3.5 rounded-2xl border border-amber-950/10 dark:border-white/10 shadow-sm flex items-center justify-between gap-3 text-xs"
@@ -1408,7 +1609,7 @@ const DashboardPage = () => {
             ) : (
               /* GRID VIEW: Detailed Inquiries */
               <div className="space-y-4">
-                {contacts.map((c) => (
+                {filteredContacts.map((c) => (
                   <div
                     key={c.id}
                     className="bg-white/90 dark:bg-zinc-900/90 p-6 rounded-3xl border border-amber-950/10 dark:border-white/10 shadow-sm"
@@ -1643,6 +1844,27 @@ const DashboardPage = () => {
                 </h3>
               </div>
 
+              {/* Broadcasts Search Bar */}
+              <div className="relative w-full">
+                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input
+                  type="text"
+                  value={broadcastSearch}
+                  onChange={(e) => setBroadcastSearch(e.target.value)}
+                  placeholder="Search broadcasts by title, promo code, message..."
+                  className="w-full pl-8 pr-7 py-2 bg-white/90 dark:bg-zinc-900/90 rounded-xl border border-amber-950/10 dark:border-white/10 text-xs text-title dark:text-white placeholder:text-text/40 dark:placeholder:text-white/40 focus:outline-none focus:border-primary shadow-sm transition-all"
+                />
+                {broadcastSearch && (
+                  <button
+                    onClick={() => setBroadcastSearch('')}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white p-0.5 rounded-full cursor-pointer"
+                    title="Clear Search"
+                  >
+                    <X size={13} />
+                  </button>
+                )}
+              </div>
+
               {broadcasts.length === 0 ? (
                 <div className="bg-white/90 dark:bg-zinc-900/90 p-10 rounded-[2rem] text-center border border-amber-950/10 dark:border-white/10">
                   <Megaphone size={32} className="text-gray-400 mx-auto mb-2 opacity-50" />
@@ -1651,10 +1873,20 @@ const DashboardPage = () => {
                     Use the form on the left to send an offer to all customers.
                   </p>
                 </div>
+              ) : filteredBroadcasts.length === 0 ? (
+                <div className="bg-white/90 dark:bg-zinc-900/90 p-6 rounded-2xl text-center border border-dashed border-amber-950/20 dark:border-white/10">
+                  <p className="text-xs text-text/60 dark:text-white/60">No broadcasts match "{broadcastSearch}"</p>
+                  <button
+                    onClick={() => setBroadcastSearch('')}
+                    className="mt-2 text-xs font-bold text-primary hover:underline cursor-pointer"
+                  >
+                    Clear Search
+                  </button>
+                </div>
               ) : viewMode === 'list' ? (
                 /* Compact Broadcast List */
                 <div className="space-y-2 max-h-[560px] overflow-y-auto pr-1">
-                  {broadcasts.map((b) => (
+                  {filteredBroadcasts.map((b) => (
                     <div
                       key={b.id}
                       className="bg-white/90 dark:bg-zinc-900/90 p-3.5 rounded-2xl border border-amber-950/10 dark:border-white/10 shadow-sm flex items-center justify-between gap-3 text-xs"
@@ -1688,7 +1920,7 @@ const DashboardPage = () => {
               ) : (
                 /* Full Broadcast Cards */
                 <div className="space-y-3 max-h-[560px] overflow-y-auto pr-1">
-                  {broadcasts.map((b) => (
+                  {filteredBroadcasts.map((b) => (
                     <div
                       key={b.id}
                       className="bg-white/90 dark:bg-zinc-900/90 p-5 rounded-2xl border border-amber-950/10 dark:border-white/10 shadow-sm relative group"
