@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Clock, Users, Flame, UtensilsCrossed, ChevronRight, Search, 
@@ -8,6 +8,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { db, doc, getDoc, setDoc } from '../firebase/config';
+import { useDebounce } from '../hooks/useDebounce';
 
 const INITIAL_RECIPES = [
  
@@ -89,21 +90,27 @@ const RecipesPage = () => {
     fetchFirestoreRecipes();
   }, []);
 
-  // Filter recipes based on query & category
-  const filteredRecipes = recipeList.filter(recipe => {
-    const matchesSearch = (recipe.title || '').toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          (recipe.chef || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          (recipe.description || '').toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'All' || recipe.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  const debouncedSearch = useDebounce(searchTerm, 300);
+
+  // Memoized and debounced recipe filtering
+  const filteredRecipes = useMemo(() => {
+    const cleanSearch = debouncedSearch.toLowerCase().trim();
+    return recipeList.filter(recipe => {
+      const matchesSearch = !cleanSearch ||
+        (recipe.title || '').toLowerCase().includes(cleanSearch) || 
+        (recipe.chef || '').toLowerCase().includes(cleanSearch) ||
+        (recipe.description || '').toLowerCase().includes(cleanSearch);
+      const matchesCategory = selectedCategory === 'All' || recipe.category === selectedCategory;
+      return matchesSearch && matchesCategory;
+    });
+  }, [recipeList, debouncedSearch, selectedCategory]);
 
   // Admin: Start Edit Mode
   const handleStartEdit = () => {
     snapshotRef.current = JSON.parse(JSON.stringify(recipeList));
     setIsEditing(true);
     addToast({
-      title: 'Recipe Edit Mode Active 👨‍🍳',
+      title: 'Recipe Edit Mode Active',
       message: 'You can now add, edit, or delete recipes. Click "Save Changes" when done or "Cancel" to revert.',
       type: 'info',
     });
@@ -135,7 +142,7 @@ const RecipesPage = () => {
       }
       setIsEditing(false);
       addToast({
-        title: 'Recipes Published! 🌟',
+        title: 'Recipes Published',
         message: 'All recipe updates have been permanently saved and published live.',
         type: 'success',
       });
@@ -209,10 +216,10 @@ const RecipesPage = () => {
 
     if (editingRecipeId) {
       setRecipeList(prev => prev.map(r => r.id === editingRecipeId ? recipeData : r));
-      addToast({ title: 'Recipe Updated! ✨', message: `"${recipeData.title}" updated. Remember to Save Changes.`, type: 'success' });
+      addToast({ title: 'Recipe Updated', message: `"${recipeData.title}" updated. Remember to Save Changes.`, type: 'success' });
     } else {
       setRecipeList(prev => [recipeData, ...prev]);
-      addToast({ title: 'Recipe Added! 🍲', message: `"${recipeData.title}" added. Click Save Changes to publish.`, type: 'success' });
+      addToast({ title: 'Recipe Added', message: `"${recipeData.title}" added. Click Save Changes to publish.`, type: 'success' });
     }
 
     setRecipeModalOpen(false);
@@ -224,7 +231,7 @@ const RecipesPage = () => {
     if (!window.confirm(`Are you sure you want to delete "${toDelete?.title || 'this recipe'}"?`)) return;
     setRecipeList(prev => prev.filter(r => r.id !== id));
     addToast({
-      title: 'Recipe Removed 🗑️',
+      title: 'Recipe Removed',
       message: `Deleted "${toDelete?.title || 'recipe'}". Click Save Changes to apply.`,
       type: 'info',
     });

@@ -10,6 +10,7 @@ import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../services/api';
+import { PaymentCardSkeleton } from '../components/common/Skeleton';
 
 const ProfilePage = () => {
   const { 
@@ -549,7 +550,7 @@ const ProfilePage = () => {
                   </div>
 
                   {loadingPayments ? (
-                    <div className="text-center py-16 text-sm text-gray-500">Loading payment records...</div>
+                    <PaymentCardSkeleton count={3} />
                   ) : payments.length === 0 ? (
                     <div className="text-center py-16">
                       <div className="w-16 h-16 bg-emerald-500/10 rounded-full flex items-center justify-center text-emerald-600 mx-auto mb-4">
@@ -705,7 +706,7 @@ const ProfilePage = () => {
                   className="w-full py-3 px-4 rounded-2xl bg-primary/10 hover:bg-primary/15 border border-primary/25 text-primary font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-sm disabled:opacity-50"
                 >
                   <LocateFixed size={16} className={detectingLocation ? 'animate-spin' : ''} />
-                  <span>{detectingLocation ? 'Detecting Live Location...' : '📍 Use Current Location (Auto-Fill Fields)'}</span>
+                  <span>{detectingLocation ? 'Detecting Live Location...' : 'Use Current Location (Auto-Fill Fields)'}</span>
                 </button>
 
                 {/* Contact Phone Number */}
@@ -719,7 +720,7 @@ const ProfilePage = () => {
                         ? 'text-emerald-600 dark:text-emerald-400'
                         : 'text-amber-600 dark:text-amber-400'
                     }`}>
-                      {(newAddress.phone || '').replace(/\D/g, '').length === 10 ? '✓ 10 Digits Complete' : `${(newAddress.phone || '').replace(/\D/g, '').length}/10 digits`}
+                      {(newAddress.phone || '').replace(/\D/g, '').length === 10 ? '10 Digits Complete' : `${(newAddress.phone || '').replace(/\D/g, '').length}/10 digits`}
                     </span>
                   </div>
                   <div className="relative">

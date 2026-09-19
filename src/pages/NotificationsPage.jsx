@@ -12,6 +12,7 @@ import { useToast } from '../context/ToastContext';
 import { useSearchParams } from 'react-router-dom';
 import { db, collection, query, where, onSnapshot } from '../firebase/config';
 import api from '../services/api';
+import { NotificationSkeleton } from '../components/common/Skeleton';
 
 const CATEGORY_CONFIG = {
   all: {
@@ -163,30 +164,108 @@ const NotificationsPage = () => {
   }, [isLoggedIn, user]);
 
   const formatTime = (isoString) => {
-    if (!isoString) return 'Recent';
+    if (!isoString) return 'Just now';
     try {
-      const date = new Date(isoString);
+      let date = null;
+      if (typeof isoString?.toDate === 'function') {
+        date = isoString.toDate();
+      } else if (isoString?.seconds) {
+        date = new Date(isoString.seconds * 1000);
+      } else if (typeof isoString === 'number') {
+        date = new Date(isoString);
+      } else {
+        date = new Date(isoString);
+      }
+      if (!date || isNaN(date.getTime())) return 'Just now';
+
       const now = new Date();
-      const diffMs = now - date;
+      const diffMs = now.getTime() - date.getTime();
       const diffMins = Math.floor(diffMs / 60000);
-      if (diffMins < 1) return 'Just now';
-      if (diffMins < 60) return `${diffMins}m ago`;
-      const diffHours = Math.floor(diffMins / 60);
-      if (diffHours < 24) return `${diffHours}h ago`;
-      const diffDays = Math.floor(diffHours / 24);
-      if (diffDays < 7) return `${diffDays}d ago`;
-      return date.toLocaleDateString('en-IN', { month: 'short', day: 'numeric' });
+
+      const timeFormatted = date.toLocaleTimeString('en-IN', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+      });
+
+      const isToday = date.toDateString() === now.toDateString();
+      if (isToday) {
+        if (diffMins < 1) return `Just now (${timeFormatted})`;
+        if (diffMins < 60) return `${diffMins}m ago • ${timeFormatted}`;
+        return `Today • ${timeFormatted}`;
+      }
+
+      const yesterday = new Date(now);
+      yesterday.setDate(yesterday.getDate() - 1);
+      if (date.toDateString() === yesterday.toDateString()) {
+        return `Yesterday • ${timeFormatted}`;
+      }
+
+      return `${date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })} • ${timeFormatted}`;
     } catch {
-      return 'Recent';
+      return 'Just now';
     }
   };
 
-  // Group notifications belonging to the same single order
+  // Group notifications belonging to the same single order & deduplicate
   const processCards = () => {
     const orderGroups = new Map();
     const otherCards = [];
 
+    // 1. Deduplicate notifications & exclude superseded allotment-only notifications & enforce strict recipient privacy
+    const seenContent = new Set();
+    const cleanNotifications = [];
+    const currentEmail = (user?.email || '').trim().toLowerCase();
+    const currentUid = user?.uid;
+
     notifications.forEach((notif) => {
+      const notifTitle = (notif.title || '').toLowerCase();
+      const notifEmail = (notif.userEmail || '').trim().toLowerCase();
+
+      // RECIPIENT PRIVACY FILTER:
+      // If notification is tied to a specific userEmail that doesn't match this logged in user, SKIP!
+      if (notifEmail && notifEmail !== 'all' && notifEmail !== currentEmail) {
+        return;
+      }
+
+      // If notification is tied to a specific userId (not 'all') that doesn't match this logged in user, SKIP!
+      if (notif.userId && notif.userId !== 'all' && notif.userId !== 'guest' && !notif.userId.startsWith('email_')) {
+        if (currentUid && notif.userId !== currentUid) {
+          return;
+        }
+      }
+
+      // If notification was mistakenly saved with userId === 'all' but contains private user-specific content (inquiry reply, table, order),
+      // only show it to the intended recipient!
+      if (notif.userId === 'all') {
+        const isPrivate = 
+          notif.type === 'order' || 
+          notif.type === 'contact' || 
+          notifTitle.includes('inquiry') || 
+          notifTitle.includes('reservation') || 
+          notifTitle.includes('table #') || 
+          notifTitle.includes('order #') ||
+          (notifEmail && notifEmail !== 'all');
+
+        if (isPrivate && (!currentEmail || notifEmail !== currentEmail)) {
+          return; // Block leakage of private notification to other users
+        }
+      }
+
+      // Only confirmed reservation notification should appear (exclude standalone allotment notifications)
+      if (notifTitle.includes('allotted')) {
+        return;
+      }
+
+      const contentKey = `${notif.title || ''}___${notif.message || ''}`;
+      if (seenContent.has(contentKey)) {
+        return; // Skip duplicate copy
+      }
+      seenContent.add(contentKey);
+      cleanNotifications.push(notif);
+    });
+
+    cleanNotifications.forEach((notif) => {
       const text = `${notif.title || ''} ${notif.message || ''}`;
       const isOrder = notif.type === 'order' || 
         text.toLowerCase().includes('order') || 
@@ -337,7 +416,7 @@ const NotificationsPage = () => {
     navigator.clipboard.writeText(code);
     setCopiedCode(code);
     addToast({
-      title: 'Coupon Copied! 🎉',
+      title: 'Coupon Copied',
       message: `Code ${code} copied to clipboard. Enjoy your discount!`,
       type: 'success',
     });
@@ -491,10 +570,7 @@ const NotificationsPage = () => {
 
         {/* Notifications Feed */}
         {loading && notifications.length === 0 ? (
-          <div className="text-center py-20 bg-white dark:bg-zinc-900 rounded-3xl border border-black/5 dark:border-white/10 shadow-sm">
-            <RefreshCw size={24} className="animate-spin text-primary mx-auto mb-3" />
-            <p className="text-xs text-text/60 dark:text-white/60 font-medium">Synchronizing latest notifications...</p>
-          </div>
+          <NotificationSkeleton count={4} />
         ) : (
           <motion.div
             initial={{ opacity: 0 }}

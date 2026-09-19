@@ -360,7 +360,7 @@ const CartPage = () => {
                       className="px-3 py-1.5 rounded-xl bg-primary/10 hover:bg-primary/15 text-primary text-[11px] font-bold inline-flex items-center gap-1.5 transition-all border border-primary/20 disabled:opacity-50"
                     >
                       <LocateFixed size={13} className={detectingLocation ? 'animate-spin' : ''} />
-                      {detectingLocation ? 'Detecting GPS Location...' : '📍 Fetch Current Location (Auto-Fill)'}
+                      {detectingLocation ? 'Detecting GPS Location...' : 'Fetch Current Location (Auto-Fill)'}
                     </button>
                   </div>
                   <textarea
@@ -384,7 +384,7 @@ const CartPage = () => {
                       ? 'text-emerald-600 dark:text-emerald-400' 
                       : 'text-amber-600 dark:text-amber-400'
                   }`}>
-                    {(phone || '').replace(/\D/g, '').length === 10 ? '✓ 10 Digits Complete' : `${(phone || '').replace(/\D/g, '').length}/10 digits`}
+                    {(phone || '').replace(/\D/g, '').length === 10 ? '10 Digits Complete' : `${(phone || '').replace(/\D/g, '').length}/10 digits`}
                   </span>
                 </div>
                 <div className="relative">

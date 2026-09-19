@@ -13,6 +13,7 @@ import { useToast } from '../context/ToastContext';
 import { useSearchParams } from 'react-router-dom';
 import { db, collection, onSnapshot, doc, setDoc } from '../firebase/config';
 import api from '../services/api';
+import { StatsGridSkeleton, OrderCardSkeleton } from '../components/common/Skeleton';
 
 const DashboardPage = () => {
   const { user, isAdmin, loginAsAdmin } = useAuth();
@@ -100,6 +101,45 @@ const DashboardPage = () => {
     return () => document.removeEventListener('mousedown', handleOutsideClick);
   }, []);
 
+  // Precise Date & Time Formatter
+  const formatAdminDateTime = (val) => {
+    if (!val) return '';
+    try {
+      let date = null;
+      if (typeof val?.toDate === 'function') {
+        date = val.toDate();
+      } else if (val?.seconds) {
+        date = new Date(val.seconds * 1000);
+      } else if (typeof val === 'number') {
+        date = new Date(val);
+      } else {
+        date = new Date(val);
+      }
+      if (!date || isNaN(date.getTime())) return '';
+
+      const timeFormatted = date.toLocaleTimeString('en-IN', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+      });
+
+      const now = new Date();
+      if (date.toDateString() === now.toDateString()) {
+        return `Today, ${timeFormatted}`;
+      }
+
+      const yesterday = new Date(now);
+      yesterday.setDate(yesterday.getDate() - 1);
+      if (date.toDateString() === yesterday.toDateString()) {
+        return `Yesterday, ${timeFormatted}`;
+      }
+
+      return `${date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}, ${timeFormatted}`;
+    } catch {
+      return '';
+    }
+  };
+
   // Load All Admin Data from API
   const loadAllAdminData = async (showLoading = false) => {
     if (showLoading) setLoadingData(true);
@@ -136,10 +176,10 @@ const DashboardPage = () => {
     // Initial load
     loadAllAdminData(true);
 
-    // 1. Periodic background refresh every 3.5 seconds
+    // 1. Periodic background safety refresh (60 seconds) - real-time updates are handled instantly by Firestore listeners below
     const interval = setInterval(() => {
       loadAllAdminData(false);
-    }, 3500);
+    }, 60000);
 
     // 2. Real-time Firestore listeners if direct connection exists
     const unsubscribes = [];
@@ -150,8 +190,14 @@ const DashboardPage = () => {
         }, (err) => console.warn('Orders listener:', err.message));
         unsubscribes.push(unSubOrders);
 
-        const unSubRes = onSnapshot(collection(db, 'tableBookings'), () => {
-          loadAllAdminData(false);
+        const unSubRes = onSnapshot(collection(db, 'tableBookings'), (snapshot) => {
+          if (snapshot && !snapshot.empty) {
+            const bookings = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            bookings.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+            setReservations(bookings);
+          } else {
+            loadAllAdminData(false);
+          }
         }, (err) => console.warn('Bookings listener:', err.message));
         unsubscribes.push(unSubRes);
 
@@ -188,7 +234,7 @@ const DashboardPage = () => {
     try {
       await loginAsAdmin(adminEmail, adminPassword);
       addToast({
-        title: 'Admin Access Granted 👑',
+        title: 'Admin Access Granted',
         message: 'Welcome to the Avyukt Admin Command Center.',
         type: 'success',
       });
@@ -248,25 +294,44 @@ const DashboardPage = () => {
     }
   };
 
-  // Reservation Status & Table Allotment Handler
+  // Reservation Status & Table Allotment Handler ( Instant Optimistic Update)
   const handleUpdateReservation = async (resId, newStatus, tableNo) => {
+    const res = reservations.find(r => r.id === resId);
+    const inputVal = (tableInputs[resId] !== undefined ? tableInputs[resId] : '').trim();
+    const effectiveTableNo = (tableNo !== undefined && tableNo.trim() !== '')
+      ? tableNo.trim()
+      : (inputVal || res?.tableNo || '').trim();
+
+    // Confirm validation: ensure a table is allotted before confirming
+    if (newStatus === 'Confirmed' && !effectiveTableNo) {
+      addToast({
+        title: 'Table Not Allotted',
+        message: 'Please allot a table number first using "Allot Table" before confirming this reservation.',
+        type: 'warning',
+      });
+      return;
+    }
+
+    // Save current state for rollback if network fails
+    const prevReservations = [...reservations];
+
+    //  INSTANT OPTIMISTIC UI UPDATE:
+    // Update local state immediately so buttons disappear and badge appears with ZERO delay
+    setReservations(prev => prev.map(r => r.id === resId ? { 
+      ...r, 
+      status: newStatus,
+      ...(effectiveTableNo ? { tableNo: effectiveTableNo } : {})
+    } : r));
+    setEditingTableId(null);
+
+    const displayStatus = newStatus === 'Rejected' ? 'Declined' : newStatus;
+    addToast({
+      title: `Reservation ${displayStatus}`,
+      message: `Booking marked as ${displayStatus}${effectiveTableNo ? ` (Table #${effectiveTableNo})` : ''}. Customer notified!`,
+      type: 'success',
+    });
+
     try {
-      const res = reservations.find(r => r.id === resId);
-
-      // Confirm button bug fix: prevent confirming if no table has been allotted yet
-      if (newStatus === 'Confirmed') {
-        const allottedTable = (res?.tableNo || '').trim();
-        if (!allottedTable) {
-          addToast({
-            title: 'Table Not Allotted',
-            message: 'Please allot a table number first using "Allot Table" before confirming this reservation.',
-            type: 'warning',
-          });
-          return;
-        }
-      }
-
-      const effectiveTableNo = (tableNo !== undefined && tableNo.trim() !== '') ? tableNo.trim() : (res?.tableNo || '');
       const payload = { 
         status: newStatus,
         userId: res?.userId,
@@ -275,52 +340,15 @@ const DashboardPage = () => {
       if (effectiveTableNo) {
         payload.tableNo = effectiveTableNo;
       }
+      // Backend creates the single, authoritative, deduplicated notification
       await api.updateReservationStatus(resId, payload);
-
-      // Also write directly to Firestore notifications collection if db is available
-      if (db) {
-        try {
-          const targetUserId = res?.userId && res.userId !== 'guest' ? res.userId : null;
-          const targetEmail = (res?.email || '').trim().toLowerCase();
-          const notifId = `NOTIF-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-          const notifData = {
-            id: notifId,
-            userId: targetUserId || 'all',
-            userEmail: targetEmail,
-            type: 'order',
-            title: newStatus === 'Confirmed' 
-              ? (effectiveTableNo ? `Table #${effectiveTableNo} Confirmed! 🍽️` : 'Table Booking Confirmed! 🎉')
-              : 'Table Booking Declined',
-            message: newStatus === 'Confirmed'
-              ? `Your table reservation for ${res?.date || ''} at ${res?.time || ''} is CONFIRMED.${effectiveTableNo ? ` Your allotted table is #${effectiveTableNo}.` : ''} We look forward to hosting you!`
-              : `Your table reservation request for ${res?.date || ''} at ${res?.time || ''} has been declined.`,
-            read: false,
-            createdAt: new Date().toISOString(),
-          };
-          await setDoc(doc(db, 'notifications', notifId), notifData);
-        } catch (dbErr) {
-          console.warn('Direct notification write error:', dbErr);
-        }
-      }
-
-      setReservations(prev => prev.map(r => r.id === resId ? { 
-        ...r, 
-        status: newStatus,
-        ...(effectiveTableNo ? { tableNo: effectiveTableNo } : {})
-      } : r));
-      setEditingTableId(null);
-      addToast({
-        title: `Reservation ${newStatus}`,
-        message: `Booking marked as ${newStatus}${effectiveTableNo ? ` (Table #${effectiveTableNo})` : ''}. Customer notified!`,
-        type: 'success',
-      });
-      loadAllAdminData(false);
     } catch (e) {
+      setReservations(prevReservations);
       addToast({ title: 'Action Failed', message: e.message, type: 'error' });
     }
   };
 
-  // Allot Table Number to Reservation
+  // Allot Table Number to Reservation ( Instant Optimistic Update)
   const handleAllotTableNumber = async (resId) => {
     const tableNo = (tableInputs[resId] !== undefined ? tableInputs[resId] : '').trim();
     if (!tableNo) {
@@ -328,57 +356,41 @@ const DashboardPage = () => {
       return;
     }
     const res = reservations.find(r => r.id === resId);
+    const prevReservations = [...reservations];
+
+    //  INSTANT OPTIMISTIC UI UPDATE:
+    // Update local table number immediately so the Confirm button is primed instantly
+    setReservations(prev => prev.map(r => r.id === resId ? { ...r, tableNo } : r));
+    addToast({
+      title: `Table #${tableNo} Allotted`,
+      message: `Table #${tableNo} has been assigned. Click Confirm to finalize.`,
+      type: 'success',
+    });
+
     try {
       const payload = { 
         tableNo,
         userId: res?.userId,
         userEmail: res?.email,
       };
+      // Updates table number on the booking; notification is only sent once Admin clicks Confirm
       await api.updateReservationStatus(resId, payload);
-
-      // Write direct notification to Firestore so customer receives table allotment notification immediately
-      if (db) {
-        try {
-          const targetUserId = res?.userId && res.userId !== 'guest' ? res.userId : null;
-          const targetEmail = (res?.email || '').trim().toLowerCase();
-          const notifId = `NOTIF-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-          const notifData = {
-            id: notifId,
-            userId: targetUserId || 'all',
-            userEmail: targetEmail,
-            type: 'order',
-            title: `Table #${tableNo} Allotted! 🍽️`,
-            message: `Table #${tableNo} has been assigned for your reservation on ${res?.date || ''} at ${res?.time || ''}.`,
-            read: false,
-            createdAt: new Date().toISOString(),
-          };
-          await setDoc(doc(db, 'notifications', notifId), notifData);
-        } catch (dbErr) {
-          console.warn('Direct notification write error:', dbErr);
-        }
-      }
-
-      setReservations(prev => prev.map(r => r.id === resId ? { ...r, tableNo } : r));
-      addToast({
-        title: `Table #${tableNo} Allotted! 🍽️`,
-        message: `Customer notified that Table #${tableNo} has been assigned. Click Confirm to finalize.`,
-        type: 'success',
-      });
-      loadAllAdminData(false);
     } catch (e) {
+      setReservations(prevReservations);
       addToast({ title: 'Table Allotment Failed', message: e.message, type: 'error' });
     }
   };
 
-  // Delete Reservation
+  // Delete Reservation ( Instant Optimistic Update)
   const handleDeleteReservation = async (resId) => {
     if (!window.confirm(`Delete reservation #${resId}?`)) return;
+    const prevReservations = [...reservations];
+    setReservations(prev => prev.filter(r => r.id !== resId));
+    addToast({ title: 'Reservation Deleted', message: `Reservation #${resId} deleted.`, type: 'success' });
     try {
       await api.deleteReservation(resId);
-      setReservations(prev => prev.filter(r => r.id !== resId));
-      addToast({ title: 'Reservation Deleted', message: `Reservation #${resId} deleted.`, type: 'success' });
-      loadAllAdminData(false);
     } catch (e) {
+      setReservations(prevReservations);
       addToast({ title: 'Delete Failed', message: e.message, type: 'error' });
     }
   };
@@ -418,33 +430,6 @@ const DashboardPage = () => {
         adminName: user?.name || 'Avyukt Restaurant Management',
       });
 
-      // Direct write to Firestore notifications so customer receives immediate real-time update
-      if (db) {
-        try {
-          const targetUserId = replyModalContact.userId && replyModalContact.userId !== 'guest' ? replyModalContact.userId : null;
-          const targetEmail = (replyModalContact.email || '').trim().toLowerCase();
-          const notifId = `NOTIF-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-          const snippet = (replyModalContact.message || '').trim();
-          const notifTitle = snippet 
-            ? `Reply to Inquiry: "${snippet.length > 30 ? snippet.slice(0, 30) + '...' : snippet}"` 
-            : 'Response to Your Inquiry - Avyukt Restaurant';
-
-          const notifData = {
-            id: notifId,
-            userId: targetUserId || 'all',
-            userEmail: targetEmail,
-            type: 'announcement',
-            title: notifTitle,
-            message: `Dear ${replyModalContact.name},\n\n${trimmed}`,
-            read: false,
-            createdAt: new Date().toISOString(),
-          };
-          await setDoc(doc(db, 'notifications', notifId), notifData);
-        } catch (dbErr) {
-          console.warn('Direct notification write error:', dbErr);
-        }
-      }
-
       const repliedAt = new Date().toISOString();
       setContacts(prev => prev.map(c => c.id === replyModalContact.id ? {
         ...c,
@@ -454,7 +439,7 @@ const DashboardPage = () => {
       } : c));
 
       addToast({
-        title: 'Reply Dispatched! ✉️',
+        title: 'Reply Dispatched',
         message: `Reply successfully sent to ${replyModalContact.name} via notifications and email.`,
         type: 'success',
       });
@@ -508,7 +493,7 @@ const DashboardPage = () => {
       });
       if (res.success) {
         addToast({
-          title: 'Offer Broadcasted! 🚀',
+          title: 'Offer Broadcasted',
           message: `Announcement "${offerTitle}" has been sent to all registered customers.`,
           type: 'success',
         });
@@ -645,8 +630,11 @@ const DashboardPage = () => {
         </div>
 
         {/* Real-time KPI Stats Cards - Single horizontal scrollbar row on mobile */}
-        <div className="flex overflow-x-auto pb-3 pt-1 no-scrollbar sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 mb-8 scroll-smooth">
-          <div className="min-w-[240px] sm:min-w-0 flex-1 shrink-0 sm:shrink bg-white/90 dark:bg-zinc-900/90 p-5 md:p-6 rounded-3xl border border-amber-950/10 dark:border-white/10 shadow-sm flex items-center gap-4">
+        {loadingData && orders.length === 0 ? (
+          <StatsGridSkeleton count={4} />
+        ) : (
+          <div className="flex overflow-x-auto pb-3 pt-1 no-scrollbar sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 mb-8 scroll-smooth">
+            <div className="min-w-[240px] sm:min-w-0 flex-1 shrink-0 sm:shrink bg-white/90 dark:bg-zinc-900/90 p-5 md:p-6 rounded-3xl border border-amber-950/10 dark:border-white/10 shadow-sm flex items-center gap-4">
             <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0">
               <IndianRupee size={24} />
             </div>
@@ -688,6 +676,7 @@ const DashboardPage = () => {
             </div>
           </div>
         </div>
+      )}
 
         {/* Admin Navigation Tabs Bar - Horizontal scrollable without edge cutoff */}
         <div className="w-full overflow-x-auto no-scrollbar pb-2 mb-6">
@@ -751,7 +740,9 @@ const DashboardPage = () => {
         {/* TAB 1: LIVE ORDERS PIPELINE */}
         {adminTab === 'orders' && (
           <div>
-            {orders.length === 0 ? (
+            {loadingData && orders.length === 0 ? (
+              <OrderCardSkeleton count={3} />
+            ) : orders.length === 0 ? (
               <div className="bg-white/90 dark:bg-zinc-900/90 p-12 rounded-3xl text-center border border-amber-950/10 dark:border-white/10">
                 <ShoppingBag size={36} className="text-primary mx-auto mb-3" />
                 <h4 className="text-base font-bold text-title dark:text-white mb-1">No orders received yet</h4>
@@ -820,8 +811,17 @@ const DashboardPage = () => {
                       {/* Expandable Order Details in List View */}
                       {isExpanded && (
                         <div className="mt-3 pt-3 border-t border-amber-950/10 dark:border-white/10 text-xs space-y-2">
-                          <p className="text-text/70 dark:text-white/70">
-                            <strong>Customer:</strong> {order.customerName} • 📞 {order.customerPhone} • {order.deliveryAddress}
+                          <p className="text-text/70 dark:text-white/70 flex items-center gap-1.5 flex-wrap">
+                            <strong>Customer:</strong> {order.customerName}
+                            <span className="inline-flex items-center gap-1 text-text/60 dark:text-white/60">
+                              <Phone size={11} className="text-primary" /> {order.customerPhone}
+                            </span>
+                            • <span>{order.deliveryAddress}</span>
+                            {order.createdAt && (
+                              <span className="inline-flex items-center gap-1 text-text/50 dark:text-white/50 text-[11px] ml-auto">
+                                <Clock size={11} /> {formatAdminDateTime(order.createdAt)}
+                              </span>
+                            )}
                           </p>
                           <div className="flex flex-wrap gap-1.5">
                             {order.items?.map((item, idx) => (
@@ -881,8 +881,20 @@ const DashboardPage = () => {
                               Status: {order.orderStatus}
                             </span>
                           </div>
-                          <p className="text-xs text-text/60 dark:text-white/60">
-                            <strong>Customer:</strong> {order.customerName} • 📞 {order.customerPhone} • {order.customerEmail || 'No email'}
+                          <p className="text-xs text-text/60 dark:text-white/60 flex items-center gap-2 flex-wrap">
+                            <strong>Customer:</strong> {order.customerName}
+                            <span className="inline-flex items-center gap-1">
+                              <Phone size={12} className="text-primary" /> {order.customerPhone}
+                            </span>
+                            •
+                            <span className="inline-flex items-center gap-1">
+                              <Mail size={12} className="text-primary" /> {order.customerEmail || 'No email'}
+                            </span>
+                            {order.createdAt && (
+                              <span className="inline-flex items-center gap-1 text-text/40 dark:text-white/40 text-[11px]">
+                                • <Clock size={11} /> {formatAdminDateTime(order.createdAt)}
+                              </span>
+                            )}
                           </p>
                         </div>
 
@@ -991,6 +1003,8 @@ const DashboardPage = () => {
               <div className="space-y-2.5">
                 {reservations.map((res) => {
                   const currentInput = tableInputs[res.id] !== undefined ? tableInputs[res.id] : (res.tableNo || '');
+                  const isConfirmed = res.status === 'Confirmed' || res.status === 'confirmed';
+                  const isDeclined = res.status === 'Rejected' || res.status === 'rejected' || res.status === 'Declined' || res.status === 'declined';
                   return (
                     <div
                       key={res.id}
@@ -998,27 +1012,36 @@ const DashboardPage = () => {
                     >
                       <div className="flex items-center gap-3 flex-wrap">
                         <span className="font-bold text-sm text-title dark:text-white">{res.name}</span>
-                        <span className="text-text/60 dark:text-white/60">📞 {res.phone}</span>
-                        <span className="text-text/60 dark:text-white/60">👥 {res.guests} Guests</span>
-                        <span className="text-text/60 dark:text-white/60">📅 {res.date} • {res.time}</span>
+                        <span className="inline-flex items-center gap-1 text-text/60 dark:text-white/60">
+                          <Phone size={12} className="text-primary" /> {res.phone}
+                        </span>
+                        <span className="inline-flex items-center gap-1 text-text/60 dark:text-white/60">
+                          <Users size={12} className="text-primary" /> {res.guests} Guests
+                        </span>
+                        <span className="inline-flex items-center gap-1 text-text/60 dark:text-white/60">
+                          <Calendar size={12} className="text-primary" /> {res.date}
+                        </span>
+                        <span className="inline-flex items-center gap-1 text-text/60 dark:text-white/60">
+                          <Clock size={12} className="text-primary" /> {res.time || '07:30 PM'}
+                        </span>
                         {res.tableNo && (
-                          <span className="px-2 py-0.5 rounded-lg bg-secondary/20 text-secondary-dark font-bold">
-                            Table #{res.tableNo}
+                          <span className="px-2 py-0.5 rounded-lg bg-secondary/20 text-secondary-dark font-bold inline-flex items-center gap-1">
+                            <Utensils size={11} /> Table #{res.tableNo}
                           </span>
                         )}
                         <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                          res.status === 'Confirmed' ? 'bg-emerald-500/15 text-emerald-600' : res.status === 'Rejected' ? 'bg-red-500/15 text-red-600' : 'bg-amber-500/15 text-amber-600'
+                          isConfirmed ? 'bg-emerald-500/15 text-emerald-600' : isDeclined ? 'bg-red-500/15 text-red-600' : 'bg-amber-500/15 text-amber-600'
                         }`}>
-                          {res.status || 'Pending'}
+                          {isConfirmed ? 'Confirmed' : isDeclined ? 'Declined' : (res.status || 'Pending')}
                         </span>
                       </div>
 
-                      <div className="flex items-center gap-2 ml-auto flex-wrap">
-                        {res.status === 'Confirmed' ? (
+                      <div className="flex items-center gap-2 ml-auto flex-wrap shrink-0">
+                        {isConfirmed ? (
                           <span className="px-2.5 py-1 rounded-xl bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 font-bold text-xs flex items-center gap-1.5 border border-emerald-500/20">
                             <CheckCircle2 size={13} /> Confirmed{res.tableNo ? ` • Table #${res.tableNo}` : ''}
                           </span>
-                        ) : res.status === 'Rejected' ? (
+                        ) : isDeclined ? (
                           <span className="px-2.5 py-1 rounded-xl bg-rose-500/15 text-rose-700 dark:text-rose-400 font-bold text-xs flex items-center gap-1.5 border border-rose-500/20">
                             <XCircle size={13} /> Declined
                           </span>
@@ -1043,7 +1066,8 @@ const DashboardPage = () => {
 
                             <button
                               onClick={() => {
-                                if (!res.tableNo) {
+                                const effectiveTable = (res.tableNo || currentInput || '').trim();
+                                if (!effectiveTable) {
                                   addToast({
                                     title: 'Table Not Allotted',
                                     message: 'Please allot a table number first using "Allot" before confirming this reservation.',
@@ -1051,14 +1075,14 @@ const DashboardPage = () => {
                                   });
                                   return;
                                 }
-                                handleUpdateReservation(res.id, 'Confirmed', currentInput);
+                                handleUpdateReservation(res.id, 'Confirmed', effectiveTable);
                               }}
                               className={`px-2.5 py-1 rounded-lg text-[10px] font-bold shadow-sm transition-all cursor-pointer ${
-                                res.tableNo
+                                (res.tableNo || currentInput.trim())
                                   ? 'bg-emerald-600 text-white hover:bg-emerald-700'
                                   : 'bg-emerald-600/50 text-white/80 hover:bg-emerald-600/70'
                               }`}
-                              title={res.tableNo ? 'Confirm Booking' : 'Please allot a table number first to confirm'}
+                              title={(res.tableNo || currentInput.trim()) ? 'Confirm Booking' : 'Please allot a table number first to confirm'}
                             >
                               Confirm
                             </button>
@@ -1088,6 +1112,8 @@ const DashboardPage = () => {
               <div className="space-y-4">
                 {reservations.map((res) => {
                   const currentInput = tableInputs[res.id] !== undefined ? tableInputs[res.id] : (res.tableNo || '');
+                  const isConfirmed = res.status === 'Confirmed' || res.status === 'confirmed';
+                  const isDeclined = res.status === 'Rejected' || res.status === 'rejected' || res.status === 'Declined' || res.status === 'declined';
                   return (
                     <div
                       key={res.id}
@@ -1099,13 +1125,13 @@ const DashboardPage = () => {
                           
                           {/* Status Badge */}
                           <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                            res.status === 'Confirmed' 
+                            isConfirmed 
                               ? 'bg-emerald-500/15 text-emerald-600' 
-                              : res.status === 'Rejected' 
+                              : isDeclined 
                               ? 'bg-red-500/15 text-red-600' 
                               : 'bg-amber-500/15 text-amber-600'
                           }`}>
-                            {res.status || 'Pending'}
+                            {isConfirmed ? 'Confirmed' : isDeclined ? 'Declined' : (res.status || 'Pending')}
                           </span>
 
                           {/* Member indicator */}
@@ -1122,14 +1148,22 @@ const DashboardPage = () => {
                           {/* Table Assigned Badge */}
                           {res.tableNo && (
                             <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-primary/10 text-primary border border-primary/20 flex items-center gap-1">
-                              🍽️ Table #{res.tableNo}
+                              <Utensils size={12} /> Table #{res.tableNo}
                             </span>
                           )}
                         </div>
 
-                        <p className="text-xs text-text/60 dark:text-white/60">
-                          📞 {res.phone} • ✉️ {res.email || 'N/A'} • 👥 {res.guests} Guests • 📅 {res.date} at {res.time}
-                        </p>
+                        <div className="flex items-center gap-2.5 flex-wrap text-xs text-text/60 dark:text-white/60">
+                          <span className="inline-flex items-center gap-1"><Phone size={12} className="text-primary" /> {res.phone}</span>
+                          •
+                          <span className="inline-flex items-center gap-1"><Mail size={12} className="text-primary" /> {res.email || 'N/A'}</span>
+                          •
+                          <span className="inline-flex items-center gap-1"><Users size={12} className="text-primary" /> {res.guests} Guests</span>
+                          •
+                          <span className="inline-flex items-center gap-1"><Calendar size={12} className="text-primary" /> {res.date}</span>
+                          •
+                          <span className="inline-flex items-center gap-1"><Clock size={12} className="text-primary" /> {res.time || '07:30 PM'}</span>
+                        </div>
                         {res.notes && (
                           <p className="text-[11px] text-text/50 dark:text-white/50 mt-1 italic">
                             Special Request: "{res.notes}"
@@ -1137,12 +1171,12 @@ const DashboardPage = () => {
                         )}
                       </div>
 
-                      <div className="flex items-center gap-3 flex-wrap">
-                        {res.status === 'Confirmed' ? (
+                      <div className="flex items-center gap-3 flex-wrap shrink-0">
+                        {isConfirmed ? (
                           <span className="px-3 py-2 bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/25 rounded-xl text-xs font-bold flex items-center gap-1.5">
                             <CheckCircle2 size={14} /> Confirmed{res.tableNo ? ` • Table #${res.tableNo}` : ''}
                           </span>
-                        ) : res.status === 'Rejected' ? (
+                        ) : isDeclined ? (
                           <span className="px-3 py-2 bg-rose-500/15 text-rose-700 dark:text-rose-400 border border-rose-500/25 rounded-xl text-xs font-bold flex items-center gap-1.5">
                             <XCircle size={14} /> Declined
                           </span>
@@ -1167,7 +1201,8 @@ const DashboardPage = () => {
 
                             <button
                               onClick={() => {
-                                if (!res.tableNo) {
+                                const effectiveTable = (res.tableNo || currentInput || '').trim();
+                                if (!effectiveTable) {
                                   addToast({
                                     title: 'Table Not Allotted',
                                     message: 'Please allot a table number first using "Allot Table" before confirming this reservation.',
@@ -1175,14 +1210,14 @@ const DashboardPage = () => {
                                   });
                                   return;
                                 }
-                                handleUpdateReservation(res.id, 'Confirmed', currentInput);
+                                handleUpdateReservation(res.id, 'Confirmed', effectiveTable);
                               }}
                               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer ${
-                                res.tableNo
+                                (res.tableNo || currentInput.trim())
                                   ? 'bg-emerald-600 text-white hover:bg-emerald-700'
                                   : 'bg-emerald-600/50 text-white/80 hover:bg-emerald-600/70'
                               }`}
-                              title={res.tableNo ? 'Confirm Booking' : 'Please allot a table first before confirming'}
+                              title={(res.tableNo || currentInput.trim()) ? 'Confirm Booking' : 'Please allot a table first before confirming'}
                             >
                               Confirm
                             </button>
@@ -1232,7 +1267,7 @@ const DashboardPage = () => {
                     <div className="flex items-center gap-3 min-w-0">
                       <div className="flex items-center gap-1 bg-amber-500/10 px-2 py-0.5 rounded-lg text-amber-600 font-bold shrink-0">
                         <Star size={13} className="fill-amber-500 text-amber-500" />
-                        <span>{fb.rating}★</span>
+                        <span>{fb.rating}</span>
                       </div>
                       <span className="font-bold text-title dark:text-white truncate">{fb.userName || 'Customer'}</span>
                       <span className="text-text/70 dark:text-white/70 truncate italic hidden sm:inline">"{fb.feedbackText || 'No comment'}"</span>
@@ -1240,7 +1275,7 @@ const DashboardPage = () => {
 
                     <div className="flex items-center gap-2 shrink-0">
                       <span className="text-[10px] text-text/40 dark:text-white/40">
-                        {fb.createdAt ? new Date(fb.createdAt).toLocaleDateString() : ''}
+                        {formatAdminDateTime(fb.createdAt)}
                       </span>
                       <button
                         onClick={() => handleDeleteFeedback(fb.id)}
@@ -1275,7 +1310,7 @@ const DashboardPage = () => {
                             </span>
                           )}
                         </div>
-                        <p className="text-[11px] text-text/40 dark:text-white/40">{fb.createdAt ? new Date(fb.createdAt).toLocaleDateString() : ''}</p>
+                        <p className="text-[11px] text-text/40 dark:text-white/40">{formatAdminDateTime(fb.createdAt)}</p>
                       </div>
 
                       <div className="flex items-center gap-2">
@@ -1345,7 +1380,7 @@ const DashboardPage = () => {
 
                     <div className="flex items-center gap-2 shrink-0">
                       <span className="text-[10px] text-text/40 dark:text-white/40 hidden sm:inline">
-                        {c.createdAt ? new Date(c.createdAt).toLocaleDateString() : ''}
+                        {formatAdminDateTime(c.createdAt)}
                       </span>
                       <button
                         onClick={() => handleOpenReplyModal(c)}
@@ -1401,12 +1436,16 @@ const DashboardPage = () => {
                             </span>
                           )}
                         </div>
-                        <p className="text-xs text-primary font-medium">{c.email} • 📞 {c.phone || 'No phone'}</p>
+                        <p className="text-xs text-primary font-medium flex items-center gap-2 flex-wrap">
+                          <span className="inline-flex items-center gap-1"><Mail size={12} /> {c.email}</span>
+                          •
+                          <span className="inline-flex items-center gap-1"><Phone size={12} /> {c.phone || 'No phone'}</span>
+                        </p>
                       </div>
 
                       <div className="flex items-center gap-2 shrink-0">
                         <span className="text-[11px] text-text/40 dark:text-white/40">
-                          {c.createdAt ? new Date(c.createdAt).toLocaleDateString() : ''}
+                          {formatAdminDateTime(c.createdAt)}
                         </span>
                         <button
                           onClick={() => handleDeleteContact(c.id)}
@@ -1633,7 +1672,7 @@ const DashboardPage = () => {
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
                         <span className="text-[10px] text-text/40 dark:text-white/40">
-                          {b.createdAt ? new Date(b.createdAt).toLocaleDateString() : ''}
+                          {formatAdminDateTime(b.createdAt)}
                         </span>
                         <button
                           onClick={() => handleDeleteBroadcast(b.id)}
@@ -1663,7 +1702,7 @@ const DashboardPage = () => {
                         </div>
                         <div className="flex items-center gap-2 shrink-0">
                           <span className="text-[10px] text-text/40 dark:text-white/40">
-                            {b.createdAt ? new Date(b.createdAt).toLocaleDateString() : 'Active'}
+                            {b.createdAt ? formatAdminDateTime(b.createdAt) : 'Active'}
                           </span>
                           <button
                             onClick={() => handleDeleteBroadcast(b.id)}
@@ -1809,10 +1848,7 @@ const DashboardPage = () => {
                       placeholder={`Write a structured response to ${replyModalContact.name}...`}
                       className="w-full px-4 py-3 bg-amber-950/5 dark:bg-zinc-800 rounded-2xl border border-amber-950/10 dark:border-white/10 text-xs text-text dark:text-white outline-none focus:border-primary transition-all resize-none font-sans"
                     />
-                    <div className="flex justify-between items-center mt-1 text-[11px] text-text/50 dark:text-white/50">
-                      <span>Structured email with logo &amp; brand details will be delivered.</span>
-                      <span>{replyText.length} chars</span>
-                    </div>
+                    
                   </div>
                 </div>
 

@@ -1,0 +1,53 @@
+# Avyukt Restaurant & Cafe — Full AI Knowledge Base
+
+## Brand Overview
+Avyukt Restaurant & Cafe is a premier culinary destination located in Vidisha, Madhya Pradesh, India. Operating on a strict 100% Pure Vegetarian philosophy, Avyukt serves high-quality North Indian, Mughlai Vegetarian, Indo-Chinese, Tandoori delicacies, and handcrafted cafe beverages since 2020.
+
+## Essential Facts
+- **Brand Name**: Avyukt Restaurant & Cafe
+- **Tagline**: Authentic Flavours & Modern Ambience
+- **Primary Website**: https://avyukt-restaurant.vercel.app
+- **Purity & Diet**: 100% Pure Vegetarian (No Meat, No Poultry, No Seafood, No Eggs).
+- **Special Diets Supported**: Jain (No Onion, No Garlic, No Root Vegetables), Satvik, Vegan alternatives.
+- **Price Range**: ₹₹ (Moderate: ₹300 - ₹700 per person)
+- **Reservations**: Available via web platform or phone (+91 98765 43210).
+
+## Location & Access
+- **Address**: Hotel Grand Ashok, 3rd Floor, Kundan Complex, Shehnai Garden, Vidisha, Madhya Pradesh 464001, India.
+- **Latitude / Longitude**: 23.5251, 77.8081
+- **Landmark**: Near Shehnai Garden, Sanchi Road, Baripura vicinity.
+- **Opening Times**: Monday – Sunday: 11:00 AM to 11:00 PM IST.
+
+## Signature Dishes & Menu Highlights
+1. **Starters & Tandoor**:
+   - Paneer Tikka Angara (Smoked cottage cheese marinated in spiced yogurt)
+   - Dahi Ke Kebab (Crispy golden melt-in-mouth spiced yogurt patties)
+   - Tandoori Malai Chaap (Creamy soya chaap grilled over charcoal)
+   - Veg Seekh Kebab (Minced vegetable skewers infused with aromatic whole spices)
+2. **Main Course**:
+   - Dal Makhani Royal (Slow-cooked overnight black lentils with white butter and cream)
+   - Paneer Butter Masala & Shahi Paneer (Rich cashew and ripe tomato gravies)
+   - Kadhai Paneer (Tossed with crisp bell peppers, crushed coriander, and dried chili)
+   - Dum Aloo Kashmiri (Stuffed baby potatoes simmered in spiced fennel gravy)
+   - Malai Kofta (Cottage cheese and mawa dumplings in velvet saffron curry)
+3. **Breads & Biryani**:
+   - Garlic Butter Naan & Chur Chur Naan
+   - Laccha Paratha & Missi Roti
+   - Handi Dum Veg Biryani (Served with cold burani raita and roasted papad)
+4. **Cafe & Desserts**:
+   - Sizzling Brownie with Vanilla Gelato
+   - Gulab Jamun with Rabdi
+   - Artisanal Shakes, Cold Brews, and Fresh Virgin Mojitos
+
+## Dining & Technology Features
+- **Interactive Page-Flip Menu**: 3D interactive book menu accessible from smartphones and tablets.
+- **Dine-In QR Ordering**: Guests can scan table QR codes to place orders directly into the kitchen display system (KDS).
+- **Online Food Delivery & Takeaway**: Delivery with real-time status updates (Order Received → Chef Preparing → Ready → Out for Delivery).
+- **Digital Payments**: Integrated Razorpay checkout supporting instant UPI (Google Pay, PhonePe, Paytm), Visa/Mastercard, NetBanking, and Cash on Delivery (COD).
+- **Loyalty & Rewards**: Avyukt Gold Club offering dining discounts, birthday specials, and exclusive tasting invites.
+
+## Contact & Social Channels
+- **Website**: https://avyukt-restaurant.vercel.app
+- **Phone**: +91 98765 43210
+- **Email**: contact@avyuktrestaurant.com
+- **Delivery Partners**: Swiggy (https://www.swiggy.com/city/vidisha/avyukt-restaurant-sanchi-road-baripura-rest317832?source=sharing)

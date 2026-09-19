@@ -60,7 +60,7 @@ try {
   googleProvider = new GoogleAuthProvider();
   googleProvider.setCustomParameters({ prompt: "select_account" });
 } catch (error) {
-  console.warn("⚠️ Firebase client initialization note:", error.message);
+  console.warn("Firebase client initialization note:", error.message);
 }
 
 export { 

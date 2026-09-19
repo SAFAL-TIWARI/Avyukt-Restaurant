@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Calendar, Package, CheckCircle2, Clock3, Truck, 
@@ -8,6 +8,30 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { db, collection, query, where, onSnapshot } from '../firebase/config';
 import api from '../services/api';
+import { OrderCardSkeleton } from '../components/common/Skeleton';
+
+const formatOrderDateTime = (val) => {
+  if (!val) return 'Recently';
+  try {
+    let d;
+    if (typeof val?.toDate === 'function') d = val.toDate();
+    else if (val?.seconds) d = new Date(val.seconds * 1000);
+    else if (typeof val === 'number') d = new Date(val);
+    else d = new Date(val);
+
+    if (isNaN(d.getTime())) return 'Recently';
+    return d.toLocaleDateString('en-IN', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    });
+  } catch {
+    return 'Recently';
+  }
+};
 
 const OrdersPage = () => {
   const { user, isLoggedIn } = useAuth();
@@ -16,6 +40,8 @@ const OrdersPage = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const PAGE_SIZE = 5;
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -58,7 +84,7 @@ const OrdersPage = () => {
         setOrders(res.orders || []);
       }
     } catch (err) {
-      console.error('Error fetching orders:', err);
+      console.error('Failed to fetch orders:', err);
     } finally {
       setLoading(false);
     }
@@ -78,9 +104,19 @@ const OrdersPage = () => {
     }
   };
 
-  const activeOrders = orders.filter(o => !['Delivered', 'Cancelled'].includes(o.orderStatus));
-  const pastOrders = orders.filter(o => ['Delivered', 'Cancelled'].includes(o.orderStatus));
+  const activeOrders = useMemo(() => orders.filter(o => !['Delivered', 'Cancelled'].includes(o.orderStatus)), [orders]);
+  const pastOrders = useMemo(() => orders.filter(o => ['Delivered', 'Cancelled'].includes(o.orderStatus)), [orders]);
   const displayedOrders = activeTab === 'active' ? activeOrders : pastOrders;
+  const totalPages = Math.ceil(displayedOrders.length / PAGE_SIZE) || 1;
+  const paginatedOrders = useMemo(() => {
+    const start = (currentPage - 1) * PAGE_SIZE;
+    return displayedOrders.slice(start, start + PAGE_SIZE);
+  }, [displayedOrders, currentPage]);
+
+  const handleTabSwitch = (tab) => {
+    setActiveTab(tab);
+    setCurrentPage(1);
+  };
 
   const getStatusBadge = (status) => {
     switch (status) {
@@ -118,15 +154,14 @@ const OrdersPage = () => {
             to="/menu"
             className="flex items-center gap-2 text-primary font-bold text-sm hover:gap-3 transition-all"
           >
-            Order Something New
-            <ArrowRight size={18} />
+            Browse Menu <ArrowRight size={16} />
           </Link>
         </div>
 
-        {/* Tabs */}
-        <div className="flex gap-2 p-1.5 bg-white dark:bg-zinc-900 rounded-2xl border border-black/5 dark:border-white/10 mb-8 w-fit shadow-sm">
+        {/* Tab Switcher */}
+        <div className="flex items-center gap-3 bg-white dark:bg-zinc-900 p-1.5 rounded-2xl border border-black/5 dark:border-white/10 w-fit mb-8 shadow-sm">
           <button
-            onClick={() => setActiveTab('active')}
+            onClick={() => handleTabSwitch('active')}
             className={`px-6 py-2.5 rounded-xl font-bold text-xs md:text-sm transition-all ${
               activeTab === 'active' 
                 ? 'bg-primary text-white shadow-lg shadow-primary/25' 
@@ -136,7 +171,7 @@ const OrdersPage = () => {
             Active Orders ({activeOrders.length})
           </button>
           <button
-            onClick={() => setActiveTab('past')}
+            onClick={() => handleTabSwitch('past')}
             className={`px-6 py-2.5 rounded-xl font-bold text-xs md:text-sm transition-all ${
               activeTab === 'past' 
                 ? 'bg-primary text-white shadow-lg shadow-primary/25' 
@@ -149,7 +184,7 @@ const OrdersPage = () => {
 
         {/* Orders Listing */}
         {loading ? (
-          <div className="text-center py-20 text-sm text-gray-500">Loading your orders...</div>
+          <OrderCardSkeleton count={3} />
         ) : displayedOrders.length === 0 ? (
           <div className="bg-white dark:bg-zinc-900 rounded-[2.5rem] p-12 text-center border border-black/5 dark:border-white/10 shadow-sm">
             <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary mx-auto mb-4">
@@ -173,7 +208,7 @@ const OrdersPage = () => {
         ) : (
           <div className="space-y-4">
             <AnimatePresence>
-              {displayedOrders.map((order) => {
+              {paginatedOrders.map((order) => {
                 const badge = getStatusBadge(order.orderStatus);
 
                 return (
@@ -205,13 +240,7 @@ const OrdersPage = () => {
                         <div className="flex items-center gap-4 text-xs text-text/50 dark:text-white/50">
                           <span className="flex items-center gap-1">
                             <Calendar size={13} />
-                            {new Date(order.createdAt).toLocaleDateString('en-IN', {
-                              day: 'numeric',
-                              month: 'short',
-                              year: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit',
-                            })}
+                            {formatOrderDateTime(order.createdAt)}
                           </span>
                           <span className="flex items-center gap-1">
                             <Package size={13} />
@@ -267,6 +296,29 @@ const OrdersPage = () => {
                 );
               })}
             </AnimatePresence>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-center gap-3 pt-6">
+                <button
+                  onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 rounded-xl text-xs font-bold border border-zinc-200 dark:border-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all text-title dark:text-white cursor-pointer"
+                >
+                  Previous
+                </button>
+                <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">
+                  Page {currentPage} of {totalPages}
+                </span>
+                <button
+                  onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 rounded-xl text-xs font-bold border border-zinc-200 dark:border-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all text-title dark:text-white cursor-pointer"
+                >
+                  Next
+                </button>
+              </div>
+            )}
           </div>
         )}
 

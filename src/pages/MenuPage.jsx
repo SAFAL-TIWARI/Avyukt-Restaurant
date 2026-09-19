@@ -94,7 +94,7 @@ const MenuPage = () => {
     menuSnapshotRef.current = JSON.parse(JSON.stringify(categories));
     setIsEditingMenu(true);
     addToast({
-      title: 'Menu Edit Mode Active ✏️',
+      title: 'Menu Edit Mode Active',
       message: 'You can now add or delete categories and dishes. Click "Save Changes" to apply or "Cancel" to revert.',
       type: 'info',
     });
@@ -107,7 +107,7 @@ const MenuPage = () => {
     }
     setIsEditingMenu(false);
     addToast({
-      title: 'Changes Reverted ↩️',
+      title: 'Changes Reverted',
       message: 'Menu restored to previous saved state.',
       type: 'info',
     });
@@ -127,7 +127,7 @@ const MenuPage = () => {
       }
       setIsEditingMenu(false);
       addToast({
-        title: 'Menu Updated & Saved! 🌟',
+        title: 'Menu Updated & Saved',
         message: 'All categories and menu items have been updated across the website.',
         type: 'success',
       });
@@ -183,7 +183,7 @@ const MenuPage = () => {
     setCategories(updated);
     setShowItemModal(false);
     addToast({
-      title: 'Dish Added (Unsaved) 🍽️',
+      title: 'Dish Added (Unsaved)',
       message: `"${newItem.name}" added to menu. Click "Save Changes" to publish.`,
       type: 'success',
     });
@@ -219,7 +219,7 @@ const MenuPage = () => {
     setNewCategoryTitle('');
     setShowCategoryModal(false);
     addToast({
-      title: 'Category Added (Unsaved) 📁',
+      title: 'Category Added (Unsaved)',
       message: `"${newCat.title}" created. Click "Save Changes" to publish.`,
       type: 'success',
     });

@@ -1,0 +1,47 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+Allow: /menu
+Allow: /recipes
+Allow: /about
+Allow: /gallery
+Allow: /contact
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+# Disallow private and administrative routes
+Disallow: /admin
+Disallow: /profile
+Disallow: /orders
+Disallow: /cart
+Disallow: /checkout
+Disallow: /api/
+
+# AI Crawlers & Agents
+User-agent: GPTBot
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+Disallow: /admin
+
+User-agent: ClaudeBot
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+Disallow: /admin
+
+User-agent: PerplexityBot
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+Disallow: /admin
+
+User-agent: Applebot-Extended
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+Disallow: /admin
+
+# Sitemap & LLMs
+Sitemap: https://avyukt-restaurant.vercel.app/sitemap.xml
+# LLMs knowledge context: https://avyukt-restaurant.vercel.app/llms.txt

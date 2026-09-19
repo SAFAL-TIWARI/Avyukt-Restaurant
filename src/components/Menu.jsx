@@ -69,7 +69,7 @@ const Menu = () => {
     featuredSnapshotRef.current = JSON.parse(JSON.stringify(menuItems));
     setIsEditingMenu(true);
     addToast({
-      title: 'Edit Mode Active ✏️',
+      title: 'Edit Mode Active',
       message: 'You can now add or remove featured dishes. Click "Save Changes" to publish or "Cancel" to revert.',
       type: 'info',
     });
@@ -81,7 +81,7 @@ const Menu = () => {
     }
     setIsEditingMenu(false);
     addToast({
-      title: 'Changes Reverted ↩️',
+      title: 'Changes Reverted',
       message: 'Featured menu restored to previous state.',
       type: 'info',
     });
@@ -93,7 +93,7 @@ const Menu = () => {
       await saveFeaturedItems(menuItems);
       setIsEditingMenu(false);
       addToast({
-        title: 'Featured Menu Saved! 🌟',
+        title: 'Featured Menu Saved',
         message: 'All changes have been saved across the website.',
         type: 'success',
       });
@@ -124,7 +124,7 @@ const Menu = () => {
     const updated = [...menuItems, newItem];
     setMenuItems(updated);
     addToast({
-      title: 'Item Added (Unsaved) 🍽️',
+      title: 'Item Added (Unsaved)',
       message: `"${newItem.title}" added to Featured Menu. Click "Save Changes" to publish.`,
       type: 'success'
     });

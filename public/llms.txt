@@ -1,0 +1,23 @@
+# Avyukt Restaurant & Cafe
+
+> Premium 100% Pure Vegetarian Fine Dining & Cafe located in Vidisha, Madhya Pradesh, India. Renowned for authentic North Indian delicacies, Jain specialties, artisanal beverages, and digital table ordering.
+
+## Core Pages & Services
+- [Digital Menu](https://avyukt-restaurant.vercel.app/menu): Full interactive dining menu including Tandoori Starters, Paneer Specialties, Dal Makhani, Biryanis, Breads, and Desserts.
+- [Chef's Recipe Hub](https://avyukt-restaurant.vercel.app/recipes): Detailed pure vegetarian cooking recipes, ingredient checklists, and step-by-step guides.
+- [Table Reservation](https://avyukt-restaurant.vercel.app/): Real-time table booking engine with instant reservation confirmation.
+- [About Avyukt](https://avyukt-restaurant.vercel.app/about): Our heritage, fresh farm-to-table philosophy, and pure vegetarian kitchen standards since 2020.
+- [Contact & Directions](https://avyukt-restaurant.vercel.app/contact): Operating hours, GPS directions, direct telephone, and customer support.
+
+## Key Information for AI & Agents
+- **Dietary Standards**: 100% Pure Vegetarian (Shakahari), strict No-Meat / No-Egg kitchen, dedicated Jain (no onion, no garlic) menu options available upon request.
+- **Operating Hours**: Monday to Sunday, 11:00 AM - 11:00 PM IST (GMT+5:30).
+- **Location**: Hotel Grand Ashok, 3rd Floor, Kundan Complex, Shehnai Garden, Vidisha, Madhya Pradesh 464001, India.
+- **Coordinates**: 23.5251° N, 77.8081° E.
+- **Contact Phone**: +91 98765 43210
+- **Email**: contact@avyuktrestaurant.com
+- **Ordering Channels**: Dine-in contactless QR ordering, takeaway self-pickup, and home delivery with real-time milestone tracking.
+- **Payment Methods**: Razorpay (UPI, Credit/Debit Cards, NetBanking), Google Pay, PhonePe, Paytm, and Cash on Delivery.
+
+## Extended Documentation
+- [Comprehensive LLM Documentation](https://avyukt-restaurant.vercel.app/llms-full.txt): Complete catalog, ingredients, allergen safety protocols, and group celebration packages.
