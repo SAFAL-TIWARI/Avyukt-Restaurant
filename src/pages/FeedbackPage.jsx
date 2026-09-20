@@ -757,10 +757,6 @@ const FeedbackPage = () => {
           )}
         </div>
 
-        {/* Bottom Note */}
-        <p className="text-center text-[11px] text-text/40 dark:text-white/30 mt-8 max-w-sm mx-auto">
-          Reviews are synchronized instantly across our platform to celebrate exceptional culinary experiences.
-        </p>
       </div>
     </div>
   );

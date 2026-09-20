@@ -258,7 +258,7 @@ const RecipesPage = () => {
 
       {/* Control Bar: View Changer (Grid / List), Search & Admin Controls */}
       <div className="sticky top-[88px] sm:top-[96px] z-30 mb-8 container px-4">
-        <div className="bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md rounded-2xl p-3 sm:p-4 border border-amber-950/10 dark:border-white/10 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div className="bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md rounded-3xl p-2 sm:p-3 border border-amber-950/10 dark:border-white/10 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-3">
           
           {/* Left: View Changer */}
           <div className="flex items-center gap-2 shrink-0">

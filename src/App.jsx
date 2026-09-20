@@ -24,6 +24,7 @@ const SignupPage = lazy(() => import('./pages/SignupPage'));
 const CartPage = lazy(() => import('./pages/CartPage'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage'));
 const OrdersPage = lazy(() => import('./pages/OrdersPage'));
+const OrderTrackingPage = lazy(() => import('./pages/OrderTrackingPage'));
 const NotificationsPage = lazy(() => import('./pages/NotificationsPage'));
 const HelpPage = lazy(() => import('./pages/HelpPage'));
 const FeedbackPage = lazy(() => import('./pages/FeedbackPage'));
@@ -105,6 +106,22 @@ function App() {
                         element={
                           <ProtectedRoute message="Please sign in to view your live orders.">
                             <OrdersPage />
+                          </ProtectedRoute>
+                        } 
+                      />
+                      <Route 
+                        path="/orders/:orderId" 
+                        element={
+                          <ProtectedRoute message="Please sign in to track your order.">
+                            <OrderTrackingPage />
+                          </ProtectedRoute>
+                        } 
+                      />
+                      <Route 
+                        path="/track-order/:orderId" 
+                        element={
+                          <ProtectedRoute message="Please sign in to track your order.">
+                            <OrderTrackingPage />
                           </ProtectedRoute>
                         } 
                       />

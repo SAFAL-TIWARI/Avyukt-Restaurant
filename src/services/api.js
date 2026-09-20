@@ -93,6 +93,8 @@ export const api = {
   // Orders Lifecycle
   createOrder: (orderData) => 
     request("/api/orders", { method: "POST", body: JSON.stringify(orderData) }),
+  getOrderById: (orderId) =>
+    request(`/api/orders/${orderId}`, { noCache: true }),
   getUserOrders: (userId) => 
     request(`/api/orders/user/${userId}`),
   getAllOrders: () => 

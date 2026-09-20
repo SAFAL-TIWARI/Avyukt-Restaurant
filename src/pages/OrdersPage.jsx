@@ -2,13 +2,15 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Calendar, Package, CheckCircle2, Clock3, Truck, 
-  ArrowRight, IndianRupee, AlertCircle, RefreshCw
+  ArrowRight, IndianRupee, AlertCircle, RefreshCw,
+  Search, X, FileText
 } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { db, collection, query, where, onSnapshot } from '../firebase/config';
 import api from '../services/api';
 import { OrderCardSkeleton } from '../components/common/Skeleton';
+import { downloadOrderReceipt } from '../utils/receiptGenerator';
 
 const formatOrderDateTime = (val) => {
   if (!val) return 'Recently';
@@ -36,8 +38,20 @@ const formatOrderDateTime = (val) => {
 const OrdersPage = () => {
   const { user, isLoggedIn } = useAuth();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('active'); // 'active' | 'past'
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Read initial section tab & query from URL search parameters (with sessionStorage fallback)
+  const urlTab = searchParams.get('tab');
+  const storedTab = typeof window !== 'undefined' ? sessionStorage.getItem('avyukt_orders_tab') : null;
+  const initialTab = (urlTab === 'past' || urlTab === 'active')
+    ? urlTab
+    : (storedTab === 'past' || storedTab === 'active' ? storedTab : 'active');
+
+  const initialQuery = searchParams.get('q') || '';
+
+  const [activeTab, setActiveTab] = useState(initialTab); // 'active' | 'past'
   const [orders, setOrders] = useState([]);
+  const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
@@ -106,16 +120,76 @@ const OrdersPage = () => {
 
   const activeOrders = useMemo(() => orders.filter(o => !['Delivered', 'Cancelled'].includes(o.orderStatus)), [orders]);
   const pastOrders = useMemo(() => orders.filter(o => ['Delivered', 'Cancelled'].includes(o.orderStatus)), [orders]);
-  const displayedOrders = activeTab === 'active' ? activeOrders : pastOrders;
+  const tabOrders = activeTab === 'active' ? activeOrders : pastOrders;
+
+  const displayedOrders = useMemo(() => {
+    if (!searchQuery.trim()) return tabOrders;
+    const q = searchQuery.toLowerCase().trim();
+    return tabOrders.filter(o => 
+      (o.id && o.id.toLowerCase().includes(q)) ||
+      (o.orderStatus && o.orderStatus.toLowerCase().includes(q)) ||
+      (o.deliveryAddress && o.deliveryAddress.toLowerCase().includes(q)) ||
+      (o.items && o.items.some(it => (it.name || it.title || '').toLowerCase().includes(q))) ||
+      (o.totalAmount && o.totalAmount.toString().includes(q))
+    );
+  }, [tabOrders, searchQuery]);
+
   const totalPages = Math.ceil(displayedOrders.length / PAGE_SIZE) || 1;
   const paginatedOrders = useMemo(() => {
     const start = (currentPage - 1) * PAGE_SIZE;
     return displayedOrders.slice(start, start + PAGE_SIZE);
   }, [displayedOrders, currentPage]);
 
+  // Sync state when URL searchParams change (e.g. browser back/forward buttons or direct links)
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam === 'active' || tabParam === 'past') {
+      setActiveTab(tabParam);
+      try {
+        sessionStorage.setItem('avyukt_orders_tab', tabParam);
+      } catch (e) {}
+    } else {
+      // Ensure the URL search param has tab set so refreshing stays on the section
+      const params = new URLSearchParams(searchParams);
+      params.set('tab', initialTab);
+      if (initialQuery) params.set('q', initialQuery);
+      setSearchParams(params, { replace: true });
+    }
+
+    const qParam = searchParams.get('q');
+    if (qParam !== null && qParam !== searchQuery) {
+      setSearchQuery(qParam);
+    }
+  }, [searchParams]);
+
+  const updateQueryParams = (tab, q) => {
+    const params = new URLSearchParams();
+    params.set('tab', tab);
+    if (q && q.trim()) {
+      params.set('q', q.trim());
+    }
+    setSearchParams(params, { replace: true });
+  };
+
   const handleTabSwitch = (tab) => {
     setActiveTab(tab);
     setCurrentPage(1);
+    try {
+      sessionStorage.setItem('avyukt_orders_tab', tab);
+    } catch (e) {}
+    updateQueryParams(tab, searchQuery);
+  };
+
+  const handleSearchChange = (value) => {
+    setSearchQuery(value);
+    setCurrentPage(1);
+    updateQueryParams(activeTab, value);
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery('');
+    setCurrentPage(1);
+    updateQueryParams(activeTab, '');
   };
 
   const getStatusBadge = (status) => {
@@ -158,53 +232,89 @@ const OrdersPage = () => {
           </Link>
         </div>
 
-        {/* Tab Switcher */}
-        <div className="flex items-center gap-3 bg-white dark:bg-zinc-900 p-1.5 rounded-2xl border border-black/5 dark:border-white/10 w-fit mb-8 shadow-sm">
-          <button
-            onClick={() => handleTabSwitch('active')}
-            className={`px-6 py-2.5 rounded-xl font-bold text-xs md:text-sm transition-all ${
-              activeTab === 'active' 
-                ? 'bg-primary text-white shadow-lg shadow-primary/25' 
-                : 'text-text dark:text-white/60 hover:bg-gray-100 dark:hover:bg-zinc-800'
-            }`}
-          >
-            Active Orders ({activeOrders.length})
-          </button>
-          <button
-            onClick={() => handleTabSwitch('past')}
-            className={`px-6 py-2.5 rounded-xl font-bold text-xs md:text-sm transition-all ${
-              activeTab === 'past' 
-                ? 'bg-primary text-white shadow-lg shadow-primary/25' 
-                : 'text-text dark:text-white/60 hover:bg-gray-100 dark:hover:bg-zinc-800'
-            }`}
-          >
-            Past Orders ({pastOrders.length})
-          </button>
+        {/* Unified Tab Switcher & Order Search Bar */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-zinc-900 p-2 rounded-2xl border border-black/5 dark:border-white/10 mb-8 shadow-sm">
+          <div className="flex items-center gap-2 p-0.5 shrink-0">
+            <button
+              onClick={() => handleTabSwitch('active')}
+              className={`px-4 sm:px-6 py-2.5 rounded-xl font-bold text-xs md:text-sm transition-all cursor-pointer ${
+                activeTab === 'active' 
+                  ? 'bg-primary text-white shadow-lg shadow-primary/25' 
+                  : 'text-text dark:text-white/60 hover:bg-gray-100 dark:hover:bg-zinc-800'
+              }`}
+            >
+              Active Orders ({activeOrders.length})
+            </button>
+            <button
+              onClick={() => handleTabSwitch('past')}
+              className={`px-4 sm:px-6 py-2.5 rounded-xl font-bold text-xs md:text-sm transition-all cursor-pointer ${
+                activeTab === 'past' 
+                  ? 'bg-primary text-white shadow-lg shadow-primary/25' 
+                  : 'text-text dark:text-white/60 hover:bg-gray-100 dark:hover:bg-zinc-800'
+              }`}
+            >
+              Past Orders ({pastOrders.length})
+            </button>
+          </div>
+
+          {/* Search Input inside the bar */}
+          <div className="relative flex-1 sm:max-w-xs md:max-w-sm">
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              placeholder="Search by order ID, dish name, address..."
+              className="w-full pl-8 pr-7 py-2 bg-gray-50 dark:bg-zinc-800/80 rounded-xl text-xs text-title dark:text-white placeholder:text-text/40 dark:placeholder:text-white/40 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all border border-black/5 dark:border-white/5"
+            />
+            {searchQuery && (
+              <button
+                onClick={handleClearSearch}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white p-0.5 rounded-full cursor-pointer"
+                title="Clear Search"
+              >
+                <X size={12} />
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Orders Listing */}
         {loading ? (
           <OrderCardSkeleton count={3} />
         ) : displayedOrders.length === 0 ? (
-          <div className="bg-white dark:bg-zinc-900 rounded-[2.5rem] p-12 text-center border border-black/5 dark:border-white/10 shadow-sm">
-            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary mx-auto mb-4">
-              <Package size={28} />
+          searchQuery ? (
+            <div className="bg-white dark:bg-zinc-900 rounded-[2.5rem] p-10 text-center border border-black/5 dark:border-white/10 shadow-sm">
+              <p className="text-sm font-semibold text-title dark:text-white mb-1">No orders found matching "{searchQuery}"</p>
+              <p className="text-xs text-text/60 dark:text-white/60 mb-4">Try searching with a different order ID, dish name, or address.</p>
+              <button
+                onClick={handleClearSearch}
+                className="bg-primary/10 hover:bg-primary text-primary hover:text-white px-5 py-2 rounded-xl font-bold text-xs transition-all cursor-pointer"
+              >
+                Clear Search
+              </button>
             </div>
-            <h3 className="text-xl font-bold font-title text-title dark:text-white mb-2">
-              {activeTab === 'active' ? 'No active orders right now' : 'No past orders found'}
-            </h3>
-            <p className="text-xs text-text/60 dark:text-white/60 mb-6 max-w-sm mx-auto">
-              {activeTab === 'active' 
-                ? 'Hungry? Check our delicious menu and place an order today!' 
-                : 'Your delivered orders will appear here once completed.'}
-            </p>
-            <Link
-              to="/menu"
-              className="bg-primary text-white px-6 py-3 rounded-full font-bold text-xs hover:bg-primary-dark transition-all inline-flex items-center gap-2"
-            >
-              Browse Menu <ArrowRight size={16} />
-            </Link>
-          </div>
+          ) : (
+            <div className="bg-white dark:bg-zinc-900 rounded-[2.5rem] p-12 text-center border border-black/5 dark:border-white/10 shadow-sm">
+              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary mx-auto mb-4">
+                <Package size={28} />
+              </div>
+              <h3 className="text-xl font-bold font-title text-title dark:text-white mb-2">
+                {activeTab === 'active' ? 'No active orders right now' : 'No past orders found'}
+              </h3>
+              <p className="text-xs text-text/60 dark:text-white/60 mb-6 max-w-sm mx-auto">
+                {activeTab === 'active' 
+                  ? 'Hungry? Check our delicious menu and place an order today!' 
+                  : 'Your delivered orders will appear here once completed.'}
+              </p>
+              <Link
+                to="/menu"
+                className="bg-primary text-white px-6 py-3 rounded-full font-bold text-xs hover:bg-primary-dark transition-all inline-flex items-center gap-2"
+              >
+                Browse Menu <ArrowRight size={16} />
+              </Link>
+            </div>
+          )
         ) : (
           <div className="space-y-4">
             <AnimatePresence>
@@ -249,11 +359,19 @@ const OrdersPage = () => {
                         </div>
                       </div>
 
-                      <div className="text-right">
+                      <div className="text-left md:text-right">
                         <p className="text-2xl font-bold text-primary">₹{order.totalAmount}</p>
-                        <p className="text-[11px] text-text/40 dark:text-white/40">
+                        <p className="text-[11px] text-text/40 dark:text-white/40 mb-2">
                           Method: {order.paymentMethod === 'razorpay' ? 'Razorpay Online' : 'Cash on Delivery'}
                         </p>
+                        <Link
+                          to={`/orders/${order.id}`}
+                          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-xl text-xs font-bold transition-all shadow-sm group"
+                        >
+                          <Truck size={13} className="group-hover:animate-bounce" />
+                          <span>Track Live Order</span>
+                          <ArrowRight size={13} />
+                        </Link>
                       </div>
                     </div>
 
@@ -270,26 +388,40 @@ const OrdersPage = () => {
 
                     {/* Address & Handshake Controls */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-3 border-t border-black/5 dark:border-white/10 text-xs">
-                      <p className="text-text/60 dark:text-white/60 max-w-md">
-                        <strong className="text-title dark:text-white">Delivery Address:</strong> {order.deliveryAddress}
-                      </p>
+                      <div>
+                        <p className="text-text/60 dark:text-white/60 max-w-md">
+                          <strong className="text-title dark:text-white">Delivery Address:</strong> {order.deliveryAddress}
+                        </p>
+                        <div className="mt-1.5 flex items-center gap-3">
+                          <button
+                            onClick={() => downloadOrderReceipt(order)}
+                            className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-primary hover:text-primary-dark hover:underline cursor-pointer transition-colors"
+                            title="Download Tax Invoice Receipt"
+                          >
+                            <FileText size={12} />
+                            <span>Download Receipt</span>
+                          </button>
+                        </div>
+                      </div>
 
-                      {/* Customer Handshake Button */}
-                      {!order.orderReceivedByCustomer && order.orderStatus !== 'Cancelled' && (
-                        <button
-                          onClick={() => handleConfirmReceived(order.id)}
-                          disabled={actionLoading[order.id]}
-                          className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-bold text-xs transition-colors shadow-md shadow-emerald-600/20 whitespace-nowrap self-start sm:self-auto"
-                        >
-                          {actionLoading[order.id] ? 'Updating...' : 'Confirm Order Received'}
-                        </button>
-                      )}
+                      <div className="flex items-center gap-2.5 self-start sm:self-auto flex-wrap">
+                        {/* Customer Handshake Button - Only appears after admin clicks Delivered */}
+                        {(order.orderStatus === 'Delivered' || order.orderStatus?.toLowerCase() === 'delivered') && !order.orderReceivedByCustomer && (
+                          <button
+                            onClick={() => handleConfirmReceived(order.id)}
+                            disabled={actionLoading[order.id]}
+                            className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-bold text-xs transition-colors shadow-md shadow-emerald-600/20 whitespace-nowrap cursor-pointer"
+                          >
+                            {actionLoading[order.id] ? 'Updating...' : 'Confirm Order Received'}
+                          </button>
+                        )}
 
-                      {order.orderReceivedByCustomer && (
-                        <span className="text-emerald-600 dark:text-emerald-400 font-bold text-xs flex items-center gap-1">
-                          <CheckCircle2 size={16} /> Receipt Confirmed
-                        </span>
-                      )}
+                        {order.orderReceivedByCustomer && (
+                          <span className="text-emerald-600 dark:text-emerald-400 font-bold text-xs flex items-center gap-1">
+                            <CheckCircle2 size={16} /> Receipt Confirmed
+                          </span>
+                        )}
+                      </div>
                     </div>
 
                   </motion.div>

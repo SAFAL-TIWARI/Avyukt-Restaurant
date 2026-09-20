@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Users, ShoppingBag, IndianRupee, Clock, 
-  Calendar, CheckCircle2, XCircle, AlertCircle, 
+import {
+  Users, ShoppingBag, IndianRupee, Clock,
+  Calendar, CheckCircle2, XCircle, AlertCircle,
   Truck, Utensils, MessageSquare, Star, Mail, Lock, ShieldCheck,
   Megaphone, Send, Tag, Sparkles, Trash2, LayoutGrid, List,
   Edit3, Check, ChevronRight, Phone, RefreshCw, ChevronDown, Gift, Flame,
-  Reply, X, Search
+  Reply, X, Search, ExternalLink
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import { db, collection, onSnapshot, doc, setDoc } from '../firebase/config';
 import api from '../services/api';
 import { StatsGridSkeleton, OrderCardSkeleton } from '../components/common/Skeleton';
@@ -394,8 +394,8 @@ const DashboardPage = () => {
 
     //  INSTANT OPTIMISTIC UI UPDATE:
     // Update local state immediately so buttons disappear and badge appears with ZERO delay
-    setReservations(prev => prev.map(r => r.id === resId ? { 
-      ...r, 
+    setReservations(prev => prev.map(r => r.id === resId ? {
+      ...r,
       status: newStatus,
       ...(effectiveTableNo ? { tableNo: effectiveTableNo } : {})
     } : r));
@@ -409,7 +409,7 @@ const DashboardPage = () => {
     });
 
     try {
-      const payload = { 
+      const payload = {
         status: newStatus,
         userId: res?.userId,
         userEmail: res?.email,
@@ -445,7 +445,7 @@ const DashboardPage = () => {
     });
 
     try {
-      const payload = { 
+      const payload = {
         tableNo,
         userId: res?.userId,
         userEmail: res?.email,
@@ -667,8 +667,8 @@ const DashboardPage = () => {
               {loginLoading ? 'Authenticating...' : 'Access Dashboard'}
             </button>
           </form>
-          
-          
+
+
         </motion.div>
       </div>
     );
@@ -677,7 +677,7 @@ const DashboardPage = () => {
   return (
     <div className="min-h-screen pt-32 pb-20 px-4 md:px-8 bg-body dark:bg-zinc-950 transition-colors">
       <div className="max-w-7xl mx-auto">
-        
+
         {/* Top Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div>
@@ -685,7 +685,7 @@ const DashboardPage = () => {
               <h1 className="text-2xl md:text-3xl font-title font-bold text-title dark:text-white">
                 Avyukt Admin Command Center
               </h1>
-              
+
             </div>
             <p className="text-xs md:text-sm text-text/60 dark:text-white/60 mt-1">
               Live orders pipeline, table bookings, customer sentiment & revenue metrics (updated automatically in real time)
@@ -693,7 +693,7 @@ const DashboardPage = () => {
           </div>
 
           <div className="flex items-center gap-3 self-start md:self-auto flex-wrap">
-            
+
 
             <button
               onClick={() => loadAllAdminData(true)}
@@ -712,130 +712,132 @@ const DashboardPage = () => {
         ) : (
           <div className="flex overflow-x-auto pb-3 pt-1 no-scrollbar sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 mb-8 scroll-smooth">
             <div className="min-w-[240px] sm:min-w-0 flex-1 shrink-0 sm:shrink bg-white/90 dark:bg-zinc-900/90 p-5 md:p-6 rounded-3xl border border-amber-950/10 dark:border-white/10 shadow-sm flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0">
-              <IndianRupee size={24} />
+              <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0">
+                <IndianRupee size={24} />
+              </div>
+              <div>
+                <p className="text-[11px] font-bold text-text/50 dark:text-white/50 uppercase tracking-wider">Total Revenue</p>
+                <h3 className="text-xl md:text-2xl font-bold text-title dark:text-white">₹{stats.totalRevenue?.toLocaleString('en-IN') || 0}</h3>
+              </div>
             </div>
-            <div>
-              <p className="text-[11px] font-bold text-text/50 dark:text-white/50 uppercase tracking-wider">Total Revenue</p>
-              <h3 className="text-xl md:text-2xl font-bold text-title dark:text-white">₹{stats.totalRevenue?.toLocaleString('en-IN') || 0}</h3>
-            </div>
-          </div>
 
-          <div className="min-w-[240px] sm:min-w-0 flex-1 shrink-0 sm:shrink bg-white/90 dark:bg-zinc-900/90 p-5 md:p-6 rounded-3xl border border-amber-950/10 dark:border-white/10 shadow-sm flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
-              <ShoppingBag size={24} />
+            <div className="min-w-[240px] sm:min-w-0 flex-1 shrink-0 sm:shrink bg-white/90 dark:bg-zinc-900/90 p-5 md:p-6 rounded-3xl border border-amber-950/10 dark:border-white/10 shadow-sm flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                <ShoppingBag size={24} />
+              </div>
+              <div>
+                <p className="text-[11px] font-bold text-text/50 dark:text-white/50 uppercase tracking-wider">Total Orders</p>
+                <h3 className="text-xl md:text-2xl font-bold text-title dark:text-white">{orders.length}</h3>
+              </div>
             </div>
-            <div>
-              <p className="text-[11px] font-bold text-text/50 dark:text-white/50 uppercase tracking-wider">Total Orders</p>
-              <h3 className="text-xl md:text-2xl font-bold text-title dark:text-white">{orders.length}</h3>
-            </div>
-          </div>
 
-          <div className="min-w-[240px] sm:min-w-0 flex-1 shrink-0 sm:shrink bg-white/90 dark:bg-zinc-900/90 p-5 md:p-6 rounded-3xl border border-amber-950/10 dark:border-white/10 shadow-sm flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0">
-              <Utensils size={24} />
+            <div className="min-w-[240px] sm:min-w-0 flex-1 shrink-0 sm:shrink bg-white/90 dark:bg-zinc-900/90 p-5 md:p-6 rounded-3xl border border-amber-950/10 dark:border-white/10 shadow-sm flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0">
+                <Utensils size={24} />
+              </div>
+              <div>
+                <p className="text-[11px] font-bold text-text/50 dark:text-white/50 uppercase tracking-wider">Active Kitchen</p>
+                <h3 className="text-xl md:text-2xl font-bold text-title dark:text-white">
+                  {orders.filter(o => ['Placed', 'Accepted', 'Preparing', 'Ready', 'Out for Delivery'].includes(o.orderStatus)).length}
+                </h3>
+              </div>
             </div>
-            <div>
-              <p className="text-[11px] font-bold text-text/50 dark:text-white/50 uppercase tracking-wider">Active Kitchen</p>
-              <h3 className="text-xl md:text-2xl font-bold text-title dark:text-white">
-                {orders.filter(o => ['Placed', 'Accepted', 'Preparing', 'Ready', 'Out for Delivery'].includes(o.orderStatus)).length}
-              </h3>
-            </div>
-          </div>
 
-          <div className="min-w-[240px] sm:min-w-0 flex-1 shrink-0 sm:shrink bg-white/90 dark:bg-zinc-900/90 p-5 md:p-6 rounded-3xl border border-amber-950/10 dark:border-white/10 shadow-sm flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-blue-500/10 text-blue-600 flex items-center justify-center shrink-0">
-              <Calendar size={24} />
-            </div>
-            <div>
-              <p className="text-[11px] font-bold text-text/50 dark:text-white/50 uppercase tracking-wider">Table Bookings</p>
-              <h3 className="text-xl md:text-2xl font-bold text-title dark:text-white">{reservations.length}</h3>
+            <div className="min-w-[240px] sm:min-w-0 flex-1 shrink-0 sm:shrink bg-white/90 dark:bg-zinc-900/90 p-5 md:p-6 rounded-3xl border border-amber-950/10 dark:border-white/10 shadow-sm flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-blue-500/10 text-blue-600 flex items-center justify-center shrink-0">
+                <Calendar size={24} />
+              </div>
+              <div>
+                <p className="text-[11px] font-bold text-text/50 dark:text-white/50 uppercase tracking-wider">Table Bookings</p>
+                <h3 className="text-xl md:text-2xl font-bold text-title dark:text-white">{reservations.length}</h3>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
         {/* Admin Navigation Tabs Bar - Sticky with gap below navbar */}
-        <div className="sticky top-[88px] md:top-[96px] z-30 w-full py-2 mb-6 bg-body/95 dark:bg-zinc-950/95 backdrop-blur-md rounded-2xl">
+        <div className="sticky top-[88px] md:top-[96px] z-30 w-full py-2 mb-6  ">
           <div className="w-full overflow-x-auto no-scrollbar pb-1">
             <div className="flex gap-2 p-1.5 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md rounded-2xl border border-amber-950/10 dark:border-white/10 shadow-md w-max min-w-full">
-            {[
-              { id: 'orders', label: `Orders (${orders.length})`, icon: <ShoppingBag size={15} /> },
-              { id: 'reservations', label: `Table Bookings (${reservations.length})`, icon: <Calendar size={15} /> },
-              { id: 'feedbacks', label: `Feedbacks (${feedbacks.length})`, icon: <Star size={15} /> },
-              { id: 'contacts', label: `Inquiries (${contacts.length})`, icon: <MessageSquare size={15} /> },
-              { id: 'broadcast', label: `Broadcast Offers (${broadcasts.length})`, icon: <Megaphone size={15} /> },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => handleAdminTabChange(tab.id)}
-                className={`flex items-center gap-2 px-4 md:px-5 py-2.5 rounded-xl font-bold text-xs transition-all shrink-0 whitespace-nowrap cursor-pointer ${
-                  adminTab === tab.id
+              {[
+                { id: 'orders', label: `Orders (${orders.length})`, icon: <ShoppingBag size={15} /> },
+                { id: 'reservations', label: `Table Bookings (${reservations.length})`, icon: <Calendar size={15} /> },
+                { id: 'feedbacks', label: `Feedbacks (${feedbacks.length})`, icon: <Star size={15} /> },
+                { id: 'contacts', label: `Inquiries (${contacts.length})`, icon: <MessageSquare size={15} /> },
+                { id: 'broadcast', label: `Broadcast Offers (${broadcasts.length})`, icon: <Megaphone size={15} /> },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => handleAdminTabChange(tab.id)}
+                  className={`flex items-center gap-2 px-4 md:px-5 py-2.5 rounded-xl font-bold text-xs transition-all shrink-0 whitespace-nowrap cursor-pointer ${adminTab === tab.id
                     ? 'bg-primary text-white shadow-md'
                     : 'text-text/70 dark:text-white/70 hover:bg-black/5 dark:hover:bg-white/5'
-                }`}
-              >
-                {tab.icon}
-                <span>{tab.label}</span>
-              </button>
-            ))}
-          </div>
-          </div>
-        </div>
-        <div className="flex justify-end mb-4">
-          {/* List / Grid View Switcher */}
-            <div className="flex items-center bg-white/90 dark:bg-zinc-900/90 p-1 rounded-2xl border border-amber-950/10 dark:border-white/10 shadow-sm">
-            <button
-                onClick={() => setViewMode('list')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                  viewMode === 'list'
-                    ? 'bg-primary text-white shadow-sm'
-                    : 'text-text/70 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-zinc-800'
-                }`}
-                title="List View (Compact Space-saving for Mobile)"
-              >
-                <List size={14} />
-                <span>List</span>
-              </button>
-              <button
-                onClick={() => setViewMode('grid')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                  viewMode === 'grid'
-                    ? 'bg-primary text-white shadow-sm'
-                    : 'text-text/70 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-zinc-800'
-                }`}
-                title="Grid View (Normal Details)"
-              >
-                <LayoutGrid size={14} />
-                <span>Grid</span>
-              </button>
-              
+                    }`}
+                >
+                  {tab.icon}
+                  <span>{tab.label}</span>
+                </button>
+              ))}
             </div>
-          
+          </div>
         </div>
 
         {/* TAB 1: LIVE ORDERS PIPELINE */}
         {adminTab === 'orders' && (
           <div>
-            {/* Orders Section Search Bar */}
-            <div className="relative mb-4 w-full">
-              <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                value={orderSearch}
-                onChange={(e) => setOrderSearch(e.target.value)}
-                placeholder="Search orders by ID, customer name, phone, item name, address, status..."
-                className="w-full pl-9 pr-8 py-2.5 bg-white/90 dark:bg-zinc-900/90 rounded-2xl border border-amber-950/10 dark:border-white/10 text-xs text-title dark:text-white placeholder:text-text/40 dark:placeholder:text-white/40 focus:outline-none focus:border-primary shadow-sm transition-all"
-              />
-              {orderSearch && (
-                <button
-                  onClick={() => setOrderSearch('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white p-0.5 rounded-full cursor-pointer"
-                  title="Clear Search"
-                >
-                  <X size={14} />
-                </button>
-              )}
+            {/* Orders Sticky Unified Toolbar: Search Bar + List/Grid View Switcher */}
+            <div className="sticky top-[152px] md:top-[160px] z-20 py-2 mb-4 ">
+              <div className="flex items-center gap-2 w-full bg-white/90 dark:bg-zinc-900/90 p-1.5 rounded-2xl border border-amber-950/10 dark:border-white/10 shadow-sm transition-all">
+                {/* Search Input */}
+                <div className="relative flex-1">
+                  <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input
+                    type="text"
+                    value={orderSearch}
+                    onChange={(e) => setOrderSearch(e.target.value)}
+                    placeholder="Search orders by ID, customer name, phone, item name, address, status..."
+                    className="w-full pl-9 pr-8 py-2 bg-transparent text-xs text-title dark:text-white placeholder:text-text/40 dark:placeholder:text-white/40 focus:outline-none"
+                  />
+                  {orderSearch && (
+                    <button
+                      onClick={() => setOrderSearch('')}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white p-0.5 rounded-full cursor-pointer"
+                      title="Clear Search"
+                    >
+                      <X size={14} />
+                    </button>
+                  )}
+                </div>
+
+                {/* Vertical Divider */}
+                <div className="h-6 w-[1px] bg-black/10 dark:bg-white/10 shrink-0"></div>
+
+                {/* List / Grid View Switcher inside the search bar */}
+                <div className="flex items-center gap-1 p-0.5 shrink-0">
+                  <button
+                    onClick={() => setViewMode('list')}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${viewMode === 'list'
+                      ? 'bg-primary text-white shadow-sm'
+                      : 'text-text/70 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-zinc-800'
+                      }`}
+                    title="List View (Compact)"
+                  >
+                    <List size={14} />
+                    <span className="hidden sm:inline">List</span>
+                  </button>
+                  <button
+                    onClick={() => setViewMode('grid')}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${viewMode === 'grid'
+                      ? 'bg-primary text-white shadow-sm'
+                      : 'text-text/70 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-zinc-800'
+                      }`}
+                    title="Grid View (Normal)"
+                  >
+                    <LayoutGrid size={14} />
+                    <span className="hidden sm:inline">Grid</span>
+                  </button>
+                </div>
+              </div>
             </div>
 
             {loadingData && orders.length === 0 ? (
@@ -873,13 +875,12 @@ const DashboardPage = () => {
                           <span className="text-xs font-bold text-primary px-2 py-0.5 bg-primary/10 rounded-full">
                             ₹{order.totalAmount}
                           </span>
-                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                            order.orderStatus === 'Delivered' 
-                              ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400' 
-                              : order.orderStatus === 'Placed' 
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${order.orderStatus === 'Delivered'
+                            ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400'
+                            : order.orderStatus === 'Placed'
                               ? 'bg-blue-500/15 text-blue-600 dark:text-blue-400'
                               : 'bg-amber-500/15 text-amber-600 dark:text-amber-400'
-                          }`}>
+                            }`}>
                             {order.orderStatus}
                           </span>
                         </div>
@@ -898,6 +899,14 @@ const DashboardPage = () => {
                               Deliver
                             </button>
                           )}
+
+                          <Link
+                            to={`/orders/${order.id}`}
+                            className="px-2 py-1 text-[11px] font-bold text-primary hover:bg-primary/10 rounded-lg flex items-center gap-1 transition-colors"
+                            title="Open Live Order Tracking Page"
+                          >
+                            <Truck size={12} /> Track
+                          </Link>
 
                           <button
                             onClick={() => setExpandedOrderId(isExpanded ? null : order.id)}
@@ -944,11 +953,10 @@ const DashboardPage = () => {
                                 <button
                                   key={st}
                                   onClick={() => handleUpdateOrderStatus(order.id, st)}
-                                  className={`px-2.5 py-1 rounded-lg text-[10px] font-bold cursor-pointer transition-all ${
-                                    order.orderStatus === st
-                                      ? 'bg-primary text-white shadow-sm'
-                                      : 'bg-black/5 dark:bg-white/5 text-text/70 dark:text-white/70 hover:bg-black/10'
-                                  }`}
+                                  className={`px-2.5 py-1 rounded-lg text-[10px] font-bold cursor-pointer transition-all ${order.orderStatus === st
+                                    ? 'bg-primary text-white shadow-sm'
+                                    : 'bg-black/5 dark:bg-white/5 text-text/70 dark:text-white/70 hover:bg-black/10'
+                                    }`}
                                 >
                                   {st}
                                 </button>
@@ -981,13 +989,19 @@ const DashboardPage = () => {
                             <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-gray-300">
                               {order.paymentMethod === 'razorpay' ? 'Razorpay Online' : 'Cash / Direct UPI'}
                             </span>
-                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                              order.orderStatus === 'Delivered' 
-                                ? 'bg-emerald-500/15 text-emerald-600' 
-                                : 'bg-amber-500/15 text-amber-600'
-                            }`}>
+                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${order.orderStatus === 'Delivered'
+                              ? 'bg-emerald-500/15 text-emerald-600'
+                              : 'bg-amber-500/15 text-amber-600'
+                              }`}>
                               Status: {order.orderStatus}
                             </span>
+                            <Link
+                              to={`/orders/${order.id}`}
+                              className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all inline-flex items-center gap-1"
+                              title="Open Live Order Tracking Page"
+                            >
+                              <Truck size={11} /> Track Order <ExternalLink size={9} />
+                            </Link>
                           </div>
                           <p className="text-xs text-text/60 dark:text-white/60 flex items-center gap-2 flex-wrap">
                             <strong>Customer:</strong> {order.customerName}
@@ -1027,11 +1041,10 @@ const DashboardPage = () => {
                                 <button
                                   key={st}
                                   onClick={() => handleUpdateOrderStatus(order.id, st)}
-                                  className={`px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all cursor-pointer ${
-                                    order.orderStatus === st
-                                      ? 'bg-primary text-white shadow-md'
-                                      : 'bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200'
-                                  }`}
+                                  className={`px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all cursor-pointer ${order.orderStatus === st
+                                    ? 'bg-primary text-white shadow-md'
+                                    : 'bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200'
+                                    }`}
                                 >
                                   {st}
                                 </button>
@@ -1065,11 +1078,10 @@ const DashboardPage = () => {
 
                         <div className="flex items-center gap-3 flex-wrap">
                           {/* Customer confirmation indicator */}
-                          <span className={`px-2.5 py-1 rounded-xl text-[11px] font-bold flex items-center gap-1 ${
-                            order.orderReceivedByCustomer
-                              ? 'bg-emerald-500/10 text-emerald-600'
-                              : 'bg-gray-100 dark:bg-zinc-800 text-gray-500'
-                          }`}>
+                          <span className={`px-2.5 py-1 rounded-xl text-[11px] font-bold flex items-center gap-1 ${order.orderReceivedByCustomer
+                            ? 'bg-emerald-500/10 text-emerald-600'
+                            : 'bg-gray-100 dark:bg-zinc-800 text-gray-500'
+                            }`}>
                             {order.orderReceivedByCustomer ? <CheckCircle2 size={14} /> : <Clock size={14} />}
                             {order.orderReceivedByCustomer ? 'Customer Confirmed Delivery' : 'Awaiting Customer Confirmation'}
                           </span>
@@ -1100,25 +1112,27 @@ const DashboardPage = () => {
         {/* TAB 2: TABLE BOOKINGS */}
         {adminTab === 'reservations' && (
           <div>
-            {/* Reservations Section Search Bar */}
-            <div className="relative mb-4 w-full">
-              <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                value={resSearch}
-                onChange={(e) => setResSearch(e.target.value)}
-                placeholder="Search bookings by name, phone, email, date, status, guests, table #..."
-                className="w-full pl-9 pr-8 py-2.5 bg-white/90 dark:bg-zinc-900/90 rounded-2xl border border-amber-950/10 dark:border-white/10 text-xs text-title dark:text-white placeholder:text-text/40 dark:placeholder:text-white/40 focus:outline-none focus:border-primary shadow-sm transition-all"
-              />
-              {resSearch && (
-                <button
-                  onClick={() => setResSearch('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white p-0.5 rounded-full cursor-pointer"
-                  title="Clear Search"
-                >
-                  <X size={14} />
-                </button>
-              )}
+            {/* Reservations Section Sticky Search Bar */}
+            <div className="sticky top-[152px] md:top-[160px] z-20 py-2 mb-4 ">
+              <div className="relative w-full">
+                <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input
+                  type="text"
+                  value={resSearch}
+                  onChange={(e) => setResSearch(e.target.value)}
+                  placeholder="Search bookings by name, phone, email, date, status, guests, table #..."
+                  className="w-full pl-9 pr-8 py-2.5 bg-white/90 dark:bg-zinc-900/90 rounded-2xl border border-amber-950/10 dark:border-white/10 text-xs text-title dark:text-white placeholder:text-text/40 dark:placeholder:text-white/40 focus:outline-none focus:border-primary shadow-sm transition-all"
+                />
+                {resSearch && (
+                  <button
+                    onClick={() => setResSearch('')}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white p-0.5 rounded-full cursor-pointer"
+                    title="Clear Search"
+                  >
+                    <X size={14} />
+                  </button>
+                )}
+              </div>
             </div>
 
             {reservations.length === 0 ? (
@@ -1168,9 +1182,8 @@ const DashboardPage = () => {
                             <Utensils size={11} /> Table #{res.tableNo}
                           </span>
                         )}
-                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                          isConfirmed ? 'bg-emerald-500/15 text-emerald-600' : isDeclined ? 'bg-red-500/15 text-red-600' : 'bg-amber-500/15 text-amber-600'
-                        }`}>
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${isConfirmed ? 'bg-emerald-500/15 text-emerald-600' : isDeclined ? 'bg-red-500/15 text-red-600' : 'bg-amber-500/15 text-amber-600'
+                          }`}>
                           {isConfirmed ? 'Confirmed' : isDeclined ? 'Declined' : (res.status || 'Pending')}
                         </span>
                       </div>
@@ -1216,11 +1229,10 @@ const DashboardPage = () => {
                                 }
                                 handleUpdateReservation(res.id, 'Confirmed', effectiveTable);
                               }}
-                              className={`px-2.5 py-1 rounded-lg text-[10px] font-bold shadow-sm transition-all cursor-pointer ${
-                                (res.tableNo || currentInput.trim())
-                                  ? 'bg-emerald-600 text-white hover:bg-emerald-700'
-                                  : 'bg-emerald-600/50 text-white/80 hover:bg-emerald-600/70'
-                              }`}
+                              className={`px-2.5 py-1 rounded-lg text-[10px] font-bold shadow-sm transition-all cursor-pointer ${(res.tableNo || currentInput.trim())
+                                ? 'bg-emerald-600 text-white hover:bg-emerald-700'
+                                : 'bg-emerald-600/50 text-white/80 hover:bg-emerald-600/70'
+                                }`}
                               title={(res.tableNo || currentInput.trim()) ? 'Confirm Booking' : 'Please allot a table number first to confirm'}
                             >
                               Confirm
@@ -1261,15 +1273,14 @@ const DashboardPage = () => {
                       <div>
                         <div className="flex items-center gap-2 mb-1 flex-wrap">
                           <h4 className="font-bold text-base text-title dark:text-white">{res.name}</h4>
-                          
+
                           {/* Status Badge */}
-                          <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                            isConfirmed 
-                              ? 'bg-emerald-500/15 text-emerald-600' 
-                              : isDeclined 
-                              ? 'bg-red-500/15 text-red-600' 
+                          <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${isConfirmed
+                            ? 'bg-emerald-500/15 text-emerald-600'
+                            : isDeclined
+                              ? 'bg-red-500/15 text-red-600'
                               : 'bg-amber-500/15 text-amber-600'
-                          }`}>
+                            }`}>
                             {isConfirmed ? 'Confirmed' : isDeclined ? 'Declined' : (res.status || 'Pending')}
                           </span>
 
@@ -1351,11 +1362,10 @@ const DashboardPage = () => {
                                 }
                                 handleUpdateReservation(res.id, 'Confirmed', effectiveTable);
                               }}
-                              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer ${
-                                (res.tableNo || currentInput.trim())
-                                  ? 'bg-emerald-600 text-white hover:bg-emerald-700'
-                                  : 'bg-emerald-600/50 text-white/80 hover:bg-emerald-600/70'
-                              }`}
+                              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer ${(res.tableNo || currentInput.trim())
+                                ? 'bg-emerald-600 text-white hover:bg-emerald-700'
+                                : 'bg-emerald-600/50 text-white/80 hover:bg-emerald-600/70'
+                                }`}
                               title={(res.tableNo || currentInput.trim()) ? 'Confirm Booking' : 'Please allot a table first before confirming'}
                             >
                               Confirm
@@ -1389,25 +1399,27 @@ const DashboardPage = () => {
         {/* TAB 3: CUSTOMER FEEDBACKS */}
         {adminTab === 'feedbacks' && (
           <div>
-            {/* Feedbacks Section Search Bar */}
-            <div className="relative mb-4 w-full">
-              <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                value={feedbackSearch}
-                onChange={(e) => setFeedbackSearch(e.target.value)}
-                placeholder="Search feedbacks by customer name, rating, comment..."
-                className="w-full pl-9 pr-8 py-2.5 bg-white/90 dark:bg-zinc-900/90 rounded-2xl border border-amber-950/10 dark:border-white/10 text-xs text-title dark:text-white placeholder:text-text/40 dark:placeholder:text-white/40 focus:outline-none focus:border-primary shadow-sm transition-all"
-              />
-              {feedbackSearch && (
-                <button
-                  onClick={() => setFeedbackSearch('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white p-0.5 rounded-full cursor-pointer"
-                  title="Clear Search"
-                >
-                  <X size={14} />
-                </button>
-              )}
+            {/* Feedbacks Section Sticky Search Bar */}
+            <div className="sticky top-[152px] md:top-[160px] z-20 py-2 mb-4 ">
+              <div className="relative w-full">
+                <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input
+                  type="text"
+                  value={feedbackSearch}
+                  onChange={(e) => setFeedbackSearch(e.target.value)}
+                  placeholder="Search feedbacks by customer name, rating, comment..."
+                  className="w-full pl-9 pr-8 py-2.5 bg-white/90 dark:bg-zinc-900/90 rounded-2xl border border-amber-950/10 dark:border-white/10 text-xs text-title dark:text-white placeholder:text-text/40 dark:placeholder:text-white/40 focus:outline-none focus:border-primary shadow-sm transition-all"
+                />
+                {feedbackSearch && (
+                  <button
+                    onClick={() => setFeedbackSearch('')}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white p-0.5 rounded-full cursor-pointer"
+                    title="Clear Search"
+                  >
+                    <X size={14} />
+                  </button>
+                )}
+              </div>
             </div>
 
             {feedbacks.length === 0 ? (
@@ -1519,25 +1531,27 @@ const DashboardPage = () => {
         {/* TAB 4: CONTACT INQUIRIES */}
         {adminTab === 'contacts' && (
           <div>
-            {/* Inquiries Section Search Bar */}
-            <div className="relative mb-4 w-full">
-              <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                value={contactSearch}
-                onChange={(e) => setContactSearch(e.target.value)}
-                placeholder="Search inquiries by name, email, phone, subject, message..."
-                className="w-full pl-9 pr-8 py-2.5 bg-white/90 dark:bg-zinc-900/90 rounded-2xl border border-amber-950/10 dark:border-white/10 text-xs text-title dark:text-white placeholder:text-text/40 dark:placeholder:text-white/40 focus:outline-none focus:border-primary shadow-sm transition-all"
-              />
-              {contactSearch && (
-                <button
-                  onClick={() => setContactSearch('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white p-0.5 rounded-full cursor-pointer"
-                  title="Clear Search"
-                >
-                  <X size={14} />
-                </button>
-              )}
+            {/* Inquiries Section Sticky Search Bar */}
+            <div className="sticky top-[152px] md:top-[160px] z-20 py-2 mb-4 ">
+              <div className="relative w-full">
+                <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input
+                  type="text"
+                  value={contactSearch}
+                  onChange={(e) => setContactSearch(e.target.value)}
+                  placeholder="Search inquiries by name, email, phone, subject, message..."
+                  className="w-full pl-9 pr-8 py-2.5 bg-white/90 dark:bg-zinc-900/90 rounded-2xl border border-amber-950/10 dark:border-white/10 text-xs text-title dark:text-white placeholder:text-text/40 dark:placeholder:text-white/40 focus:outline-none focus:border-primary shadow-sm transition-all"
+                />
+                {contactSearch && (
+                  <button
+                    onClick={() => setContactSearch('')}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white p-0.5 rounded-full cursor-pointer"
+                    title="Clear Search"
+                  >
+                    <X size={14} />
+                  </button>
+                )}
+              </div>
             </div>
 
             {contacts.length === 0 ? (
@@ -1585,11 +1599,10 @@ const DashboardPage = () => {
                       </span>
                       <button
                         onClick={() => handleOpenReplyModal(c)}
-                        className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer shadow-sm ${
-                          c.status === 'Replied'
-                            ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 hover:bg-emerald-100'
-                            : 'bg-primary text-white hover:bg-primary-dark'
-                        }`}
+                        className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer shadow-sm ${c.status === 'Replied'
+                          ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 hover:bg-emerald-100'
+                          : 'bg-primary text-white hover:bg-primary-dark'
+                          }`}
                         title={c.status === 'Replied' ? 'View / Send follow-up reply' : 'Reply to customer inquiry'}
                       >
                         <Reply size={12} />
@@ -1749,9 +1762,8 @@ const DashboardPage = () => {
                       </div>
                       <ChevronDown
                         size={14}
-                        className={`transition-transform duration-200 text-gray-400 ${
-                          isOfferDropdownOpen ? 'rotate-180 text-primary' : ''
-                        }`}
+                        className={`transition-transform duration-200 text-gray-400 ${isOfferDropdownOpen ? 'rotate-180 text-primary' : ''
+                          }`}
                       />
                     </button>
 
@@ -1772,11 +1784,10 @@ const DashboardPage = () => {
                                 setOfferType(cat.value);
                                 setIsOfferDropdownOpen(false);
                               }}
-                              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all text-left ${
-                                offerType === cat.value
-                                  ? 'bg-primary/10 text-primary font-bold'
-                                  : 'text-text/70 dark:text-white/80 hover:bg-gray-100 dark:hover:bg-zinc-800'
-                              }`}
+                              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all text-left ${offerType === cat.value
+                                ? 'bg-primary/10 text-primary font-bold'
+                                : 'text-text/70 dark:text-white/80 hover:bg-gray-100 dark:hover:bg-zinc-800'
+                                }`}
                             >
                               <div className="flex items-center gap-2.5">
                                 <span className={`p-1.5 rounded-lg ${offerType === cat.value ? 'bg-primary/20' : 'bg-gray-100 dark:bg-zinc-800'}`}>
@@ -1844,25 +1855,27 @@ const DashboardPage = () => {
                 </h3>
               </div>
 
-              {/* Broadcasts Search Bar */}
-              <div className="relative w-full">
-                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                <input
-                  type="text"
-                  value={broadcastSearch}
-                  onChange={(e) => setBroadcastSearch(e.target.value)}
-                  placeholder="Search broadcasts by title, promo code, message..."
-                  className="w-full pl-8 pr-7 py-2 bg-white/90 dark:bg-zinc-900/90 rounded-xl border border-amber-950/10 dark:border-white/10 text-xs text-title dark:text-white placeholder:text-text/40 dark:placeholder:text-white/40 focus:outline-none focus:border-primary shadow-sm transition-all"
-                />
-                {broadcastSearch && (
-                  <button
-                    onClick={() => setBroadcastSearch('')}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white p-0.5 rounded-full cursor-pointer"
-                    title="Clear Search"
-                  >
-                    <X size={13} />
-                  </button>
-                )}
+              {/* Broadcasts Sticky Search Bar */}
+              <div className="sticky top-[152px] md:top-[160px] z-20 py-1.5 bg-body/95 dark:bg-zinc-950/95 backdrop-blur-md">
+                <div className="relative w-full">
+                  <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input
+                    type="text"
+                    value={broadcastSearch}
+                    onChange={(e) => setBroadcastSearch(e.target.value)}
+                    placeholder="Search broadcasts by title, promo code, message..."
+                    className="w-full pl-8 pr-7 py-2 bg-white/90 dark:bg-zinc-900/90 rounded-xl border border-amber-950/10 dark:border-white/10 text-xs text-title dark:text-white placeholder:text-text/40 dark:placeholder:text-white/40 focus:outline-none focus:border-primary shadow-sm transition-all"
+                  />
+                  {broadcastSearch && (
+                    <button
+                      onClick={() => setBroadcastSearch('')}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white p-0.5 rounded-full cursor-pointer"
+                      title="Clear Search"
+                    >
+                      <X size={13} />
+                    </button>
+                  )}
+                </div>
               </div>
 
               {broadcasts.length === 0 ? (
@@ -2080,7 +2093,7 @@ const DashboardPage = () => {
                       placeholder={`Write a structured response to ${replyModalContact.name}...`}
                       className="w-full px-4 py-3 bg-amber-950/5 dark:bg-zinc-800 rounded-2xl border border-amber-950/10 dark:border-white/10 text-xs text-text dark:text-white outline-none focus:border-primary transition-all resize-none font-sans"
                     />
-                    
+
                   </div>
                 </div>
 

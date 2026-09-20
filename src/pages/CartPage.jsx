@@ -106,7 +106,7 @@ const CartPage = () => {
     }
     const cleanPhone = (phone || '').replace(/\D/g, '');
     if (cleanPhone.length !== 10) {
-      setErrorMsg('Please provide an exact 10-digit contact mobile number for order delivery (e.g. 9876543210).');
+      setErrorMsg('Please provide an exact 10-digit contact mobile number for order delivery (e.g. 1234567890).');
       return;
     }
 
@@ -309,12 +309,12 @@ const CartPage = () => {
                       {/* Compact Dish Thumbnail */}
                       <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden shrink-0 bg-gray-100 dark:bg-zinc-800">
                         <img 
-                          src={item.image || '/assets/paneer.jpeg'} 
+                          src={item.image} 
                           alt={item.name || item.title} 
                           className="w-full h-full object-cover" 
-                          onError={(e) => {
-                            e.currentTarget.onerror = null;
-                            e.currentTarget.src = '/assets/paneer.jpeg';
+                           onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            e.currentTarget.parentElement.innerHTML = `<span class="flex items-center justify-center font-title font-bold text-xl sm:text-2xl text-primary dark:text-secondary">${item.name[0]}</span>`;
                           }}
                         />
                       </div>
