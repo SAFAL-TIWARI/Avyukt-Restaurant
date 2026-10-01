@@ -17,10 +17,10 @@ const MenuFlipBook = () => {
   const [currentPage, setCurrentPage] = useState(0);
 
   const menuImages = [
-    '/assets/menu/1.png',
-    '/assets/menu/2.png',
-    '/assets/menu/3.png',
-    '/assets/menu/4.png'
+    '/assets/menu/1.jpg',
+    '/assets/menu/2.jpg',
+    '/assets/menu/3.jpg',
+    '/assets/menu/4.jpg'
   ];
 
   const onFlip = useCallback((e) => {
