@@ -96,18 +96,18 @@ export const ToastProvider = ({ children }) => {
     <ToastContext.Provider value={{ addToast, removeToast, toast }}>
       {children}
 
-      {/* Floating Bottom-Right Toast Stack */}
-      <div className="fixed bottom-6 right-6 z-[100] flex flex-col gap-3 max-w-sm w-full pointer-events-none px-4 md:px-0">
+      {/* Floating Toast Stack: Centered above mobile bottom nav on mobile, docked bottom-right on desktop */}
+      <div className="fixed bottom-24 sm:bottom-6 left-1/2 -translate-x-1/2 sm:left-auto sm:right-6 sm:translate-x-0 z-[100] flex flex-col gap-2.5 w-[calc(100%-2rem)] max-w-sm pointer-events-none">
         <AnimatePresence mode="popLayout">
           {toasts.map((t) => (
             <motion.div
               key={t.id}
               layout
-              initial={{ opacity: 0, y: 30, scale: 0.9 }}
+              initial={{ opacity: 0, y: 20, scale: 0.92 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, x: 50, scale: 0.95 }}
+              exit={{ opacity: 0, y: 15, scale: 0.95 }}
               transition={{ duration: 0.25, ease: 'easeOut' }}
-              className={`pointer-events-auto backdrop-blur-xl border rounded-2xl p-4 shadow-2xl flex items-start gap-3 relative overflow-hidden group ${getToastBorder(
+              className={`pointer-events-auto backdrop-blur-xl border rounded-2xl p-3.5 sm:p-4 shadow-2xl flex items-start gap-3 relative overflow-hidden group ${getToastBorder(
                 t.type
               )}`}
             >

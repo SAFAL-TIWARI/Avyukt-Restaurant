@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import FlyingItemOverlay from '../components/FlyingItemOverlay';
 import { useAuth } from './AuthContext';
 import { useToast } from './ToastContext';
@@ -13,39 +13,87 @@ export const useCart = () => {
   return context;
 };
 
-export const CartProvider = ({ children }) => {
-  const { isLoggedIn } = useAuth();
-  const { toast } = useToast();
+// Helper to determine the user-specific storage key
+const getCartStorageKey = (currentUser) => {
+  if (!currentUser) return null;
+  const identifier = currentUser.uid || currentUser.id || (currentUser.email ? currentUser.email.toLowerCase().trim() : null) || (currentUser.phone ? currentUser.phone.trim() : null);
+  return identifier ? `avyukt_cart_${identifier}` : null;
+};
 
-  const [cartItems, setCartItems] = useState(() => {
-    const savedCart = localStorage.getItem('avyukt_cart');
+// Helper to safely load items from localStorage for a specific user
+const loadUserCart = (currentUser) => {
+  if (!currentUser) return [];
+  const key = getCartStorageKey(currentUser);
+  if (!key) return [];
+
+  try {
+    const savedCart = localStorage.getItem(key);
     if (savedCart) {
-      try {
-        const parsed = JSON.parse(savedCart);
-        if (Array.isArray(parsed)) {
-          return parsed.map(item => ({
-            ...item,
-            name: item.name || item.title || 'Delicious Dish',
-            title: item.title || item.name || 'Delicious Dish',
-            desc: item.desc || item.description || '',
-          }));
-        }
-      } catch (e) {
-        console.error('Failed to parse cart from localStorage', e);
+      const parsed = JSON.parse(savedCart);
+      if (Array.isArray(parsed)) {
+        return parsed.map(item => ({
+          ...item,
+          name: item.name || item.title || 'Delicious Dish',
+          title: item.title || item.name || 'Delicious Dish',
+          desc: item.desc || item.description || '',
+        }));
       }
     }
-    return [];
-  });
+  } catch (e) {
+    console.error('Failed to parse user cart from localStorage', e);
+  }
+  return [];
+};
+
+export const CartProvider = ({ children }) => {
+  const { user, isLoggedIn } = useAuth();
+  const { toast } = useToast();
+
+  const currentStorageKey = getCartStorageKey(user);
+  const activeKeyRef = useRef(currentStorageKey);
+
+  const [cartItems, setCartItems] = useState(() => loadUserCart(user));
   const [flyingItem, setFlyingItem] = useState(null);
 
-  // Save cart to localStorage on changes
+  // One-time cleanup of legacy un-scoped cart so it never leaks between accounts
   useEffect(() => {
-    localStorage.setItem('avyukt_cart', JSON.stringify(cartItems));
-  }, [cartItems]);
+    try {
+      if (localStorage.getItem('avyukt_cart')) {
+        localStorage.removeItem('avyukt_cart');
+      }
+    } catch {}
+  }, []);
+
+  // When user changes (login, logout, or account switch)
+  useEffect(() => {
+    const newKey = getCartStorageKey(user);
+
+    if (activeKeyRef.current !== newKey) {
+      activeKeyRef.current = newKey;
+      if (newKey && isLoggedIn) {
+        // Load the new user's isolated cart
+        setCartItems(loadUserCart(user));
+      } else {
+        // User logged out: clear cart immediately from state
+        setCartItems([]);
+      }
+    }
+  }, [user, isLoggedIn]);
+
+  // Save cart to the currently authenticated user's isolated storage key
+  useEffect(() => {
+    if (currentStorageKey && isLoggedIn && user && activeKeyRef.current === currentStorageKey) {
+      try {
+        localStorage.setItem(currentStorageKey, JSON.stringify(cartItems));
+      } catch (e) {
+        console.error('Failed to save cart to localStorage', e);
+      }
+    }
+  }, [cartItems, currentStorageKey, isLoggedIn, user]);
 
   const addToCart = (item, sourceRect) => {
     // REQUIRE USER TO BE LOGGED IN BEFORE ADDING ITEMS
-    if (!isLoggedIn) {
+    if (!isLoggedIn || !user) {
       toast.warning('Please sign in or create an account to add items to your cart.', 'Sign In Required');
       return false;
     }
@@ -99,10 +147,27 @@ export const CartProvider = ({ children }) => {
 
   const clearCart = () => {
     setCartItems([]);
+    if (currentStorageKey) {
+      try {
+        localStorage.removeItem(currentStorageKey);
+      } catch {}
+    }
   };
 
   const triggerFlyAnimation = (item, sourceRect) => {
-    const targetElement = document.getElementById('profile-trigger') || document.getElementById('profile-trigger-mobile');
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 1024;
+
+    let targetElement = null;
+    if (isMobile) {
+      targetElement = document.getElementById('mobile-cart-target') || 
+                      document.getElementById('mobile-cart-slot-target');
+    }
+
+    if (!targetElement) {
+      targetElement = document.getElementById('profile-trigger') || 
+                      document.getElementById('profile-trigger-mobile');
+    }
+
     if (!targetElement) return;
 
     const targetRect = targetElement.getBoundingClientRect();

@@ -1,8 +1,7 @@
 // Centralized menu data for search and display across the website
+import fallbackMenu from '../../fullmenu.json';
 
-export const menuCategories = [
- 
-];
+export const menuCategories = fallbackMenu?.categories || [];
 
 // Helper to get all items including dynamic dishes from local storage and firestore
 export const getAllMenuItems = () => {
@@ -60,14 +59,14 @@ export const getAllMenuItems = () => {
 
 export const allMenuItems = getAllMenuItems();
 
-// Search function: matches against name, desc, and category with no artificial limit
+// Search function: matches against name, desc, category, and portion prices
 export const searchMenuItems = (query) => {
   if (!query || query.trim().length < 1) return [];
   const lowerQuery = query.toLowerCase().trim();
   const items = getAllMenuItems();
 
   return items.filter(item => {
-    const searchableText = `${item.name || item.title || ''} ${item.desc || ''} ${item.category || ''}`.toLowerCase();
+    const searchableText = `${item.name || item.title || ''} ${item.desc || ''} ${item.category || ''} ${item.price || ''} ${item.priceHalf || ''} ${item.priceFull || ''}`.toLowerCase();
     const words = lowerQuery.split(/\s+/);
     return words.every(word => searchableText.includes(word));
   });

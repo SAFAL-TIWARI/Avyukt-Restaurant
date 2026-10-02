@@ -578,6 +578,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     localStorage.removeItem('avyukt_user');
     localStorage.removeItem('avyukt_token');
+    localStorage.removeItem('avyukt_cart');
   };
 
   const adminEmailConfig = (import.meta.env.VITE_ADMIN_EMAIL || '').toLowerCase();

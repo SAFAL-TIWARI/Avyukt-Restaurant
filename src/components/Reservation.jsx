@@ -291,13 +291,6 @@ const Reservation = () => {
                         onChange={handlePhoneChange}
                         className="w-full bg-white/5 border border-white/10 rounded-xl p-3.5 outline-none ring-2 ring-transparent focus:ring-primary transition-all text-white placeholder:text-gray-500 text-xs"
                       />
-                      {formData.phone && (
-                        <span className={`absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono font-bold px-1.5 py-0.5 rounded ${
-                          formData.phone.length === 10 ? 'bg-emerald-500/20 text-emerald-400' : 'text-gray-400'
-                        }`}>
-                          {formData.phone.length}/10
-                        </span>
-                      )}
                     </div>
                   </div>
                 </div>

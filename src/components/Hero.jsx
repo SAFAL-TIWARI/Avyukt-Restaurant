@@ -279,16 +279,20 @@ const Hero = () => {
                             </p>
                           </div>
                           <span className="text-sm font-bold text-secondary whitespace-nowrap mr-2">
-                            {item.price}
+                            {item.hasHalfFull ? `${item.priceHalf} / ${item.priceFull}` : item.price}
                           </span>
                           <div onClick={(e) => e.stopPropagation()} className="shrink-0">
                             <AddToCartButton 
                               item={{ 
+                                ...item,
                                 id: item.id, 
                                 name: item.name || item.title, 
                                 title: item.name || item.title, 
                                 desc: item.desc || item.description || '', 
                                 price: item.price, 
+                                hasHalfFull: item.hasHalfFull,
+                                priceHalf: item.priceHalf,
+                                priceFull: item.priceFull,
                                 image: item.image || '/assets/paneer.jpeg' 
                               }} 
                               size="small" 

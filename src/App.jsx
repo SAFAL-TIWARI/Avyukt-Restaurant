@@ -7,6 +7,7 @@ import { CartProvider } from './context/CartContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import MobileBottomNav from './components/MobileBottomNav';
 import ScrollToTop from './components/ScrollToTop';
 
 // Eagerly loaded critical landing page
@@ -65,7 +66,7 @@ function App() {
             <div className="min-h-screen bg-body dark:bg-zinc-950 transition-colors duration-300">
               <ScrollToTop />
               <Header />
-              <main>
+              <main className="pb-20 lg:pb-0">
                 <Suspense fallback={<PageSkeleton />}>
                   <AnimatePresence mode="wait">
                     <Routes location={location} key={location.pathname}>
@@ -146,6 +147,7 @@ function App() {
                 </Suspense>
               </main>
               <Footer />
+              <MobileBottomNav />
             </div>
           </CartProvider>
         </AuthProvider>

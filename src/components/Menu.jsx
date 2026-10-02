@@ -68,7 +68,8 @@ const Menu = () => {
     localStorage.setItem('avyukt_featured_menu', JSON.stringify(items));
     if (db) {
       try {
-        await setDoc(doc(db, 'settings', 'featuredMenu'), { items, updatedAt: new Date().toISOString() }, { merge: true });
+        const cleanItems = JSON.parse(JSON.stringify(items));
+        await setDoc(doc(db, 'settings', 'featuredMenu'), { items: cleanItems, updatedAt: new Date().toISOString() }, { merge: true });
       } catch (e) {
         console.warn('Could not save to firestore:', e);
       }
@@ -391,7 +392,7 @@ const Menu = () => {
 
                 {/* Price */}
                 <span className="text-secondary font-bold text-[11px] sm:text-xs mb-2 sm:mb-3">
-                  {item.price}
+                  {item.hasHalfFull ? `${item.priceHalf} / ${item.priceFull}` : item.price}
                 </span>
 
                 {/* Add To Cart Button with + or - */}
@@ -460,7 +461,7 @@ const Menu = () => {
                     }}
                   />
                   <div className="absolute top-3 right-3 bg-primary/90 text-white px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-xs sm:text-sm font-bold shadow-lg">
-                    {item.price}
+                    {item.hasHalfFull ? `H: ${item.priceHalf} | F: ${item.priceFull}` : item.price}
                   </div>
                 </div>
 

@@ -3,12 +3,21 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Clock, Users, Flame, UtensilsCrossed, ChevronRight, Search, 
   Plus, Trash2, Edit3, Save, Undo2, X, Check, ChefHat, Sparkles,
-  List, LayoutGrid
+  List, LayoutGrid, Video
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { db, doc, getDoc, setDoc } from '../firebase/config';
 import { useDebounce } from '../hooks/useDebounce';
+
+// Helper to extract clean YouTube embed URL with player controls enabled
+const getYouTubeEmbedUrl = (url) => {
+  if (!url || typeof url !== 'string') return null;
+  const trimmed = url.trim();
+  const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+  const match = trimmed.match(regExp);
+  return match && match[1] ? `https://www.youtube.com/embed/${match[1]}?autoplay=0&controls=1&rel=0` : null;
+};
 
 const INITIAL_RECIPES = [
  
@@ -49,6 +58,7 @@ const RecipesPage = () => {
   const [formServes, setFormServes] = useState('');
   const [formDifficulty, setFormDifficulty] = useState('Medium');
   const [formImage, setFormImage] = useState('');
+  const [formVideo, setFormVideo] = useState('');
   const [formDesc, setFormDesc] = useState('');
   const [formIngredients, setFormIngredients] = useState('');
 
@@ -115,10 +125,23 @@ const RecipesPage = () => {
   const handleSaveAll = async () => {
     setSaving(true);
     try {
-      localStorage.setItem('avyukt_recipes', JSON.stringify(recipeList));
+      const cleanList = recipeList.map(r => ({
+        id: r.id || `rec_${Date.now()}`,
+        title: r.title || '',
+        chef: r.chef || '',
+        category: r.category || 'Main Course',
+        time: r.time || '45 min',
+        serves: r.serves || '2-4',
+        difficulty: r.difficulty || 'Medium',
+        image: r.image || '',
+        video: r.video || '',
+        description: r.description || '',
+        ingredients: Array.isArray(r.ingredients) ? r.ingredients : [],
+      }));
+      localStorage.setItem('avyukt_recipes', JSON.stringify(cleanList));
       if (db) {
         await setDoc(doc(db, 'settings', 'recipes'), {
-          list: recipeList,
+          list: cleanList,
           updatedAt: new Date().toISOString(),
         });
       }
@@ -150,6 +173,7 @@ const RecipesPage = () => {
     setFormServes('4');
     setFormDifficulty('Medium');
     setFormImage('/assets/recipes/paneer.jpeg');
+    setFormVideo('');
     setFormDesc('');
     setFormIngredients('Paneer\nFresh Cream\nTomatoes\nSpices');
     setRecipeModalOpen(true);
@@ -165,6 +189,7 @@ const RecipesPage = () => {
     setFormServes(rec.serves || '');
     setFormDifficulty(rec.difficulty || 'Medium');
     setFormImage(rec.image || '');
+    setFormVideo(rec.video || '');
     setFormDesc(rec.description || '');
     setFormIngredients(Array.isArray(rec.ingredients) ? rec.ingredients.join('\n') : (rec.ingredients || ''));
     setRecipeModalOpen(true);
@@ -192,6 +217,7 @@ const RecipesPage = () => {
       serves: formServes.trim() || '2-4',
       difficulty: formDifficulty,
       image: formImage.trim() || '/assets/recipes/biryani.jpeg',
+      video: formVideo.trim() || '',
       description: formDesc.trim() || 'A signature delicacy from Avyukt kitchen.',
       ingredients: ingArray.length > 0 ? ingArray : ['Fresh herbs', 'House spices', 'Secret marinade'],
     };
@@ -227,7 +253,7 @@ const RecipesPage = () => {
       className="pt-24 lg:pt-32 pb-20 bg-body dark:bg-zinc-950 min-h-screen transition-colors duration-300"
     >
       {/* Hero Section */}
-      <section className="container mb-12 px-4">
+      <section className="max-w-6xl mx-auto mb-12 px-4 sm:px-6 lg:px-8">
         <div className="text-center space-y-4 mb-8">
           <motion.span 
             initial={{ opacity: 0, y: 20 }}
@@ -257,7 +283,7 @@ const RecipesPage = () => {
       </section>
 
       {/* Control Bar: View Changer (Grid / List), Search & Admin Controls */}
-      <div className="sticky top-[88px] sm:top-[96px] z-30 mb-8 container px-4">
+      <div className="sticky top-[88px] sm:top-[96px] z-30 mb-8 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md rounded-3xl p-2 sm:p-3 border border-amber-950/10 dark:border-white/10 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-3">
           
           {/* Left: View Changer */}
@@ -357,7 +383,7 @@ const RecipesPage = () => {
       </div>
 
       {/* Recipes Showcase */}
-      <section className="container px-4">
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {filteredRecipes.length === 0 ? (
           /* Empty State */
           <div className="text-center py-16 bg-white/60 dark:bg-zinc-900/60 rounded-3xl border border-dashed border-amber-950/20 dark:border-white/10">
@@ -391,20 +417,50 @@ const RecipesPage = () => {
                   transition={{ duration: 0.3, delay: index * 0.04 }}
                   className="group relative bg-white dark:bg-zinc-900 rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden shadow-xl border border-amber-950/10 dark:border-white/10 flex flex-col h-full hover:shadow-2xl transition-all"
                 >
-                  {/* Image Container */}
-                  <div className="relative h-52 sm:h-64 overflow-hidden">
-                    <img 
-                      src={recipe.image} 
-                      alt={recipe.title}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                      onError={(e) => {
-                        e.currentTarget.onerror = null;
-                        e.currentTarget.src = '/assets/recipes/biryani.jpeg';
-                      }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
+                  {/* Media Container */}
+                  <div className="relative h-52 sm:h-64 overflow-hidden bg-black/90">
+                    {recipe.video ? (
+                      (() => {
+                        const ytUrl = getYouTubeEmbedUrl(recipe.video);
+                        if (ytUrl) {
+                          return (
+                            <iframe
+                              src={ytUrl}
+                              title={recipe.title}
+                              className="w-full h-full border-0"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; muted; picture-in-picture"
+                              allowFullScreen
+                            />
+                          );
+                        }
+                        return (
+                          <video
+                            src={recipe.video}
+                            controls
+                            playsInline
+                            preload="metadata"
+                            poster={recipe.image}
+                            className="w-full h-full object-cover"
+                          />
+                        );
+                      })()
+                    ) : (
+                      <img 
+                        src={recipe.image} 
+                        alt={recipe.title}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = '/assets/recipes/biryani.jpeg';
+                        }}
+                      />
+                    )}
+
+                    {!recipe.video && (
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 pointer-events-none" />
+                    )}
                     
-                    <div className="absolute top-4 left-4 sm:top-5 sm:left-5">
+                    <div className="absolute top-4 left-4 sm:top-5 sm:left-5 pointer-events-none z-10">
                       <span className="px-3 py-1 sm:px-3.5 sm:py-1.5 bg-primary/90 text-white text-[10px] sm:text-xs font-bold rounded-full backdrop-blur-md uppercase tracking-wider shadow-md">
                         {recipe.category}
                       </span>
@@ -412,7 +468,7 @@ const RecipesPage = () => {
 
                     {/* Admin Floating Controls */}
                     {isEditing && (
-                      <div className="absolute top-4 right-4 sm:top-5 sm:right-5 flex items-center gap-2 bg-black/60 backdrop-blur-md p-1.5 rounded-2xl border border-white/20">
+                      <div className="absolute top-4 right-4 sm:top-5 sm:right-5 flex items-center gap-2 bg-black/60 backdrop-blur-md p-1.5 rounded-2xl border border-white/20 z-20">
                         <button
                           onClick={() => handleOpenEditModal(recipe)}
                           title="Edit Recipe"
@@ -817,6 +873,23 @@ const RecipesPage = () => {
                     onChange={(e) => setFormImage(e.target.value)}
                     className="w-full px-4 py-3 bg-gray-50 dark:bg-zinc-800 rounded-xl border border-transparent focus:border-primary outline-none text-xs dark:text-white font-medium"
                   />
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold uppercase text-gray-500 dark:text-gray-400 block mb-1 flex items-center gap-1.5">
+                    <Video size={13} className="text-primary" />
+                    <span>Video URL</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="YouTube URL or direct video (.mp4) link (Optional)"
+                    value={formVideo}
+                    onChange={(e) => setFormVideo(e.target.value)}
+                    className="w-full px-4 py-3 bg-gray-50 dark:bg-zinc-800 rounded-xl border border-transparent focus:border-primary outline-none text-xs dark:text-white font-medium"
+                  />
+                  <p className="text-[11px] text-text/50 dark:text-white/40 mt-1">
+                    Displays with full video controls in Grid View only (switches back to image in List View).
+                  </p>
                 </div>
 
                 <div>

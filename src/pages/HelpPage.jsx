@@ -56,7 +56,7 @@ const HelpPage = () => {
 
   return (
     <div className="min-h-screen pt-32 pb-20 px-4 bg-body dark:bg-zinc-950 transition-colors duration-300">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         {/* Hero Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

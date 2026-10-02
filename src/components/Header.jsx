@@ -73,47 +73,53 @@ const Header = () => {
 
   const textColorClass = getTextColorClass();
 
-  const ProfileDropdown = ({ isMobile = false }) => (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95, y: -10 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.95, y: -10 }}
-      className={`absolute right-0 mt-2 w-64 bg-[#FFFDD0] dark:bg-zinc-900 rounded-2xl shadow-2xl border border-amber-950/20 dark:border-white/10 overflow-hidden z-[60] ${
-        isMobile ? 'top-full mr-2' : ''
-      }`}
-    >
-      {/* User Info - Only show if logged in */}
-      {isLoggedIn && user && (
-        <div className="p-4 border-b border-black/5 dark:border-white/10 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary overflow-hidden border border-primary/20">
-            <img 
-              src={user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || user.email || 'User')}&background=800000&color=ffffff&bold=true&size=80&rounded=true`} 
-              alt={user.name || 'User'} 
-              className="w-full h-full object-cover"
-              referrerPolicy="no-referrer"
-              onError={(e) => {
-                e.currentTarget.onerror = null;
-                e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'User')}&background=800000&color=ffffff&bold=true&size=80&rounded=true`;
-              }}
-            />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <p className="font-bold text-title dark:text-white leading-none">{user.name}</p>
-              {isAdmin && (
-                <span className="px-1.5 py-0.5 text-[9px] font-extrabold uppercase bg-amber-500/20 text-amber-500 border border-amber-500/40 rounded-md">
-                  ADMIN
-                </span>
-              )}
+  const ProfileDropdown = ({ isMobile = false }) => {
+    // Exclude profile, orders, cart, notifications on mobile since they reside in mobile bottom nav
+    const displayedItems = isMobile
+      ? profileMenuItems.filter(item => !['Profile', 'Orders', 'Cart', 'Notifications'].includes(item.name))
+      : profileMenuItems;
+
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: -10 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: -10 }}
+        className={`absolute right-0 mt-2 w-56 bg-[#FFFDD0] dark:bg-zinc-900 rounded-2xl shadow-2xl border border-amber-950/20 dark:border-white/10 overflow-hidden z-[60] ${
+          isMobile ? 'top-full mr-2' : ''
+        }`}
+      >
+        {/* User Info - Only show if logged in */}
+        {isLoggedIn && user && (
+          <div className="p-4 border-b border-black/5 dark:border-white/10 flex items-center gap-3">
+            <div className="w-15 h-15 rounded-full bg-primary/20 flex items-center justify-center text-primary overflow-hidden border border-primary/20">
+              <img 
+                src={user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || user.email || 'User')}&background=800000&color=ffffff&bold=true&size=80&rounded=true`} 
+                alt={user.name || 'User'} 
+                className="w-full h-full object-cover"
+                referrerPolicy="no-referrer"
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'User')}&background=800000&color=ffffff&bold=true&size=80&rounded=true`;
+                }}
+              />
             </div>
-            <p className="text-xs text-text/60 dark:text-white/60 mt-1">{user.email}</p>
+            <div>
+              <div className="flex items-center gap-2">
+                <p className="font-bold text-title dark:text-white leading-none">{user.name}</p>
+                {isAdmin && (
+                  <span className="px-1.5 py-0.5 text-[9px] font-extrabold uppercase bg-amber-500/20 text-amber-500 border border-amber-500/40 rounded-md">
+                    ADMIN
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-text/60 dark:text-white/60 mt-1">{user.email}</p>
+            </div>
           </div>
-        </div>
-      )}
-      
-      <div className="py-2">
-        {profileMenuItems.map((item) => {
-          const isCart = item.name === 'Cart';
+        )}
+        
+        <div className="py-2">
+          {displayedItems.map((item) => {
+            const isCart = item.name === 'Cart';
           return (
             <Link
               key={item.name}
@@ -183,6 +189,7 @@ const Header = () => {
       </div>
     </motion.div>
   );
+};
 
   return (
     <header 
@@ -287,12 +294,7 @@ const Header = () => {
 
         {/* Mobile Navigation Header Items */}
         <div className="flex lg:hidden items-center gap-3">
-          <button 
-            onClick={() => setIsOpen(!isOpen)}
-            className={`transition-colors ${textColorClass}`}
-          >
-            {isOpen ? <X size={28} /> : <Menu size={28} />}
-          </button>
+       
 
           {/* Profile Menu Mobile */}
           <div className="relative" ref={profileRef}>
@@ -320,15 +322,6 @@ const Header = () => {
                   <User size={22} />
                 </div>
               )}
-              {totalItems > 0 && (
-                <motion.span 
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  className="absolute top-0 right-0 bg-primary text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md"
-                >
-                  {totalItems}
-                </motion.span>
-              )}
             </button>
             <AnimatePresence>
               {isProfileOpen && <ProfileDropdown isMobile={true} />}
@@ -343,7 +336,14 @@ const Header = () => {
           >
             {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
           </button>
+             <button 
+            onClick={() => setIsOpen(!isOpen)}
+            className={`transition-colors ${textColorClass}`}
+          >
+            {isOpen ? <X size={28} /> : <Menu size={28} />}
+          </button>
         </div>
+        
       </nav>
 
       {/* Mobile Nav Links Overlay */}

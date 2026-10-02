@@ -18,8 +18,8 @@ const MenuFlipBook = () => {
 
   const menuImages = [
     '/assets/menu/1.jpg',
-    '/assets/menu/2.jpg',
-    '/assets/menu/3.jpg',
+    '/assets/menu/2.jpeg',
+    '/assets/menu/3.jpeg',
     '/assets/menu/4.jpg'
   ];
 

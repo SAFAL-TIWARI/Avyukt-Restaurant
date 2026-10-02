@@ -4,7 +4,7 @@ import { Check } from 'lucide-react';
 const About = () => {
   return (
     <section id="about" className="section bg-transparent">
-      <div className="container grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+      <div className="container grid lg:grid-cols-2 gap-12 lg:gap-20 items-center ">
         <div className="relative">
           <div className="rounded-3xl overflow-hidden border-8 border-secondary/20 shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-500 bg-zinc-900/50 backdrop-blur-sm">
             <img src="/assets/images/interior.jpeg" alt="Interior" className="w-full h-full object-cover" />

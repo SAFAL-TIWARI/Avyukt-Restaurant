@@ -16,7 +16,7 @@ const GalleryPage = () => {
       exit={{ opacity: 0 }}
       className="pt-24 lg:pt-32 pb-20 dark:bg-zinc-950 min-h-screen"
     >
-      <div className="container">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <span className="section-subtitle">Visual Showcase</span>
           <h2 className="section-title dark:text-white">Full Gallery</h2>

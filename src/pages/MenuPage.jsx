@@ -31,7 +31,30 @@ const MenuPage = () => {
         } else {
           price = `₹${num}`;
         }
-        return { ...item, price };
+        let priceHalf = item.priceHalf || item.halfPrice;
+        let priceFull = item.priceFull || item.fullPrice;
+        let hasHalfFull = Boolean(item.hasHalfFull || (priceHalf && priceFull));
+        if (hasHalfFull) {
+          const hNum = parseInt(String(priceHalf).replace(/[^\d]/g, ''), 10);
+          const fNum = parseInt(String(priceFull).replace(/[^\d]/g, ''), 10);
+          priceHalf = isNaN(hNum) ? price : `₹${hNum}`;
+          priceFull = isNaN(fNum) ? price : `₹${fNum}`;
+        }
+        const cleaned = { 
+          ...item, 
+          price, 
+          hasHalfFull: !!hasHalfFull, 
+        };
+        if (hasHalfFull) {
+          cleaned.priceHalf = priceHalf;
+          cleaned.priceFull = priceFull;
+        } else {
+          delete cleaned.priceHalf;
+          delete cleaned.priceFull;
+          delete cleaned.halfPrice;
+          delete cleaned.fullPrice;
+        }
+        return cleaned;
       })
     }));
   };
@@ -86,6 +109,9 @@ const MenuPage = () => {
   const [targetCategoryIndex, setTargetCategoryIndex] = useState(0);
   const [itemName, setItemName] = useState('');
   const [itemPrice, setItemPrice] = useState('');
+  const [itemHasHalfFull, setItemHasHalfFull] = useState(false);
+  const [itemPriceHalf, setItemPriceHalf] = useState('');
+  const [itemPriceFull, setItemPriceFull] = useState('');
   const [itemDesc, setItemDesc] = useState('');
   const [itemImage, setItemImage] = useState('');
   const [addItemPosition, setAddItemPosition] = useState('end'); // 'start' (top) or 'end' (bottom)
@@ -96,6 +122,9 @@ const MenuPage = () => {
   const [editingItemIdx, setEditingItemIdx] = useState(null);
   const [editItemName, setEditItemName] = useState('');
   const [editItemPrice, setEditItemPrice] = useState('');
+  const [editItemHasHalfFull, setEditItemHasHalfFull] = useState(false);
+  const [editItemPriceHalf, setEditItemPriceHalf] = useState('');
+  const [editItemPriceFull, setEditItemPriceFull] = useState('');
   const [editItemDesc, setEditItemDesc] = useState('');
   const [editItemImage, setEditItemImage] = useState('');
   const [editItemPosition, setEditItemPosition] = useState(1);
@@ -158,10 +187,15 @@ const MenuPage = () => {
     const listToSave = customList || categories;
     setSaving(true);
     try {
-      localStorage.setItem('avyukt_full_menu', JSON.stringify(listToSave));
+      const sanitized = sanitizeCategories(listToSave);
+      // Clean clone: JSON.stringify removes any remaining undefined values for Firestore
+      const cleanList = JSON.parse(JSON.stringify(sanitized));
+
+      setCategories(cleanList);
+      localStorage.setItem('avyukt_full_menu', JSON.stringify(cleanList));
       if (db) {
         await setDoc(doc(db, 'settings', 'fullMenu'), {
-          categories: listToSave,
+          categories: cleanList,
           updatedAt: new Date().toISOString(),
         }, { merge: true });
       }
@@ -188,6 +222,9 @@ const MenuPage = () => {
     setTargetCategoryIndex(catIdx);
     setItemName('');
     setItemPrice('');
+    setItemHasHalfFull(false);
+    setItemPriceHalf('');
+    setItemPriceFull('');
     setItemDesc('');
     setItemImage('');
     setAddItemPosition('end');
@@ -197,16 +234,34 @@ const MenuPage = () => {
   // Submit Add Item (updates in real time with numeric price only)
   const handleAddItemSubmit = (e) => {
     e.preventDefault();
-    const cleanNum = parseInt(String(itemPrice).replace(/[^0-9]/g, ''), 10);
-    if (!itemName.trim() || isNaN(cleanNum) || cleanNum <= 0) {
-      addToast({ title: 'Invalid Price', message: 'Please enter a valid numeric price (e.g. 150).', type: 'warning' });
-      return;
+    let formattedPrice = '';
+    let formattedHalf = '';
+    let formattedFull = '';
+
+    if (itemHasHalfFull) {
+      const hNum = parseInt(String(itemPriceHalf).replace(/[^0-9]/g, ''), 10);
+      const fNum = parseInt(String(itemPriceFull).replace(/[^0-9]/g, ''), 10);
+      if (isNaN(hNum) || hNum <= 0 || isNaN(fNum) || fNum <= 0) {
+        addToast({ title: 'Invalid Prices', message: 'Please enter valid numeric prices for both Half and Full portions.', type: 'warning' });
+        return;
+      }
+      formattedHalf = `₹${hNum}`;
+      formattedFull = `₹${fNum}`;
+      formattedPrice = formattedFull;
+    } else {
+      const cleanNum = parseInt(String(itemPrice).replace(/[^0-9]/g, ''), 10);
+      if (!itemName.trim() || isNaN(cleanNum) || cleanNum <= 0) {
+        addToast({ title: 'Invalid Price', message: 'Please enter a valid numeric price (e.g. 150).', type: 'warning' });
+        return;
+      }
+      formattedPrice = `₹${cleanNum}`;
     }
 
-    const formattedPrice = `₹${cleanNum}`;
     const newItem = {
       name: itemName.trim(),
       price: formattedPrice,
+      hasHalfFull: !!itemHasHalfFull,
+      ...(itemHasHalfFull ? { priceHalf: formattedHalf, priceFull: formattedFull } : {}),
       desc: itemDesc.trim() || 'Prepared fresh with royal spices and culinary mastery.',
       image: itemImage.trim() || '',
     };
@@ -242,6 +297,10 @@ const MenuPage = () => {
     setEditItemName(item.name || '');
     const num = String(item.price || '').replace(/[^0-9]/g, '');
     setEditItemPrice(num);
+    const hasHalf = Boolean(item.hasHalfFull || (item.priceHalf && item.priceFull));
+    setEditItemHasHalfFull(hasHalf);
+    setEditItemPriceHalf(String(item.priceHalf || '').replace(/[^0-9]/g, ''));
+    setEditItemPriceFull(String(item.priceFull || item.price || '').replace(/[^0-9]/g, ''));
     setEditItemDesc(item.desc || '');
     setEditItemImage(item.image || '');
     setEditItemPosition(itemIdx + 1);
@@ -251,13 +310,29 @@ const MenuPage = () => {
   // Submit Edit Item
   const handleEditItemSubmit = (e) => {
     e.preventDefault();
-    const cleanNum = parseInt(String(editItemPrice).replace(/[^0-9]/g, ''), 10);
-    if (!editItemName.trim() || isNaN(cleanNum) || cleanNum <= 0) {
-      addToast({ title: 'Invalid Price', message: 'Please enter a valid numeric price (e.g. 150).', type: 'warning' });
-      return;
+    let formattedPrice = '';
+    let formattedHalf = '';
+    let formattedFull = '';
+
+    if (editItemHasHalfFull) {
+      const hNum = parseInt(String(editItemPriceHalf).replace(/[^0-9]/g, ''), 10);
+      const fNum = parseInt(String(editItemPriceFull).replace(/[^0-9]/g, ''), 10);
+      if (isNaN(hNum) || hNum <= 0 || isNaN(fNum) || fNum <= 0) {
+        addToast({ title: 'Invalid Prices', message: 'Please enter valid numeric prices for both Half and Full portions.', type: 'warning' });
+        return;
+      }
+      formattedHalf = `₹${hNum}`;
+      formattedFull = `₹${fNum}`;
+      formattedPrice = formattedFull;
+    } else {
+      const cleanNum = parseInt(String(editItemPrice).replace(/[^0-9]/g, ''), 10);
+      if (!editItemName.trim() || isNaN(cleanNum) || cleanNum <= 0) {
+        addToast({ title: 'Invalid Price', message: 'Please enter a valid numeric price (e.g. 150).', type: 'warning' });
+        return;
+      }
+      formattedPrice = `₹${cleanNum}`;
     }
 
-    const formattedPrice = `₹${cleanNum}`;
     const updated = categories.map((cat, cIdx) => {
       if (cIdx === editingCatIdx) {
         const newItems = [...cat.items];
@@ -267,9 +342,17 @@ const MenuPage = () => {
           ...oldItem,
           name: editItemName.trim(),
           price: formattedPrice,
+          hasHalfFull: !!editItemHasHalfFull,
+          ...(editItemHasHalfFull ? { priceHalf: formattedHalf, priceFull: formattedFull } : {}),
           desc: editItemDesc.trim() || 'Prepared fresh with royal spices and culinary mastery.',
           image: editItemImage.trim() || '',
         };
+        if (!editItemHasHalfFull) {
+          delete updatedItem.priceHalf;
+          delete updatedItem.priceFull;
+          delete updatedItem.halfPrice;
+          delete updatedItem.fullPrice;
+        }
         // Insert into requested position
         const targetIdx = Math.max(0, Math.min(newItems.length, (Number(editItemPosition) || 1) - 1));
         newItems.splice(targetIdx, 0, updatedItem);
@@ -428,7 +511,7 @@ const MenuPage = () => {
       </section>
 
       {/* Control Bar: View Changer (Grid / List) & Admin Controls */}
-      <div className="sticky top-[88px] sm:top-[96px] z-30 mb-8 container px-4">
+      <div className="sticky top-[88px] sm:top-[96px] z-30 mb-8 max-w-6xl mx-auto px-4">
         <div className="bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md rounded-2xl p-3 sm:p-4 border border-amber-950/10 dark:border-white/10 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-3">
           
           {/* Left: View Changer */}
@@ -531,7 +614,7 @@ const MenuPage = () => {
       </div>
 
       {/* CATEGORIES SECTIONS */}
-      <div className="container space-y-20">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20">
         {filteredCategories.length === 0 ? (
           <div className="text-center py-16 bg-white/60 dark:bg-zinc-900/60 rounded-3xl border border-dashed border-amber-950/20 dark:border-white/10">
             <Search size={36} className="text-primary mx-auto mb-3" />
@@ -728,7 +811,7 @@ const MenuPage = () => {
 
                     {/* Price */}
                     <span className="text-primary dark:text-secondary font-bold text-[11px] sm:text-xs mb-2 sm:mb-3">
-                      {item.price}
+                      {item.hasHalfFull ? `${item.priceHalf} / ${item.priceFull}` : item.price}
                     </span>
 
                     {/* Add To Cart Button with + or - option */}
@@ -740,6 +823,9 @@ const MenuPage = () => {
                           title: item.name,
                           desc: item.desc || '',
                           price: item.price,
+                          hasHalfFull: item.hasHalfFull,
+                          priceHalf: item.priceHalf,
+                          priceFull: item.priceFull,
                           image: item.image || '/assets/paneer.jpeg',
                         }}
                         size="small"
@@ -818,7 +904,7 @@ const MenuPage = () => {
                           {item.name}
                         </h3>
                         <span className="text-primary dark:text-secondary font-bold whitespace-nowrap text-xs sm:text-base">
-                          {item.price}
+                          {item.hasHalfFull ? `Half: ${item.priceHalf} • Full: ${item.priceFull}` : item.price}
                         </span>
                       </div>
 
@@ -828,7 +914,7 @@ const MenuPage = () => {
                         </p>
                       )}
 
-                      <div className="w-fit">
+                      <div className="w-fit min-w-[120px] sm:min-w-[150px]">
                         <AddToCartButton
                           item={{
                             id: item.id || `${actualCatIdx}-${actualItemIdx}-${item.name}`,
@@ -836,6 +922,9 @@ const MenuPage = () => {
                             title: item.name,
                             desc: item.desc || '',
                             price: item.price,
+                            hasHalfFull: item.hasHalfFull,
+                            priceHalf: item.priceHalf,
+                            priceFull: item.priceFull,
                             image: item.image || '/assets/placeholder-food.png',
                           }}
                           size="small"
@@ -892,28 +981,76 @@ const MenuPage = () => {
                   />
                 </div>
 
+                {/* Portions option: Single Price vs Half & Full */}
                 <div>
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-1">
-                    Price (₹) *
-                  </label>
-                  <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-primary font-bold text-sm">₹</span>
-                    <input
-                      type="text"
-                      inputMode="numeric"
-                      required
-                      placeholder="e.g. 150"
-                      value={itemPrice}
-                      onChange={(e) => {
-                        const digits = e.target.value.replace(/[^0-9]/g, '');
-                        setItemPrice(digits);
-                      }}
-                      onKeyDown={(e) => {
-                        if (['e', 'E', '+', '-', '.'].includes(e.key)) e.preventDefault();
-                      }}
-                      className="w-full pl-8 pr-4 py-3 bg-gray-50 dark:bg-zinc-800 rounded-xl text-xs dark:text-white border border-transparent focus:border-primary outline-none font-bold"
-                    />
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                      Price Details *
+                    </label>
+                    <label className="flex items-center gap-1.5 cursor-pointer text-xs font-bold text-secondary">
+                      <input
+                        type="checkbox"
+                        checked={itemHasHalfFull}
+                        onChange={(e) => setItemHasHalfFull(e.target.checked)}
+                        className="rounded border-gray-300 text-secondary focus:ring-secondary accent-secondary w-4 h-4 cursor-pointer"
+                      />
+                      Has Half & Full
+                    </label>
                   </div>
+
+                  {!itemHasHalfFull ? (
+                    <div className="relative">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-primary font-bold text-sm">₹</span>
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        required={!itemHasHalfFull}
+                        placeholder="e.g. 150"
+                        value={itemPrice}
+                        onChange={(e) => {
+                          const digits = e.target.value.replace(/[^0-9]/g, '');
+                          setItemPrice(digits);
+                        }}
+                        onKeyDown={(e) => {
+                          if (['e', 'E', '+', '-', '.'].includes(e.key)) e.preventDefault();
+                        }}
+                        className="w-full pl-8 pr-4 py-3 bg-gray-50 dark:bg-zinc-800 rounded-xl text-xs dark:text-white border border-transparent focus:border-primary outline-none font-bold"
+                      />
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="text-[11px] font-semibold text-gray-400 block mb-1">Half Price (₹) *</label>
+                        <div className="relative">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-primary font-bold text-xs">₹</span>
+                          <input
+                            type="text"
+                            inputMode="numeric"
+                            required={itemHasHalfFull}
+                            placeholder="e.g. 129"
+                            value={itemPriceHalf}
+                            onChange={(e) => setItemPriceHalf(e.target.value.replace(/[^0-9]/g, ''))}
+                            className="w-full pl-7 pr-3 py-2.5 bg-gray-50 dark:bg-zinc-800 rounded-xl text-xs dark:text-white border border-transparent focus:border-primary outline-none font-bold"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-[11px] font-semibold text-gray-400 block mb-1">Full Price (₹) *</label>
+                        <div className="relative">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-primary font-bold text-xs">₹</span>
+                          <input
+                            type="text"
+                            inputMode="numeric"
+                            required={itemHasHalfFull}
+                            placeholder="e.g. 179"
+                            value={itemPriceFull}
+                            onChange={(e) => setItemPriceFull(e.target.value.replace(/[^0-9]/g, ''))}
+                            className="w-full pl-7 pr-3 py-2.5 bg-gray-50 dark:bg-zinc-800 rounded-xl text-xs dark:text-white border border-transparent focus:border-primary outline-none font-bold"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div>
@@ -1125,28 +1262,76 @@ const MenuPage = () => {
                   />
                 </div>
 
+                {/* Portions option: Single Price vs Half & Full */}
                 <div>
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-1">
-                    Price (₹) *
-                  </label>
-                  <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-primary font-bold text-sm">₹</span>
-                    <input
-                      type="text"
-                      inputMode="numeric"
-                      required
-                      placeholder="e.g. 150"
-                      value={editItemPrice}
-                      onChange={(e) => {
-                        const digits = e.target.value.replace(/[^0-9]/g, '');
-                        setEditItemPrice(digits);
-                      }}
-                      onKeyDown={(e) => {
-                        if (['e', 'E', '+', '-', '.'].includes(e.key)) e.preventDefault();
-                      }}
-                      className="w-full pl-8 pr-4 py-3 bg-gray-50 dark:bg-zinc-800 rounded-xl text-xs dark:text-white border border-transparent focus:border-primary outline-none font-bold"
-                    />
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                      Price Details *
+                    </label>
+                    <label className="flex items-center gap-1.5 cursor-pointer text-xs font-bold text-secondary">
+                      <input
+                        type="checkbox"
+                        checked={editItemHasHalfFull}
+                        onChange={(e) => setEditItemHasHalfFull(e.target.checked)}
+                        className="rounded border-gray-300 text-secondary focus:ring-secondary accent-secondary w-4 h-4 cursor-pointer"
+                      />
+                      Has Half & Full
+                    </label>
                   </div>
+
+                  {!editItemHasHalfFull ? (
+                    <div className="relative">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-primary font-bold text-sm">₹</span>
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        required={!editItemHasHalfFull}
+                        placeholder="e.g. 150"
+                        value={editItemPrice}
+                        onChange={(e) => {
+                          const digits = e.target.value.replace(/[^0-9]/g, '');
+                          setEditItemPrice(digits);
+                        }}
+                        onKeyDown={(e) => {
+                          if (['e', 'E', '+', '-', '.'].includes(e.key)) e.preventDefault();
+                        }}
+                        className="w-full pl-8 pr-4 py-3 bg-gray-50 dark:bg-zinc-800 rounded-xl text-xs dark:text-white border border-transparent focus:border-primary outline-none font-bold"
+                      />
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="text-[11px] font-semibold text-gray-400 block mb-1">Half Price (₹) *</label>
+                        <div className="relative">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-primary font-bold text-xs">₹</span>
+                          <input
+                            type="text"
+                            inputMode="numeric"
+                            required={editItemHasHalfFull}
+                            placeholder="e.g. 129"
+                            value={editItemPriceHalf}
+                            onChange={(e) => setEditItemPriceHalf(e.target.value.replace(/[^0-9]/g, ''))}
+                            className="w-full pl-7 pr-3 py-2.5 bg-gray-50 dark:bg-zinc-800 rounded-xl text-xs dark:text-white border border-transparent focus:border-primary outline-none font-bold"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-[11px] font-semibold text-gray-400 block mb-1">Full Price (₹) *</label>
+                        <div className="relative">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-primary font-bold text-xs">₹</span>
+                          <input
+                            type="text"
+                            inputMode="numeric"
+                            required={editItemHasHalfFull}
+                            placeholder="e.g. 179"
+                            value={editItemPriceFull}
+                            onChange={(e) => setEditItemPriceFull(e.target.value.replace(/[^0-9]/g, ''))}
+                            className="w-full pl-7 pr-3 py-2.5 bg-gray-50 dark:bg-zinc-800 rounded-xl text-xs dark:text-white border border-transparent focus:border-primary outline-none font-bold"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Dish Order Position in current category */}

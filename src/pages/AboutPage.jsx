@@ -17,7 +17,7 @@ const AboutPage = () => {
         </div>
       </section>
 
-      <div className="container">
+      <div className="container max-w-7xl">
         <div className="grid lg:grid-cols-2 gap-16 items-center mb-24">
           <div className="space-y-6">
             <h2 className="text-3xl lg:text-4xl font-title font-bold dark:text-white">Our Story</h2>

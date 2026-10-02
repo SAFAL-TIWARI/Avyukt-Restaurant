@@ -261,7 +261,7 @@ const FeedbackPage = () => {
 
   return (
     <div className="min-h-screen pt-32 pb-24 px-4 bg-body dark:bg-zinc-950 transition-colors duration-300">
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         
         {/* Header */}
         <motion.div

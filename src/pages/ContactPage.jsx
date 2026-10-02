@@ -69,13 +69,13 @@ const ContactPage = () => {
       className="pt-24 lg:pt-32 pb-20 dark:bg-zinc-950 min-h-screen"
     >
       <section className="bg-primary py-16 lg:py-24 text-center text-white mb-16">
-        <div className="container">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-4xl lg:text-6xl font-title font-bold text-secondary mb-4">Contact Us</h1>
           <p className="text-lg lg:text-xl opacity-90">We'd love to hear from you</p>
         </div>
       </section>
 
-      <div className="container grid lg:grid-cols-2 gap-16 items-start">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-16 items-start">
         {/* Contact Info & Map */}
         <div className="space-y-12">
           <div className="space-y-8">
@@ -83,7 +83,7 @@ const ContactPage = () => {
             <div className="grid gap-1">
               {[
                 { icon: <MapPin />, title: "Visit Us", content: "Hotel Grand Ashok, Vidisha - 464001, Madhya Pradesh, India" },
-                { icon: <Phone />, title: "Call Us", content: "+91 9039121277" },
+                { icon: <Phone />, title: "Call Us", content: "+91 8319670523" },
                 { icon: <Mail />, title: "Email Us", content: "rahul.baghel76@gmail.com" }
               ].map((item, idx) => (
                 <div key={idx} className="flex gap-5 items-start p-5 rounded-3xl group">
