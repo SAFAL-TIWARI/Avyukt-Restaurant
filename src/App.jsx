@@ -8,6 +8,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import MobileBottomNav from './components/MobileBottomNav';
+import PWAInstallPrompt from './components/PWAInstallPrompt';
 import ScrollToTop from './components/ScrollToTop';
 
 // Eagerly loaded critical landing page
@@ -148,6 +149,7 @@ function App() {
               </main>
               <Footer />
               <MobileBottomNav />
+              <PWAInstallPrompt />
             </div>
           </CartProvider>
         </AuthProvider>
