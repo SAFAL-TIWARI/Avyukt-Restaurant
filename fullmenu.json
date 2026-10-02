@@ -1,0 +1,1696 @@
+{
+  "categories": [
+    {
+      "title": "Beverages",
+      "items": [
+        {
+          "desc": "Freshly brewed hot aromatic Indian tea.",
+          "hasHalfFull": false,
+          "image": "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=600&auto=format&fit=crop&q=80",
+          "name": "Tea",
+          "price": "₹20"
+        },
+        {
+          "desc": "Refreshing black tea infused with fresh lemon extract.",
+          "hasHalfFull": false,
+          "image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=600&auto=format&fit=crop&q=80",
+          "name": "Lemon Tea",
+          "price": "₹30"
+        },
+        {
+          "desc": "Rich and creamy hot brewed coffee.",
+          "hasHalfFull": false,
+          "image": "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=600&auto=format&fit=crop&q=80",
+          "name": "Coffee",
+          "price": "₹30"
+        },
+        {
+          "desc": "Chilled spiced traditional Indian chaas.",
+          "hasHalfFull": false,
+          "image": "https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy%2Cf_auto%2Cq_auto/FOOD_CATALOG/IMAGES/CMS/2026/3/20/2420b834-4a6f-4c11-890e-3fe73bd92790_735617ba-f20b-4f52-8b1d-605a9c008275.jpg",
+          "name": "Butter Milk",
+          "price": "₹40"
+        },
+        {
+          "desc": "Pure warm wholesome milk served fresh.",
+          "hasHalfFull": false,
+          "image": "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=600&auto=format&fit=crop&q=80",
+          "name": "Milk in Glass",
+          "price": "₹60"
+        },
+        {
+          "desc": "Crisp sparkling soda with fresh squeezed lime juice.",
+          "hasHalfFull": false,
+          "image": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=600&auto=format&fit=crop&q=80",
+          "name": "Fresh Lime Soda",
+          "price": "₹60"
+        },
+        {
+          "desc": "Traditional immunity boosting golden turmeric milk.",
+          "hasHalfFull": false,
+          "image": "https://static.toiimg.com/thumb/113575656/113575656.jpg?height=746&imgsize=1632238&resizemode=76&width=420",
+          "name": "Haldi Milk",
+          "price": "₹70"
+        },
+        {
+          "desc": "Creamy churned sweet yogurt drink garnished delicately.",
+          "hasHalfFull": false,
+          "image": "https://www.indianveggiedelight.com/wp-content/uploads/2023/01/sweet-lassi-recipe-1.jpg",
+          "name": "Lassi",
+          "price": "₹80"
+        },
+        {
+          "desc": "Chilled blended creamy coffee served cold.",
+          "hasHalfFull": false,
+          "image": "https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=600&auto=format&fit=crop&q=80",
+          "name": "Cold Coffee",
+          "price": "₹99"
+        },
+        {
+          "desc": "Royal saffron infused hot milk with fragrant notes.",
+          "hasHalfFull": false,
+          "image": "https://imgs.search.brave.com/5XL2oHHRjAdXrbpGgxyc1D-aq10t5J3TCKj2_P4IsTU/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/dWVuZ2FnZS5pby91/cGxvYWRzLzI4Mjg5/L2ltYWdlLTFVUzdR/TC0xNzY4MzA4MDc5/LmpwZw",
+          "name": "Kesar Milk",
+          "price": "₹120"
+        },
+        {
+          "desc": "Thick cold coffee crowned with rich vanilla ice cream.",
+          "hasHalfFull": false,
+          "image": "https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=600&auto=format&fit=crop&q=80",
+          "name": "Cold Coffee with Ice Cream",
+          "price": "₹129"
+        },
+        {
+          "desc": "Packaged premium purified drinking water.",
+          "hasHalfFull": false,
+          "image": "https://images.unsplash.com/photo-1523362628745-0c100150b504?w=600&auto=format&fit=crop&q=80",
+          "name": "Mineral Water",
+          "price": "₹20"
+        },
+        {
+          "desc": "Chilled bubbly club soda bottle.",
+          "hasHalfFull": false,
+          "image": "https://5.imimg.com/data5/OW/BQ/VL/SELLER-96587852/bottle-500x500.jpg",
+          "name": "Soda Bottel",
+          "price": "₹20"
+        },
+        {
+          "desc": "Assorted chilled carbonated soft beverages.",
+          "hasHalfFull": false,
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRx95ds6eRRbBSbSFR-SZzRjnI5_Lv1c_1m3FK-Av1n8cMF3p0kT64tdqQ&s=10",
+          "name": "Cold Drinks",
+          "price": "₹40"
+        }
+      ]
+    },
+    {
+      "title": "Snacks",
+      "items": [
+        {
+          "desc": "Crispy deep-fried salted potato fingers.",
+          "hasHalfFull": false,
+          "image": "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=600&auto=format&fit=crop&q=80",
+          "name": "French Fries",
+          "price": "₹139"
+        },
+        {
+          "desc": "Assorted fresh vegetable fritters dipped in spiced gram flour batter.",
+          "hasHalfFull": false,
+          "image": "https://fullkitchenrecipes.com/wp-content/uploads/2023/03/Untitled-design124-720x720.jpg",
+          "name": "Veg Pakoda",
+          "price": "₹129"
+        },
+        {
+          "desc": "Thick paneer slabs coated in seasoned batter and fried golden.",
+          "hasHalfFull": false,
+          "image": "https://lyndyskitchen.com/wp-content/uploads/2025/09/pakoblog_Easy_Paneer_Pakora_angle_shot_kitchen_background_We_wa_15ab0c85-c332-4ec8-9066-2275bbb8be38.webp",
+          "name": "Paneer Pakoda",
+          "price": "₹149"
+        },
+        {
+          "desc": "Healthy and tasty pan-fried patties made of spinach, peas, and potatoes.",
+          "hasHalfFull": false,
+          "image": "https://www.indianhealthyrecipes.com/wp-content/uploads/2021/05/hara-bhara-kabab-recipe.jpg",
+          "name": "Hara Bhara Kabab",
+          "price": "₹149"
+        },
+        {
+          "desc": "Golden french fries tossed with zesty peri peri style masala seasoning.",
+          "hasHalfFull": false,
+          "image": "https://easyindiancookbook.com/wp-content/uploads/2023/11/masala-fries-3.jpg",
+          "name": "Masala French Fries",
+          "price": "₹149"
+        }
+      ]
+    },
+    {
+      "title": "Kofta",
+      "items": [
+        {
+          "desc": "Soft paneer-potato dumplings served in rich, mildly spiced red tomato gravy.",
+          "hasHalfFull": false,
+          "image": "https://www.vegrecipesofindia.com/wp-content/uploads/2021/04/malai-kofta-1.jpg",
+          "name": "Malai Kofta Red Gravy",
+          "price": "₹219"
+        },
+        {
+          "desc": "Royal melt-in-mouth cottage cheese dumplings cooked in a luscious spiced red gravy.",
+          "hasHalfFull": false,
+          "image": "https://www.honeywhatscooking.com/wp-content/uploads/2020/11/15C337FA-BA62-43F8-9932-FFF8FB72B1E5_1_105_c-2-4.jpg",
+          "name": "Shahi Malai Kofta Red Gravy",
+          "price": "₹219"
+        },
+        {
+          "desc": "Minced vegetable kofta balls simmered in a spiced onion-tomato red gravy.",
+          "hasHalfFull": false,
+          "image": "https://healthyindianrecipes.com/wp-content/uploads/2025/04/veg-kofta-dish-140925.jpg",
+          "name": "Veg Kofta Red Gravy",
+          "price": "₹219"
+        },
+        {
+          "desc": "Melt-in-mouth cottage cheese dumplings served in an exquisite white cashew-cream sauce.",
+          "hasHalfFull": false,
+          "image": "https://i.ytimg.com/vi/lWbadi9NaWk/maxresdefault.jpg",
+          "name": "White Gravy Kofta",
+          "price": "₹279"
+        }
+      ]
+    },
+    {
+      "title": "Add Ons",
+      "items": [
+        {
+          "desc": "Crispy fire roasted lentil cracker.",
+          "hasHalfFull": false,
+          "image": "https://www.tarladalal.com/media/recipe/mainphoto/2025/02/08/big_masala_khichiya_papad_(_mumbai_roadside_recipes_)-16086.webp",
+          "name": "Papad Rosted",
+          "price": "₹15"
+        },
+        {
+          "desc": "Golden deep-fried crunchy lentil papad.",
+          "hasHalfFull": false,
+          "image": "https://www.tarladalal.com/media/recipecategory/photos/2024/11/12/Papads.webp",
+          "name": "Papad Fry",
+          "price": "₹27"
+        },
+        {
+          "desc": "Crisp papad topped with chopped onions, tomatoes, and chatpata spices.",
+          "hasHalfFull": false,
+          "image": "https://i0.wp.com/kalimirchbysmita.com/wp-content/uploads/2016/09/Masala-Papad-02.jpg",
+          "name": "Masala Papad",
+          "price": "₹59"
+        },
+        {
+          "desc": "Diced cucumber, onion, and tomato salad tossed with lemon juice.",
+          "hasHalfFull": false,
+          "image": "https://www.indianhealthyrecipes.com/wp-content/uploads/2021/03/kachumber-salad-recipe.webp",
+          "name": "Kachumbar Salad",
+          "price": "₹79"
+        },
+        {
+          "desc": "Fresh garden salad of cucumber, tomato, radish, and carrot slices.",
+          "hasHalfFull": false,
+          "image": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&auto=format&fit=crop&q=80",
+          "name": "Green Salad",
+          "price": "₹69"
+        },
+        {
+          "desc": "Crispy spiced roasted chickpeas seasoned with tangy masala.",
+          "hasHalfFull": false,
+          "image": "https://www.indianveggiedelight.com/wp-content/uploads/2025/06/roasted-chana-salad-featured-768x768.jpg",
+          "name": "Chana Roasted",
+          "price": "₹149"
+        },
+        {
+          "desc": "Crunchy roasted peanuts tossed with onions, chilies, and tangy chaat masala.",
+          "hasHalfFull": false,
+          "image": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEggcOpQKGoKqrbdwvsTYzTnQEtFhgzC-lsJ149POKf-Z-pUxOOTxnbbM-ke2Juhavj1jJGAjtZOF6C0W7PZg7UNvJU8jxnKdNQ9I3_R2jhgCGRRBfCerZRDEzNdb1LAOYpEMn5WvMgU-2Z0msfD5jNnzpcec_AgIf_Gy-Q5NirEdDqdmLXMuuPmv1_A/s530/peanutchaat.jpg",
+          "name": "Peanut Chaat",
+          "price": "₹179"
+        },
+        {
+          "desc": "Crisp sliced onion rings with lemon wedge and green chili.",
+          "hasHalfFull": false,
+          "image": "https://www.kaileerecipes.com/wp-content/uploads/2026/02/ui8a5dmi9vpymrwtztpu.webp",
+          "name": "Onion Salad",
+          "price": "₹49"
+        },
+        {
+          "desc": "Steamed tender sweet corn tossed with butter and tangy spices.",
+          "hasHalfFull": false,
+          "image": "https://www.sharmispassions.com/wp-content/uploads/2014/04/corn-chaat6-683x1024.jpg",
+          "name": "Corn Chaat",
+          "price": "₹179"
+        },
+        {
+          "desc": "Golden fried dumplings filled with molten gooey cheese.",
+          "hasHalfFull": false,
+          "image": "https://www.indianhealthyrecipes.com/wp-content/uploads/2022/03/cheese-balls.jpg",
+          "name": "Cheese Balls",
+          "price": "₹179"
+        },
+        {
+          "desc": "Whole cashew nuts fried to golden perfection in pure butter.",
+          "hasHalfFull": false,
+          "image": "https://myheartbeets.com/wp-content/uploads/2021/01/instant-pot-bitter-melon-cashew-stir-fry.jpg",
+          "name": "Kaju Butter Fry",
+          "price": "₹289"
+        }
+      ]
+    },
+    {
+      "title": "Sandwiches",
+      "items": [
+        {
+          "desc": "Fresh garden vegetables layered between buttered bread slices.",
+          "hasHalfFull": false,
+          "image": "https://smithakalluraya.com/wp-content/uploads/2017/07/avocado-sandwich.jpg",
+          "name": "Vegetable Sandwich",
+          "price": "₹79"
+        },
+        {
+          "desc": "Classic combination of sliced tomatoes and melting cheese.",
+          "hasHalfFull": false,
+          "image": "https://www.madhuseverydayindian.com/wp-content/uploads/2021/06/tomato-chutney-grilled-cheese-sandwich.jpg",
+          "name": "Cheese & Tomato Sandwich",
+          "price": "₹99"
+        },
+        {
+          "desc": "Toasted golden crust filled with gooey melted cheese.",
+          "hasHalfFull": false,
+          "image": "https://www.madhuseverydayindian.com/wp-content/uploads/2021/06/samosa-grilled-cheese-1-768x768.jpg",
+          "name": "Grilled Cheese Sandwich",
+          "price": "₹99"
+        },
+        {
+          "desc": "Generous filling of spiced paneer and creamy cheese.",
+          "hasHalfFull": false,
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzL2AS6tVSub3gA21NkYa2aVzcjn9jwTvwSI17R-b6Lg&s=10",
+          "name": "Cheese & Paneer Sandwich",
+          "price": "₹119"
+        },
+        {
+          "desc": "Smoky marinated paneer tikka stuffed inside grilled bread.",
+          "hasHalfFull": false,
+          "image": "https://mykitchendiaries.com/wp-content/uploads/2025/08/Whisk_ac53bff796.webp",
+          "name": "Paneer Tikka Masala Sandwich",
+          "price": "₹119"
+        },
+        {
+          "desc": "Loaded with garden veggies and spicy creamy tandoori dressing.",
+          "hasHalfFull": false,
+          "image": "https://recipesblob.oetker.in/assets/3d6950a1502d453ca2e46e533c499f9d/1272x764/tandoori-paneer-sandwich.webp",
+          "name": "Tandoori Sauce Sandwich",
+          "price": "₹119"
+        },
+        {
+          "desc": "Comforting spiced potato filling toasted to golden perfection.",
+          "hasHalfFull": false,
+          "image": "https://thegaruskitchen.com/wp-content/uploads/2019/02/Aloo-Sandwich-Recipe.jpg",
+          "name": "Aloo Masala Sandwich",
+          "price": "₹99"
+        },
+        {
+          "desc": "Soft paneer cubes seasoned with herbs in toasted bread.",
+          "hasHalfFull": false,
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDVci-zpy9-hyVJdBjjDhGxFP3_2DXNNjlkbvtusTiyxQjg9gaasr6SuY&s=10",
+          "name": "Paneer Sandwich",
+          "price": "₹119"
+        },
+        {
+          "desc": "Spicy and tangy filling of green chilies, onions, and chatpata spices.",
+          "hasHalfFull": false,
+          "image": "https://i.ytimg.com/vi/JkN1J6-2Sps/maxresdefault.jpg",
+          "name": "Chilli Chatpata Sandwich",
+          "price": "₹119"
+        }
+      ]
+    },
+    {
+      "title": "Indian Cuisine",
+      "items": [
+        {
+          "desc": "Half: ₹100 | Full: ₹160. Baby potatoes slow-cooked in royal spiced gravy.",
+          "hasHalfFull": false,
+          "image": "https://res.cloudinary.com/dzryngnol/image/upload/v1789842724/dum_aloo_hl2jrk.jpg",
+          "name": "Dum Aloo",
+          "price": "₹189"
+        },
+        {
+          "desc": "Half: ₹100 | Full: ₹160. Ripe tomatoes filled with seasoned paneer in rich gravy.",
+          "hasHalfFull": false,
+          "image": "https://peekncooksa.blob.core.windows.net/index-recipe/stuffed_tomato.jpg",
+          "name": "Stuffed Tomato",
+          "price": "₹189"
+        },
+        {
+          "desc": "Half: ₹149 | Full: ₹199. Tender paneer simmered in robust onion tomato masala.",
+          "hasHalfFull": true,
+          "image": "https://preview.redd.it/wc9v4gq5tnn91.jpg?auto=webp&s=f7a122d67de8a12187ee82c74a32393ad9746910",
+          "name": "Paneer Masala",
+          "price": "₹199",
+          "priceFull": "₹199",
+          "priceHalf": "₹149"
+        },
+        {
+          "desc": "Succulent paneer cubes simmered in Kashmiri-style aromatic spiced curry.",
+          "hasHalfFull": true,
+          "image": "https://hetalkamdar.com/wp-content/uploads/2016/05/paneer-rogan-josh-kashmiri-cuisine-f.jpg",
+          "name": "Paneer Rogan Josh",
+          "price": "₹219",
+          "priceFull": "₹219",
+          "priceHalf": "₹159"
+        },
+        {
+          "desc": "Half: ₹149| Full: ₹219. Fresh cottage cheese in silky creamy butter tomato gravy.",
+          "hasHalfFull": true,
+          "image": "https://myfoodstory.com/wp-content/uploads/2021/10/Paneer-Butter-Masala-1-2.jpg",
+          "name": "Butter Paneer Masala",
+          "price": "₹219",
+          "priceFull": "₹219",
+          "priceHalf": "₹149"
+        },
+        {
+          "desc": "Half: ₹159 | Full: ₹219. Wok-tossed paneer, bell peppers, and fresh ground spices.",
+          "hasHalfFull": true,
+          "image": "https://www.indianhealthyrecipes.com/wp-content/uploads/2022/04/kadai-paneer-recipe.jpg",
+          "name": "Kadhai Paneer",
+          "price": "₹219",
+          "priceFull": "₹219",
+          "priceHalf": "₹159"
+        },
+        {
+          "desc": "Prepared fresh with royal spices and culinary mastery.",
+          "hasHalfFull": true,
+          "image": "https://www.cookwithmanali.com/wp-content/uploads/2014/08/Best-Methi-Matar-Malai.jpg",
+          "name": "Methi Matar Malai",
+          "price": "₹219",
+          "priceFull": "₹219",
+          "priceHalf": "₹159"
+        },
+        {
+          "desc": "Half: ₹169| Full: ₹219. Fresh mushrooms cooked in thick spicy brown gravy.",
+          "hasHalfFull": true,
+          "image": "https://i.ytimg.com/vi/69bxGa1pgVY/maxresdefault.jpg",
+          "name": "Mushroom Masala",
+          "price": "₹219",
+          "priceFull": "₹219",
+          "priceHalf": "₹169"
+        },
+        {
+          "desc": "Classic North Indian curry cooked with soft paneer cubes and sweet green peas.",
+          "hasHalfFull": true,
+          "image": "https://www.cubesnjuliennes.com/wp-content/uploads/2019/04/Restaurant-Style-Matar-Paneer-Recipe.jpg",
+          "name": "Matar Paneer",
+          "price": "₹219",
+          "priceFull": "₹219",
+          "priceHalf": "₹169"
+        },
+        {
+          "desc": "Full: ₹249. Stuffed paneer sandwiches shallow-fried in luscious gravy.",
+          "hasHalfFull": false,
+          "image": "https://thefoodtravellers.com/wp-content/uploads/2025/03/paneer-pasanda-recipe-creamy-mughlai-style-paneer-curry.jpg",
+          "name": "Paneer Pasanda",
+          "price": "₹249"
+        },
+        {
+          "desc": "Half: ₹159 | Full: ₹219. Tangy and spicy paneer preparation with pickle flavor notes.",
+          "hasHalfFull": true,
+          "image": "https://www.relishthebite.com/wp-content/uploads/2020/06/Paneer-Chatpata1.jpg",
+          "name": "Paneer Chatpata",
+          "price": "₹219",
+          "priceFull": "₹219",
+          "priceHalf": "₹159"
+        },
+        {
+          "desc": "Half: ₹159 | Full: ₹219. Paneer chunks in rich creamy tomato and grated cottage cheese gravy.",
+          "hasHalfFull": true,
+          "image": "https://wfg32p.s3.amazonaws.com/media/dishes/paneer-lababdar_7375-reg.jpg",
+          "name": "Paneer Lababdar",
+          "price": "₹219",
+          "priceFull": "₹219",
+          "priceHalf": "₹159"
+        },
+        {
+          "desc": "Half: ₹159 | Full: ₹219. Fiery Maharashtrian style paneer with roasted coconut spices.",
+          "hasHalfFull": true,
+          "image": "https://www.vegrecipesofindia.com/wp-content/uploads/2016/12/paneer-kolhapuri-recipe.jpg",
+          "name": "Paneer Kolhapuri",
+          "price": "₹219",
+          "priceFull": "₹219",
+          "priceHalf": "₹159"
+        },
+        {
+          "desc": "Half: ₹159 | Full: ₹219. Hearty Dhaba style paneer in spicy onion and tomato sauce.",
+          "hasHalfFull": true,
+          "image": "https://img.freepik.com/premium-photo/closeup-palak-paneer-traditional-punjabi-spinach-cottage-cheese-curry-concept-indian-cuisine-vegetarian-dish-palak-paneer-recipe-punjabi-food_864588-180694.jpg?w=2000",
+          "name": "Paneer Punjabi",
+          "price": "₹219",
+          "priceFull": "₹219",
+          "priceHalf": "₹159"
+        },
+        {
+          "desc": "Full: ₹229. Rolled paneer parcels served on rich creamy royal gravy.",
+          "hasHalfFull": false,
+          "image": "https://img.freepik.com/premium-photo/paneer-patiala-is-famous-indian-dish-served-rustic-wooden-background-selective-focus_726363-1019.jpg",
+          "name": "Paneer Patiala",
+          "price": "₹229"
+        },
+        {
+          "desc": "Half: ₹140 | Full: ₹200. Royal Mughlai curry with cottage cheese in cashew cream sauce.",
+          "hasHalfFull": false,
+          "image": "https://1.bp.blogspot.com/-KzKj1aBe7-k/XeeVsF5b-2I/AAAAAAAAEII/XOksle75D5IKvng5l7OMWaX9K_0hCQX7wCLcBGAsYHQ/s1600/shahi%2Bpaneerr.jpg",
+          "name": "Shahi Paneer",
+          "price": "₹169"
+        },
+        {
+          "desc": "Half: ₹179 | Full: ₹249. Charcoal grilled smoky paneer pieces simmered in spicy sauce.",
+          "hasHalfFull": true,
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_PRt0fxaImfKqGlyOkY8vJFKO9cw56_I-f-mig2Htuw&s=10",
+          "name": "Paneer Tikka Masala",
+          "price": "₹249",
+          "priceFull": "₹249",
+          "priceHalf": "₹179"
+        },
+        {
+          "desc": "Crisp roasted whole cashews simmered in an aromatic spiced red tomato gravy.",
+          "hasHalfFull": true,
+          "image": "https://www.kajubadam.com/wp-content/uploads/2023/01/kaju-curry-recipe-860x484.jpg",
+          "name": "Kaju Curry Red Gravy",
+          "price": "₹249",
+          "priceFull": "₹249",
+          "priceHalf": "₹179"
+        },
+        {
+          "desc": "Roasted whole cashews bathed in a velvety royal white cashew-cream sauce.",
+          "hasHalfFull": true,
+          "image": "https://www.plattershare.com/storage/2025/09/Creamy-White-Cashew-Curry-Kaju-Curry.webp",
+          "name": "Kaju Curry White Gravy",
+          "price": "₹279",
+          "priceFull": "₹279",
+          "priceHalf": "₹189"
+        },
+        {
+          "desc": "Crispy cashew nuts simmered in a bold, spicy Kashmiri rogan josh gravy.",
+          "hasHalfFull": true,
+          "image": "https://i.pinimg.com/736x/8c/0d/14/8c0d149a64a4f29c3032292cdf136785.jpg",
+          "name": "Kaju Rogan Josh Spicy",
+          "price": "₹249",
+          "priceFull": "₹249",
+          "priceHalf": "₹169"
+        },
+        {
+          "desc": "Half: ₹179 | Full: ₹249. Pickling spices infused tandoori paneer in rich masala.",
+          "hasHalfFull": true,
+          "image": "https://img.freepik.com/premium-photo/paneer-tikka-is-indian-cuisine-dish-with-grilled-paneer-cheese-with-vegetables-spices-indian-food_781325-5472.jpg",
+          "name": "Paneer Achari Tikka Masala",
+          "price": "₹249",
+          "priceFull": "₹249",
+          "priceHalf": "₹179"
+        },
+        {
+          "desc": "Half: ₹179 | Full: ₹249. Rich pairing of fresh paneer and golden cashews in Mughlai gravy.",
+          "hasHalfFull": true,
+          "image": "https://www.cookingcarnival.com/wp-content/uploads/2015/08/reshmi-kaju-paneer-2.jpg",
+          "name": "Kaju Paneer",
+          "price": "₹249",
+          "priceFull": "₹249",
+          "priceHalf": "₹179"
+        },
+        {
+          "desc": "Cottage cheese preparation cooked with double portions of braised onions.",
+          "hasHalfFull": true,
+          "image": "https://www.whiskaffair.com/wp-content/uploads/2024/07/Paneer-Do-Pyaza-2-2.jpg",
+          "name": "Paneer Do Pyaza",
+          "price": "₹219",
+          "priceFull": "₹219",
+          "priceHalf": "₹159"
+        },
+        {
+          "desc": "Tender soya chaap slow-cooked in rich Kashmiri rogan josh spiced gravy.",
+          "hasHalfFull": true,
+          "image": "https://i.pinimg.com/originals/1a/e6/83/1ae683fb6e7745803eef926817e3c1ac.jpg",
+          "name": "Chaap Rogan Josh",
+          "price": "₹219",
+          "priceFull": "₹219",
+          "priceHalf": "₹159"
+        },
+        {
+          "desc": "Marinated soya chaap tossed in a spicy, thick onion-tomato gravy.",
+          "hasHalfFull": true,
+          "image": "https://www.funfoodfrolic.com/wp-content/uploads/2022/09/Soya-Chaap-Tikka-Blog.jpg",
+          "name": "Chaap Masala",
+          "price": "₹199",
+          "priceFull": "₹199",
+          "priceHalf": "₹149"
+        }
+      ]
+    },
+    {
+      "title": "Roti / Chapati",
+      "items": [
+        {
+          "desc": "Freshly puffed whole wheat flatbread made on tawa.",
+          "hasHalfFull": false,
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSysaydtC5V5GXn8IG24YIaUXBxKyy3rqGzlfytdjTtoddAVHIdlvFdwf9u&s=10",
+          "name": "Tawa Roti",
+          "price": "₹12"
+        },
+        {
+          "desc": "Soft hot tawa roti brushed with golden dairy butter.",
+          "hasHalfFull": false,
+          "image": "https://cdn.grofers.com/assets/search/usecase/banner/tawa_butter_roti_01.png",
+          "name": "Tawa Roti Butter",
+          "price": "₹15"
+        },
+        {
+          "desc": "Golden tawa paratha stuffed with spiced mashed potatoes.",
+          "hasHalfFull": false,
+          "image": "https://easyindiancookbook.com/wp-content/uploads/2023/12/aloo-paratha-2-1152x1536.jpg",
+          "name": "Aloo Paratha",
+          "price": "₹69"
+        },
+        {
+          "desc": "Whole wheat paratha filled with seasoned grated cauliflower.",
+          "hasHalfFull": false,
+          "image": "https://thumbs.dreamstime.com/b/gobi-paratha-stuffed-indian-flatbread-filled-spiced-cauliflower-cooked-griddle-served-yogurt-pickle-gobi-346976362.jpg",
+          "name": "Gobhi Paratha",
+          "price": "₹69"
+        },
+        {
+          "desc": "Stuffed aloo paratha served with fresh chilled plain curd.",
+          "hasHalfFull": false,
+          "image": "https://easyindiancookbook.com/wp-content/uploads/2023/12/aloo-paratha-2-1152x1536.jpg",
+          "name": "Aloo Paratha With Curd",
+          "price": "₹99"
+        },
+        {
+          "desc": "Stuffed gobhi paratha accompanied with creamy chilled curd.",
+          "hasHalfFull": false,
+          "image": "https://thumbs.dreamstime.com/b/gobi-paratha-stuffed-indian-flatbread-filled-spiced-cauliflower-cooked-griddle-served-yogurt-pickle-gobi-346976362.jpg",
+          "name": "Gobhi Paratha With Curd",
+          "price": "₹99"
+        },
+        {
+          "desc": "Crispy golden wheat flatbread stuffed with spiced grated paneer and herbs.",
+          "hasHalfFull": false,
+          "image": "https://www.cookwithkushi.com/wp-content/uploads/2021/07/easy_paneer_paratha_recipe.jpg",
+          "name": "Paneer Paratha",
+          "price": "₹99"
+        },
+        {
+          "desc": "Hearty paneer paratha served piping hot with fresh chilled bowl of curd.",
+          "hasHalfFull": false,
+          "image": "https://i.pinimg.com/736x/9f/d8/f5/9fd8f596c3c1459c159fa9b6ead94a34.jpg",
+          "name": "Paneer Paratha With Curd",
+          "price": "₹129"
+        },
+        {
+          "desc": "Wholesome griddled paratha stuffed with a savory spiced vegetable mixture.",
+          "hasHalfFull": false,
+          "image": "https://images.slurrp.com/prod/recipe_images/hebbars-kitchen/mix-veg-paratha-recipe-vegetable-paratha_17D3602WZAZPRB0KO9MQ.webp",
+          "name": "Mix Paratha",
+          "price": "₹99"
+        },
+        {
+          "desc": "Crisp mixed vegetable paratha served with fresh creamy curd.",
+          "hasHalfFull": false,
+          "image": "https://www.vegrecipesofindia.com/wp-content/uploads/2014/12/vegetable-paratha.jpg",
+          "name": "Mix Paratha With Curd",
+          "price": "₹129"
+        },
+        {
+          "desc": "Golden griddled flatbread stuffed with spiced crunchy onions and green chillies.",
+          "hasHalfFull": false,
+          "image": "https://smithakalluraya.com/wp-content/uploads/2014/11/onion-paratha-pyaaz-ka-paratha-stuffed-onion-flatbread.1024x1024-1.jpg",
+          "name": "Onion Paratha",
+          "price": "₹89"
+        },
+        {
+          "desc": "Spiced onion paratha accompanied by a bowl of cool refreshing curd.",
+          "hasHalfFull": false,
+          "image": "https://as2.ftcdn.net/jpg/04/27/46/15/1000_F_427461596_cxwQTQ9NstOqR3S9EwX4OkhxCFosDeAg.jpg",
+          "name": "Onion Paratha With Curd",
+          "price": "₹119"
+        }
+      ]
+    },
+    {
+      "title": "Raita",
+      "items": [
+        {
+          "desc": "Pure fresh creamy homestyle chilled set curd.",
+          "hasHalfFull": false,
+          "image": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjfEUSuzhm7kEbLruJHfIO2CNZtjqIUoe5aqUMPWIXYJaSK4DkIp-QfJ6bhevofUfLQhQCx67o9hcHS9jsmMulYLt4XV305Na7Un_2ZuEmClxuykEkgvM0763yNDWcM06jZmFZvu5OSy3ey/s4032/20200506_130009.jpg",
+          "name": "Plain Curd",
+          "price": "₹89"
+        },
+        {
+          "desc": "Crispy fried gram flour pearls in whisked spiced yogurt.",
+          "hasHalfFull": false,
+          "image": "https://www.indianveggiedelight.com/wp-content/uploads/2020/11/boondi-raita.jpg",
+          "name": "Boondi Raita",
+          "price": "₹149"
+        },
+        {
+          "desc": "Sweet chilled creamy yogurt mixed with seasonal fruit chunks.",
+          "hasHalfFull": false,
+          "image": "https://www.tipsnrecipesblog.com/wp-content/uploads/2025/04/fruit-raita-main.jpg",
+          "name": "Fruit Raita",
+          "price": "₹179"
+        },
+        {
+          "desc": "Chilled yogurt mixed with finely diced cucumbers, onions, and tomatoes.",
+          "hasHalfFull": false,
+          "image": "https://chillybite.com/wp-content/uploads/2025/08/Mix-Veg-Raita.jpg",
+          "name": "Veg Raita",
+          "price": "₹159"
+        }
+      ]
+    },
+    {
+      "title": "Dal",
+      "items": [
+        {
+          "desc": "Half: ₹99 | Full: ₹129. Spicy yellow dal infused with fresh fried green chilies.",
+          "hasHalfFull": true,
+          "image": "https://twinklingtinacooks.com/wp-content/uploads/2018/01/indian-lentil-recipe.jpg",
+          "name": "Dal Fry Green Chilli",
+          "price": "₹129",
+          "priceFull": "₹129",
+          "priceHalf": "₹99"
+        },
+        {
+          "desc": "Half: ₹99 | Full: ₹149. Aromatic yellow dal topped with smoky garlic ghee tadka.",
+          "hasHalfFull": true,
+          "image": "https://d3s8tbcesxr4jm.cloudfront.net/recipe-images/v0/classic-yellow-dal-tadka_large.jpg",
+          "name": "Dal Tadka",
+          "price": "₹149",
+          "priceFull": "₹149",
+          "priceHalf": "₹99"
+        },
+        {
+          "desc": "Half: ₹109 | Full: ₹169. Homestyle yellow lentils enriched with dairy butter.",
+          "hasHalfFull": true,
+          "image": "https://i2.wp.com/vegecravings.com/wp-content/uploads/2018/02/Dal-Fry-Recipe-Step-By-Step-Instructions.jpg?fit=1629%2C1683&quality=65&strip=all&ssl=1",
+          "name": "Dal Butter Fry",
+          "price": "₹169",
+          "priceFull": "₹169",
+          "priceHalf": "₹109"
+        },
+        {
+          "desc": "Half: ₹99 | Full: ₹149. Simple comforting yellow dal tempered with roasted cumin.",
+          "hasHalfFull": true,
+          "image": "https://www.awesomecuisine.com/wp-content/uploads/2024/10/Jeera-rice-and-dal-fry.png",
+          "name": "Dal Zeera",
+          "price": "₹149",
+          "priceFull": "₹149",
+          "priceHalf": "₹99"
+        },
+        {
+          "desc": "Wholesome comforting rice and yellow dal simmered to perfection and tempered with desi butter.",
+          "hasHalfFull": false,
+          "image": "https://maharajaroyaldining.com/wp-content/uploads/2024/04/Dal-Khichdi-3.webp",
+          "name": "Butter Khichdi",
+          "price": "₹179"
+        }
+      ]
+    },
+    {
+      "title": "Biryani",
+      "items": [
+        {
+          "desc": "Aromatic long-grain rice layered with assorted seasonal vegetables.",
+          "hasHalfFull": false,
+          "image": "https://www.madhuseverydayindian.com/wp-content/uploads/2022/11/easy-vegetable-biryani.jpg",
+          "name": "Veg Biryani",
+          "price": "₹149"
+        },
+        {
+          "desc": "Fragrant basmati rice dum-cooked with royal Hyderabadi spices.",
+          "hasHalfFull": false,
+          "image": "https://cdn.gulte.com/wp-content/uploads/2024/12/Hyderabadi-Biryani.jpg",
+          "name": "Hyderabadi Biryani",
+          "price": "₹149"
+        },
+        {
+          "desc": "Fragrant basmati rice slow dum cooked with marinated spiced soya chaap and mint.",
+          "hasHalfFull": false,
+          "image": "https://blessmyfoodbypayal.com/wp-content/uploads/2026/04/IMG_7114.png",
+          "name": "Chaap Hyderabadi Biryani",
+          "price": "₹159"
+        },
+        {
+          "desc": "Flavorful Hyderabadi style dum biryani layered with sautéed earthy mushrooms.",
+          "hasHalfFull": false,
+          "image": "https://www.kannammacooks.com/wp-content/uploads/Mushroom-Dum-Biryani-recipe-hyderabadi-style-1.jpg",
+          "name": "Mushroom Biryani",
+          "price": "₹169"
+        }
+      ]
+    },
+    {
+      "title": "Rice",
+      "items": [
+        {
+          "desc": "Steamed aromatic long grain basmati rice.",
+          "hasHalfFull": true,
+          "image": "https://img.freepik.com/premium-photo/plain-rice-served-dish-isolated-grey-background-top-view-indian-bangladesh-food_689047-4239.jpg?w=2000",
+          "name": "Plane Rice",
+          "price": "₹119",
+          "priceFull": "₹119",
+          "priceHalf": "₹79"
+        },
+        {
+          "desc": "Basmati rice tempered with fragrant cumin seeds and pure ghee.",
+          "hasHalfFull": true,
+          "image": "https://vanitascorner.com/wp-content/uploads/2023/06/Jeera-Rice-FB.jpg",
+          "name": "Jeera Rice",
+          "price": "₹129",
+          "priceFull": "₹129",
+          "priceHalf": "₹89"
+        },
+        {
+          "desc": "Steamed rice delicately tossed with rich melted butter.",
+          "hasHalfFull": false,
+          "image": "https://www.cookingclassy.com/wp-content/uploads/2021/05/garlic-butter-rice-2.jpg",
+          "name": "Butter Rice",
+          "price": "₹149"
+        },
+        {
+          "desc": "Fragrant rice seasoned with caramelized golden sliced onions.",
+          "hasHalfFull": false,
+          "image": "https://www.cookwithkushi.com/wp-content/uploads/2016/02/best_onion_rice_recipe.jpg",
+          "name": "Onion Rice",
+          "price": "₹149"
+        },
+        {
+          "desc": "Spicy Indian style rice cooked with whole garam masalas.",
+          "hasHalfFull": false,
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEPYhW7avJ-EtGzVCTWpc6jPU_S3FQff4lsYNGo0ZT6w&s=10",
+          "name": "Masala Rice",
+          "price": "₹149"
+        },
+        {
+          "desc": "Aromatic rice cooked with fresh seasonal garden vegetables.",
+          "hasHalfFull": false,
+          "image": "https://www.indianveggiedelight.com/wp-content/uploads/2019/07/veg-pulao-featured.jpg",
+          "name": "Veg Pulao",
+          "price": "₹149"
+        },
+        {
+          "desc": "Basmati rice studded with sweet tender green peas and spices.",
+          "hasHalfFull": false,
+          "image": "https://www.awesomecuisine.com/wp-content/uploads/2008/02/Peas-Pulao.jpg",
+          "name": "Green Peas Pulao",
+          "price": "₹149"
+        },
+        {
+          "desc": "Cooling South Indian rice tempered with mustard, curry leaves, and curd.",
+          "hasHalfFull": false,
+          "image": "https://www.indianhealthyrecipes.com/wp-content/uploads/2022/02/curd-rice-thayir-sadam.jpg",
+          "name": "Curd Rice",
+          "price": "₹169"
+        },
+        {
+          "desc": "Fragrant saffron rice garnished with dry fruits and fresh fruits.",
+          "hasHalfFull": false,
+          "image": "https://sp-ao.shortpixel.ai/client/to_webp,q_glossy,ret_img/https://allrecipesss.com/wp-content/uploads/2025/08/Kashmiri-Pulao-6.webp",
+          "name": "Kashmiri Pulao",
+          "price": "₹179"
+        },
+        {
+          "desc": "Royal pulao packed with soft paneer cubes and green peas.",
+          "hasHalfFull": false,
+          "image": "https://www.indianveggiedelight.com/wp-content/uploads/2023/09/matar-paneer-pulao.jpg",
+          "name": "Peas Paneer Pulao",
+          "price": "₹149"
+        }
+      ]
+    },
+    {
+      "title": "Desserts",
+      "items": [
+        {
+          "desc": "Warm soft milk dumplings soaked in cardamom sugar syrup (Served per piece).",
+          "hasHalfFull": false,
+          "image": "https://upload.wikimedia.org/wikipedia/commons/c/c1/Gulab-jamun-wallpaper-1.jpg",
+          "name": "Gulab Jamun",
+          "price": "₹39"
+        },
+        {
+          "desc": "Hot gulab jamun served alongside chilled vanilla ice cream.",
+          "hasHalfFull": false,
+          "image": "https://img.freepik.com/premium-photo/gulab-jamun-dessert-with-vanilla-ice-cream-served_1029679-7465.jpg?w=996",
+          "name": "Gulab Jamun With Ice Cream",
+          "price": "₹129"
+        },
+        {
+          "desc": "Spongy cottage cheese balls soaked in pure light syrup (Served per piece).",
+          "hasHalfFull": false,
+          "image": "https://images.unsplash.com/photo-1714799263412-2e0c1f875959?w=600&auto=format&fit=crop&q=80",
+          "name": "Rasgulla",
+          "price": "₹29"
+        },
+        {
+          "desc": "Two scoops of rich creamy butterscotch ice cream studded with crunchy praline bits.",
+          "hasHalfFull": false,
+          "image": "https://www.mummy-time.com/wp-content/uploads/2026/05/tmpgdy497yc.jpeg",
+          "name": "Butter Scotch Ice Cream",
+          "price": "₹59"
+        },
+        {
+          "desc": "Two scoops of velvety smooth and decadent chocolate ice cream.",
+          "hasHalfFull": false,
+          "image": "https://thumbs.dreamstime.com/b/chocolate-ice-cream-scoops-dark-ceramic-bowl-mint-leaves-emphasizing-rich-flavors-smooth-texture-gourmet-ai-370069285.jpg",
+          "name": "Chocolate Ice Cream",
+          "price": "₹59"
+        },
+        {
+          "desc": "Two scoops of premium Belgian dark chocolate ice cream for true cocoa lovers.",
+          "hasHalfFull": false,
+          "image": "https://mangalorestore-in.b-cdn.net/wp-content/uploads/2021/03/ideals-premium-1ltr-belgian-chocolate.png",
+          "name": "Belgium Ice Cream",
+          "price": "₹79"
+        },
+        {
+          "desc": "Two scoops of tropical Alphonso mango ice cream made with real fruit pulp.",
+          "hasHalfFull": false,
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTq_8RM266Ks09g5ncv4aNauwrK97qcTEYaRZC88Q6tViRsx-QS8bvRWb8&s=10",
+          "name": "Mango Ice Cream",
+          "price": "₹59"
+        },
+        {
+          "desc": "Two scoops of exotic rose falooda infused ice cream with delightful floral notes.",
+          "hasHalfFull": false,
+          "image": "https://www.desserthaven.net/wp-content/uploads/2026/03/falooda-ice-cream-dessert.webp",
+          "name": "Rose Falooda Ice Cream",
+          "price": "₹79"
+        },
+        {
+          "desc": "Two scoops of timeless classic vanilla bean ice cream.",
+          "hasHalfFull": false,
+          "image": "https://thumbs.dreamstime.com/b/classic-vanilla-ice-cream-scoops-bowl-silver-spoon-classic-vanilla-ice-cream-scoops-bowl-silver-spoon-textured-309506074.jpg",
+          "name": "Vanilla Ice Cream",
+          "price": "₹49"
+        }
+      ]
+    },
+    {
+      "title": "Mocktails",
+      "items": [
+        {
+          "desc": "Prepared fresh with royal spices and culinary mastery.",
+          "hasHalfFull": false,
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTf8tWKOkZqPVzIKFhpaTbldggorM_vRYbntgku5ZU_hM7Y-9c0TI6X-K0&s=10",
+          "name": "Fresh Classic Mojito",
+          "price": "₹109"
+        },
+        {
+          "desc": "Sweet ripe mango extract with mint, lemon, and fizzy soda.",
+          "hasHalfFull": false,
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9a1GtFudnn_dIn4DTBGh4uBQlzVjy454kJSsVnZ5RyQjUX6Vhb4cKD-4&s=10",
+          "name": "Mango Mojito",
+          "price": "₹109"
+        },
+        {
+          "desc": "Vibrant blue curacao mocktail infused with citrus and mint.",
+          "hasHalfFull": false,
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQifO6zU6mgxfc_L6_FGIK2wV8JedNhmcc_zE3JAFUTRAWTqzxN4p5gme2d&s=10",
+          "name": "Blue Ocean Mojito",
+          "price": "₹109"
+        },
+        {
+          "desc": "Sweet fresh strawberry puree with crushed ice and soda.",
+          "hasHalfFull": false,
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSG-eXK2RHIDgoZ_0s9CMaS8baOTN9Vh5oYqivoZTHq3A&s=10",
+          "name": "Strawberry Mojito",
+          "price": "₹119"
+        },
+        {
+          "desc": "Crisp green apple sour notes with sweet mint sparkle.",
+          "hasHalfFull": false,
+          "image": "https://recipes.timesofindia.com/photo/60258570.cms?imgsize=778749",
+          "name": "Green Apple Mojito",
+          "price": "₹119"
+        }
+      ]
+    },
+    {
+      "title": "Shakes",
+      "items": [
+        {
+          "desc": "Creamy blended shake prepared with luscious strawberry flavor.",
+          "hasHalfFull": false,
+          "image": "https://images.unsplash.com/photo-1553530666-ba11a7da3888?w=600&auto=format&fit=crop&q=80",
+          "name": "Strawberry Shake",
+          "price": "₹129"
+        },
+        {
+          "desc": "Classic thick blended chilled dairy milkshake.",
+          "hasHalfFull": false,
+          "image": "https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=600&auto=format&fit=crop&q=80",
+          "name": "Milk Shake",
+          "price": "₹119"
+        },
+        {
+          "desc": "Creamy smooth vanilla smoothie chilled to perfection.",
+          "hasHalfFull": false,
+          "image": "https://www.lettyskitchen.com/wp-content/uploads/2015/05/vanilla-honey-nut-smoothie.jpg",
+          "name": "Vanilla Smoothie",
+          "price": "₹129"
+        },
+        {
+          "desc": "Thick tropical mango pulp blended with chilled cream.",
+          "hasHalfFull": false,
+          "image": "https://thumbs.dreamstime.com/z/mango-smoothie-glass-isolated-white-healthy-mint-straw-91032329.jpg",
+          "name": "Mango Smoothie",
+          "price": "₹129"
+        },
+        {
+          "desc": "Thick and creamy chocolate milkshake topped with chocolate drizzle.",
+          "hasHalfFull": false,
+          "image": "https://assets.epicurious.com/photos/647df8cc38379779cdfad947/1:1/w_2560%2Cc_limit/ChocolateMalt_RECIPE_053123_3625.jpg",
+          "name": "Chocolate Shake",
+          "price": "₹129"
+        },
+        {
+          "desc": "Caramelized butterscotch shake with crunchy praline bits.",
+          "hasHalfFull": false,
+          "image": "https://cdn.grofers.com/assets/search/usecase/banner/butterscotch_milkshake_01.png",
+          "name": "Butter Scotch Shake",
+          "price": "₹129"
+        },
+        {
+          "desc": "Traditional royal milkshake enriched with crushed almonds and saffron.",
+          "hasHalfFull": false,
+          "image": "https://i.ytimg.com/vi/p5K6fpMimw8/maxresdefault.jpg",
+          "name": "Badam Shake",
+          "price": "₹159"
+        },
+        {
+          "desc": "Thick and luscious milkshake loaded with rich roasted cashew nuts.",
+          "hasHalfFull": false,
+          "image": "https://rakskitchen.net/wp-content/uploads/2017/06/dry-fruits-milkshake-1-500x500.jpg",
+          "name": "Kaju Shake",
+          "price": "₹159"
+        },
+        {
+          "desc": "Tangy and sweet wild blackcurrant blended smoothie.",
+          "hasHalfFull": false,
+          "image": "https://cdn.grofers.com/assets/search/usecase/banner/blackcurrant_shake_01.png",
+          "name": "Black Currant Smoothie",
+          "price": "₹149"
+        },
+        {
+          "desc": "Authentic Belgian style rich chocolate fudge shake.",
+          "hasHalfFull": false,
+          "image": "https://www.cookwithkushi.com/wp-content/uploads/2019/06/best_falooda_ice_cream_Dessert_drink_Indian.jpg",
+          "name": "Belgium Shake",
+          "price": "₹149"
+        },
+        {
+          "desc": "Nutritious royal shake packed with almonds, cashews, and pistachios.",
+          "hasHalfFull": false,
+          "image": "https://www.indianveggiedelight.com/wp-content/uploads/2023/05/dryfruits-milkshake.jpg",
+          "name": "Dry Fruits Shake",
+          "price": "₹179"
+        },
+        {
+          "desc": "Creamy shake loaded with crushed chocolate Oreo cookies.",
+          "hasHalfFull": false,
+          "image": "https://dancearoundthekitchen.com/wp-content/uploads/2021/10/DSC_8647-2-683x1024.jpg",
+          "name": "Oreo Shake",
+          "price": "₹139"
+        },
+        {
+          "desc": "Chilled chocolate shake blended with crunchy Kit Kat wafer bars.",
+          "hasHalfFull": false,
+          "image": "https://static.vecteezy.com/system/resources/previews/049/632/972/large_2x/chocolate-kitkat-milkshake-topped-with-whipped-cream-chocolate-sauce-and-a-kitkat-bar-served-in-glass-isolated-on-background-side-view-of-dessert-drink-photo.jpg",
+          "name": "Kit Kat Shake",
+          "price": "₹139"
+        }
+      ]
+    },
+    {
+      "title": "Sizzlers",
+      "items": [
+        {
+          "desc": "Sizzling platter loaded with aromatic rice, grilled veggie cutlets, fries, and pepper sauce.",
+          "hasHalfFull": false,
+          "image": "https://www.nehascookbook.com/wp-content/uploads/2022/10/Veg-sizzler-WS-1024x576.jpg",
+          "name": "Veg Sizzler",
+          "price": "₹399"
+        },
+        {
+          "desc": "Sizzling cast-iron plate with vegetable manchurian balls, noodles, fried rice, and tangy glaze.",
+          "hasHalfFull": false,
+          "image": "https://www.zaykakatadka.com/wp-content/uploads/2016/08/sizzler.jpg",
+          "name": "Veg Manchurian Sizzler",
+          "price": "₹449"
+        },
+        {
+          "desc": "Sizzling hot platter with fiery chilli paneer, stir-fried noodles, and sizzling oriental sauce.",
+          "hasHalfFull": false,
+          "image": "https://culinaryshades.com/wp-content/uploads/2021/08/Sizzler-main02.jpg",
+          "name": "Chilli Paneer Sizzler",
+          "price": "₹499"
+        }
+      ]
+    },
+    {
+      "title": "Pasta",
+      "items": [
+        {
+          "desc": "Penne pasta bathed in creamy melted cheese sauce with sweet juicy sweet corn.",
+          "hasHalfFull": false,
+          "image": "https://cdn.loveandlemons.com/wp-content/uploads/2023/07/270_LL_Corn_Pasta_9440_final.jpg",
+          "name": "Corn Cheese Pasta",
+          "price": "₹189"
+        },
+        {
+          "desc": "Fusion pasta tossed in spicy and garlicky Schezwan sauce.",
+          "hasHalfFull": false,
+          "image": "https://southindianfoods.in/recipe_picture_enlarge/schezwan-pasta-indian-style-recipe.jpg",
+          "name": "Schezwan Pasta",
+          "price": "₹179"
+        },
+        {
+          "desc": "Creamy Italian pasta infused with smoky North Indian tandoori flavors.",
+          "hasHalfFull": false,
+          "image": "https://motionsandemotions.com/wp-content/uploads/2023/12/Untitled-design-_52_-_1_-1024x1024.webp",
+          "name": "Tandoori Sauce Pasta",
+          "price": "₹189"
+        },
+        {
+          "desc": "Rich and velvety béchamel cream pasta topped with herbs.",
+          "hasHalfFull": false,
+          "image": "https://www.indianhealthyrecipes.com/wp-content/uploads/2024/04/white-sauce-pasta-recipe.webp",
+          "name": "White Sauce Pasta",
+          "price": "₹179"
+        },
+        {
+          "desc": "Infused with roasted garlic butter and loaded with mozzarella.",
+          "hasHalfFull": false,
+          "image": "https://www.cookingclassy.com/wp-content/uploads/2023/05/garlic-parmesan-pasta-3.jpg",
+          "name": "Garlic Cheese Pasta",
+          "price": "₹199"
+        },
+        {
+          "desc": "Spicy arrabbiata style pasta with tomatoes, chili, and basil.",
+          "hasHalfFull": false,
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxMDUmbovhpaoxIdJC4eTGI8f1xypd0HaptzZp-fdwqA&s=10",
+          "name": "Red Sauce Pasta",
+          "price": "₹179"
+        },
+        {
+          "desc": "Decadent pasta drenched in four-cheese melting blend.",
+          "hasHalfFull": false,
+          "image": "https://someindiangirl.com/wp-content/uploads/2021/04/tandoori-macaroni-and-cheese-4-of-6-1024x1536.jpg",
+          "name": "Cheese Pasta",
+          "price": "₹219"
+        },
+        {
+          "desc": "Sautéed fresh button mushrooms folded into rich creamy pasta.",
+          "hasHalfFull": false,
+          "image": "https://diy-recipes.net/wp-content/uploads/2024/08/2_Mushroom-Pasta-Recipe-703x1024.jpg",
+          "name": "Mushroom Pasta",
+          "price": "₹229"
+        }
+      ]
+    },
+    {
+      "title": "Maggi",
+      "items": [
+        {
+          "desc": "Classic comfort noodles cooked with signature tastemaker seasoning.",
+          "hasHalfFull": false,
+          "image": "https://yummyindiankitchen.com/wp-content/uploads/2020/04/maggi-noodles-veg-maggi.jpg",
+          "name": "Simple Maggi",
+          "price": "₹119"
+        },
+        {
+          "desc": "Noodles tossed with fresh onions, tomatoes, and green peas.",
+          "hasHalfFull": false,
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkojXSG7Y9vw2X_NgtSdS1FhjuuF9gN7xbnr6tHUYTgAcsWBY8jdb2g1Pw&s=10",
+          "name": "Vegetable Maggi",
+          "price": "₹129"
+        },
+        {
+          "desc": "Spicy Indian street-style Maggi loaded with extra spices.",
+          "hasHalfFull": false,
+          "image": "https://media.istockphoto.com/id/1443175406/photo/masala-maggi-noodles-instant-maggi-noodles-served-in-a-bowl-closeup-with-selective-focus-and.jpg?s=170667a&w=0&k=20&c=5qVAzXWspqVtquYOhvHpYiAQb0UkteEly4xzDHZqhZY=",
+          "name": "Masala Maggi",
+          "price": "₹129"
+        },
+        {
+          "desc": "Hot steaming Maggi topped with molten melted mozzarella cheese.",
+          "hasHalfFull": false,
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTKc_O4sBRUTTRFNO1IkdghdBIWZRx2tNkkKiXQmAIPRc8GQcEV652MAI&s=10",
+          "name": "Cheese Maggi",
+          "price": "₹179"
+        },
+        {
+          "desc": "Juicy sweet corn and bubbling melted cheese combined with Maggi.",
+          "hasHalfFull": false,
+          "image": "https://www.tarladalal.com/media/recipe/mainphoto/2025/02/08/big_cheesy_maggi%2C_chilli_cheese_maggi-16242.webp",
+          "name": "Corn Cheese Maggi",
+          "price": "₹189"
+        },
+        {
+          "desc": "Fresh cottage cheese cubes and cheese layered over noodles.",
+          "hasHalfFull": false,
+          "image": "https://i.ytimg.com/vi/UcO2AmQgqeM/maxresdefault.jpg",
+          "name": "Paneer Cheese Maggi",
+          "price": "₹199"
+        },
+        {
+          "desc": "Fiery wok-tossed Maggi with zesty Schezwan chili garlic sauce.",
+          "hasHalfFull": false,
+          "image": "https://www.mintsrecipes.com/wp-content/uploads/Schezwan-Maggi-Small-1.jpg",
+          "name": "Schezwan Maggi",
+          "price": "₹129"
+        }
+      ]
+    },
+    {
+      "title": "South Indian",
+      "items": [
+        {
+          "desc": "Crispy golden fermented crepe served with sambar and coconut chutney.",
+          "hasHalfFull": false,
+          "image": "https://southindianrecipes.in/wp-content/uploads/2021/06/Plain-Dosa-772x1024.jpg",
+          "name": "Plain Dosa",
+          "price": "₹99"
+        },
+        {
+          "desc": "Crispy dosa rolled with flavorful spiced potato mash filling.",
+          "hasHalfFull": false,
+          "image": "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=600&auto=format&fit=crop&q=80",
+          "name": "Masala Dosa",
+          "price": "₹109"
+        },
+        {
+          "desc": "Spicy butter-mashed vegetable curry served with toasted pav buns.",
+          "hasHalfFull": false,
+          "image": "https://foodoncall.co.in/wp-content/uploads/2017/10/butter-pav-bhaji.jpg",
+          "name": "Pav Bhaji",
+          "price": "₹119"
+        },
+        {
+          "desc": "Crisp golden dosa filled with generous layer of melting cheese.",
+          "hasHalfFull": false,
+          "image": "https://purendesi.in/wp-content/uploads/2024/06/Cheese-Dosa-recipe.jpg",
+          "name": "Cheese Dosa",
+          "price": "₹129"
+        },
+        {
+          "desc": "Tangy tomato spiced chutney smeared inside hot crispy dosa.",
+          "hasHalfFull": false,
+          "image": "https://www.vidhyashomecooking.com/wp-content/uploads/2009/08/SouthIndianTomatoChutney.jpg",
+          "name": "Tomato Dosa",
+          "price": "₹99"
+        },
+        {
+          "desc": "Thick rice pancake topped with fresh chopped juicy tomatoes.",
+          "hasHalfFull": false,
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfK-keNNhlbpg5B6AlBNDVLJ4xmSYHA90Cwe49g9xNQg&s=10",
+          "name": "Tomato Uttapam",
+          "price": "₹139"
+        },
+        {
+          "desc": "Savory thick pancake topped with caramelized roasted onions.",
+          "hasHalfFull": false,
+          "image": "https://static.india.com/wp-content/uploads/2024/12/FEATURE-44.jpg",
+          "name": "Onion Uttapam",
+          "price": "₹139"
+        },
+        {
+          "desc": "Spicy tangy chickpea curry served with soft fluffy kulchas.",
+          "hasHalfFull": false,
+          "image": "https://preview.redd.it/2ykh2khu3lw21.jpg?width=640&crop=smart&auto=webp&s=f0f61ef4e995f69c97e3b6be2f35bd043903ccbc",
+          "name": "Chole Kulche",
+          "price": "₹129"
+        },
+        {
+          "desc": "Puffy golden fried bhature served with robust Amritsari chole and pickle.",
+          "hasHalfFull": false,
+          "image": "https://static.wixstatic.com/media/55a0a9_317788f4ec074d0490cfa7a135ac0c8f~mv2.png/v1/fill/w_1000,h_800,al_c,q_90,usm_0.66_1.00_0.01/55a0a9_317788f4ec074d0490cfa7a135ac0c8f~mv2.png",
+          "name": "Chole Bhature",
+          "price": "₹149"
+        },
+        {
+          "desc": "Crispy leavened bread stuffed with spiced paneer, served with spicy chole.",
+          "hasHalfFull": false,
+          "image": "https://i.ytimg.com/vi/7E9RSyISbSM/maxresdefault.jpg",
+          "name": "Paneer Kulcha",
+          "price": "₹189"
+        },
+        {
+          "desc": "Crispy golden dosa stuffed with seasoned grated cottage cheese.",
+          "hasHalfFull": false,
+          "image": "https://vegecravings.com/wp-content/uploads/2024/07/Dosa-Recipe-Step-By-Step-Instructions-scaled.jpg",
+          "name": "Paneer Dosa",
+          "price": "₹139"
+        },
+        {
+          "desc": "Traditional savory semolina breakfast dish tempered with mustard and nuts.",
+          "hasHalfFull": false,
+          "image": "https://images.herzindagi.info/image/2024/Jul/south-indian-veg-suji-upma-recipe.jpg",
+          "name": "Upma",
+          "price": "₹120"
+        },
+        {
+          "desc": "Grand royal dosa stuffed with paneer, potato, dry fruits, and cheese.",
+          "hasHalfFull": false,
+          "image": "https://maharajaroyaldining.com/wp-content/uploads/2024/03/Masala-Dosa-2.webp",
+          "name": "Maharaja Dosa",
+          "price": "₹149"
+        }
+      ]
+    },
+    {
+      "title": "Chinese",
+      "items": [
+        {
+          "desc": "Wok-tossed noodles with shredded cabbage, carrots, and peppers.",
+          "hasHalfFull": false,
+          "image": "https://i0.wp.com/mariasmenu.com/wp-content/uploads/Veg-Hakka-Noodles.png?fit=600%2C718&ssl=1",
+          "name": "Veg Noodles",
+          "price": "₹129"
+        },
+        {
+          "desc": "Crispy vegetable dumplings in savory soy garlic cilantro gravy.",
+          "hasHalfFull": false,
+          "image": "https://kannanskitchen.com/wp-content/uploads/2021/05/IMG_20200927_142549_Bokeh-1024x712.jpg",
+          "name": "Veg Manchurian",
+          "price": "₹129"
+        },
+        {
+          "desc": "Traditional Hakka style thin noodles tossed on high flame.",
+          "hasHalfFull": false,
+          "image": "https://desihut.ca/wp-content/uploads/2022/09/Veg-Hakka-Noodles-The-Chutney-Life-4-1.jpeg",
+          "name": "Veg Hakka Noodles",
+          "price": "₹129"
+        },
+        {
+          "desc": "Pan-fried crispy dumplings coated in aromatic ginger-garlic sauce.",
+          "hasHalfFull": false,
+          "image": "https://4.bp.blogspot.com/-VjYHw1Eyckg/Uj3zf7iJLfI/AAAAAAAATgw/6uc2jBkMxH4/s1600/vegkothe.jpg",
+          "name": "Veg Kothe",
+          "price": "₹179"
+        },
+        {
+          "desc": "Fluffy basmati rice tossed with finely chopped vegetables and soy.",
+          "hasHalfFull": false,
+          "image": "https://i0.wp.com/southindianrecipes.in/wp-content/uploads/2021/07/Vegetable-Fried-Rice.jpg",
+          "name": "Veg Fried Rice",
+          "price": "₹149"
+        },
+        {
+          "desc": "Crispy fried potato strips tossed in sweet and spicy chili glaze.",
+          "hasHalfFull": false,
+          "image": "https://www.alittlebitofspice.com/wp-content/uploads/2017/07/honey-chilli-potato-recipe-portrait.jpg",
+          "name": "Chilli Potato",
+          "price": "₹219"
+        },
+        {
+          "desc": "Spicy noodles infused with roasted garlic and red chili paste.",
+          "hasHalfFull": false,
+          "image": "https://www.veganricha.com/wp-content/uploads/2022/03/Chili-Garlic-Noodles-0999-1024x1536.jpg",
+          "name": "Chilli Garlic Noodles",
+          "price": "₹159"
+        },
+        {
+          "desc": "Spicy wok fried rice tossed with fiery Schezwan seasoning.",
+          "hasHalfFull": false,
+          "image": "https://cdn.grofers.com/assets/search/usecase/banner/chicken_schezwan_fried_rice_01.png",
+          "name": "Schezwan Fried Rice",
+          "price": "₹159"
+        },
+        {
+          "desc": "Crunchy fried noodles tossed with shredded salad and sweet chili sauce.",
+          "hasHalfFull": false,
+          "image": "https://thefoodtravellers.com/wp-content/uploads/2025/02/mumbai-style-chinese-bhel-recipe.jpg",
+          "name": "Chinese Bhel",
+          "price": "₹189"
+        },
+        {
+          "desc": "Crispy fried chickpeas tossed with bell peppers, onion, and dark soy.",
+          "hasHalfFull": false,
+          "image": "https://someindiangirl.com/wp-content/uploads/2021/04/Chilli-Chana-19-of-24-1024x1536.jpg",
+          "name": "Chana Chilli",
+          "price": "₹169"
+        },
+        {
+          "desc": "Crispy potatoes glazed with sweet honey, chili paste, and sesame seeds.",
+          "hasHalfFull": false,
+          "image": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgHhP1YQflnvTI51l1HnThBfIzmi57BpX623NjlWBIfCYWMIY5DV3Hx2jipdQ5dXrKVJlvvwIwjiQDGFpghaii80o3XkBXxhI4xw2f73Pm3IDmpCz6ulCMw4yMU_gxhD0QiNBMNCQ4qy62x/s1182/20201102_233302.jpg",
+          "name": "Honey Chilli Potato",
+          "price": "₹249"
+        },
+        {
+          "desc": "Battered crispy fried vegetables tossed in spicy Asian sauce.",
+          "hasHalfFull": false,
+          "image": "https://homecookingshow.in/wp-content/uploads/2025/03/Veg-Crispy-819x1024.webp",
+          "name": "Veg Crispy",
+          "price": "₹130"
+        },
+        {
+          "desc": "Crispy batter fried sweet corn seasoned with sea salt and pepper.",
+          "hasHalfFull": false,
+          "image": "https://www.funfoodfrolic.com/wp-content/uploads/2017/09/Crispy-Corn-3-650x900.jpg",
+          "name": "Corn Crispy Salted",
+          "price": "₹179"
+        },
+        {
+          "desc": "Fried corn kernels tossed with spring onions and Chinese spices.",
+          "hasHalfFull": false,
+          "image": "https://www.funfoodfrolic.com/wp-content/uploads/2021/01/Crispy-Corn-Thumbnail.jpg",
+          "name": "Crispy Corn",
+          "price": "₹219"
+        },
+        {
+          "desc": "Golden fried cottage cheese cubes tossed with capsicum and chili sauce.",
+          "hasHalfFull": false,
+          "image": "https://image.freepik.com/free-photo/chilli-paneer-dry-is-made-using-cottage-cheese-indo-chinese-food_466689-76879.jpg",
+          "name": "Chilly Paneer",
+          "price": "₹249"
+        },
+        {
+          "desc": "Spicy South-meets-Chinese style fried paneer with curry leaves.",
+          "hasHalfFull": false,
+          "image": "https://www.indianhealthyrecipes.com/wp-content/uploads/2022/06/paneer-65-recipe.jpg",
+          "name": "Paneer 65",
+          "price": "₹269"
+        },
+        {
+          "desc": "Crispy button mushrooms tossed in spicy Indo-Chinese chilli gravy.",
+          "hasHalfFull": false,
+          "image": "https://www.indianhealthyrecipes.com/wp-content/uploads/2021/06/chilli-mushroom-1024x1536.jpg",
+          "name": "Chilly Masroom",
+          "price": "₹249"
+        },
+        {
+          "desc": "Spicy fiery dragon sauce tossed paneer fingers with cashews.",
+          "hasHalfFull": false,
+          "image": "https://i.ytimg.com/vi/X1NFTH_ExWo/maxresdefault.jpg",
+          "name": "Paneer Dragon",
+          "price": "₹269"
+        },
+        {
+          "desc": "Dry fried paneer strips coated with green chilli and mint glaze.",
+          "hasHalfFull": false,
+          "image": "https://www.mygingergarlickitchen.com/wp-content/rich-markup-images/1x1/1x1-chilli-paneer.jpg",
+          "name": "Paneer Majestic",
+          "price": "₹289"
+        }
+      ]
+    },
+    {
+      "title": "Soups",
+      "items": [
+        {
+          "desc": "Classic ripe tomato soup served with crispy golden croutons.",
+          "hasHalfFull": false,
+          "image": "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&auto=format&fit=crop&q=80",
+          "name": "Tomato Soup",
+          "price": "₹99"
+        },
+        {
+          "desc": "Spicy Indo-Chinese soup topped with crispy fried noodles.",
+          "hasHalfFull": false,
+          "image": "https://www.cookingcarnival.com/wp-content/uploads/2021/09/Veg-manchow-soup.jpg",
+          "name": "Manchow Soup",
+          "price": "₹119"
+        },
+        {
+          "desc": "Tangy and peppery vegetable broth with Asian seasoning.",
+          "hasHalfFull": false,
+          "image": "https://www.cookingcarnival.com/wp-content/uploads/2023/09/Hot-and-sour-soup-4.jpg",
+          "name": "Hot N Soure Soup",
+          "price": "₹119"
+        },
+        {
+          "desc": "Zesty lemon and aromatic fresh coriander herbal soup.",
+          "hasHalfFull": false,
+          "image": "https://i0.wp.com/www.shanazrafiq.com/wp-content/uploads/2020/02/Lemon-Coriander-Soup-1.jpg?fit=800%2C532&ssl=1",
+          "name": "Lemon Coriander Soup",
+          "price": "₹129"
+        },
+        {
+          "desc": "Rich earthy cream of mushroom simmered with mild herbs.",
+          "hasHalfFull": false,
+          "image": "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&auto=format&fit=crop&q=80",
+          "name": "Mushroom Soup",
+          "price": "₹129"
+        }
+      ]
+    },
+    {
+      "title": "Green Vegetables",
+      "items": [
+        {
+          "desc": "Tender okra stir-fried with onions and Indian spices.",
+          "hasHalfFull": true,
+          "image": "https://tandoor.com.sg/wp-content/uploads/2025/06/indian-bhindi-masala-recipe-1750136628.jpg",
+          "name": "Bhindi Masala",
+          "price": "₹179",
+          "priceFull": "₹179",
+          "priceHalf": "₹129"
+        },
+        {
+          "desc": "Diced potatoes cooked in spiced tomato onion gravy.",
+          "hasHalfFull": true,
+          "image": "https://eastindianrecipes.net/wp-content/uploads/2023/08/Aloo-Masala-Potato-Masala-1.jpg",
+          "name": "Aloo Masala",
+          "price": "₹179",
+          "priceFull": "₹179",
+          "priceHalf": "₹129"
+        },
+        {
+          "desc": "Tangy Gujarati style tomato curry topped with crispy gram flour sev.",
+          "hasHalfFull": true,
+          "image": "https://vanitascorner.com/wp-content/uploads/2020/02/Sev-Tamatar-Sabzi.jpg",
+          "name": "Sev Tamater",
+          "price": "₹179",
+          "priceFull": "₹179",
+          "priceHalf": "₹129"
+        },
+        {
+          "desc": "Spicy thick gravy infused with crunchy seasoned sev.",
+          "hasHalfFull": true,
+          "image": "https://www.funfoodfrolic.com/wp-content/uploads/2024/06/sev-tamatar-ki-sabji-blog-1024x1024.jpg",
+          "name": "Sev Masala",
+          "price": "₹179",
+          "priceFull": "₹179",
+          "priceHalf": "₹129"
+        },
+        {
+          "desc": "Cauliflower florets simmered in aromatic masala gravy.",
+          "hasHalfFull": true,
+          "image": "https://static.india.com/wp-content/uploads/2024/12/FEATURE-2024-12-02T202544.718.jpg",
+          "name": "Gobhi Masala",
+          "price": "₹179",
+          "priceFull": "₹179",
+          "priceHalf": "₹129"
+        },
+        {
+          "desc": "Medley of seasonal garden vegetables cooked in rich curry.",
+          "hasHalfFull": true,
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQV2fcGJRmvVkeH_wkcbWyAj5IusaEMyNoR7SoBeI5-VQjTi7K1PoFNbLA&s=10",
+          "name": "Mix Veg",
+          "price": "₹179",
+          "priceFull": "₹179",
+          "priceHalf": "₹129"
+        },
+        {
+          "desc": "Classic home style curry of potatoes and cauliflower florets.",
+          "hasHalfFull": true,
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSkFevuPY2xyGplX5HVZMRv-OVl6XqVAGRTJkC2Bpi3xw4VmYHCrADy7XX&s=10",
+          "name": "Aloo Gobhi",
+          "price": "₹179",
+          "priceFull": "₹179",
+          "priceHalf": "₹129"
+        },
+        {
+          "desc": "Potatoes, green peas, and tomatoes cooked in mild gravy.",
+          "hasHalfFull": true,
+          "image": "https://gadegal-homestay.himwebx.com/wp-content/uploads/2023/10/aloo-matar.jpg",
+          "name": "Aloo Mater Tamater",
+          "price": "₹179",
+          "priceFull": "₹179",
+          "priceHalf": "₹129"
+        },
+        {
+          "desc": "Tangy spiced tomato curry prepared with authentic herbs.",
+          "hasHalfFull": true,
+          "image": "https://www.funfoodfrolic.com/wp-content/uploads/2024/06/sev-tamatar-ki-sabji-blog.jpg",
+          "name": "Tamater Masala",
+          "price": "₹179",
+          "priceFull": "₹179",
+          "priceHalf": "₹129"
+        },
+        {
+          "desc": "Punjabi style chickpeas cooked in dark tangy spiced gravy.",
+          "hasHalfFull": true,
+          "image": "https://vegehomecooking.com/wp-content/uploads/2024/01/Green-Chana-MasalaFeaturedImage.jpg",
+          "name": "Chana Masala",
+          "price": "₹179",
+          "priceFull": "₹179",
+          "priceHalf": "₹129"
+        },
+        {
+          "desc": "Potatoes sautéed with roasted cumin seeds and turmeric.",
+          "hasHalfFull": true,
+          "image": "https://www.indianhealthyrecipes.com/wp-content/uploads/2018/04/jeera-aloo-recipe.jpg",
+          "name": "Aloo Jeera",
+          "price": "₹179",
+          "priceFull": "₹179",
+          "priceHalf": "₹129"
+        },
+        {
+          "desc": "Thinly sliced crisp okra fried with gram flour and chaat masala.",
+          "hasHalfFull": true,
+          "image": "https://www.vegrecipesofindia.com/wp-content/uploads/2010/09/kurkuri-bhindi-recipe-580x580.jpg",
+          "name": "Bhindi Kurkuri",
+          "price": "₹199",
+          "priceFull": "₹199",
+          "priceHalf": "₹149"
+        },
+        {
+          "desc": "Authentic spicy Khandeshi style curry with crispy sev in a fiery onion-tomato gravy.",
+          "hasHalfFull": true,
+          "image": "https://www.whiskaffair.com/wp-content/uploads/2024/03/Shev-Bhaji-2-1.jpg",
+          "name": "Sev Bhaji",
+          "price": "₹199",
+          "priceFull": "₹199",
+          "priceHalf": "₹149"
+        }
+      ]
+    },
+    {
+      "title": "Tandoor",
+      "items": [
+        {
+          "desc": "Traditional whole wheat bread baked in clay tandoor oven.",
+          "hasHalfFull": false,
+          "image": "https://www.whiskaffair.com/wp-content/uploads/2020/08/Tandoori-Roti-2-1-1200x1800.jpg",
+          "name": "Roti Plain",
+          "price": "₹15"
+        },
+        {
+          "desc": "Hot clay tandoor roti brushed with rich dairy butter.",
+          "hasHalfFull": false,
+          "image": "https://www.indianhealthyrecipes.com/wp-content/uploads/2023/09/tandoori-roti-recipe.jpg",
+          "name": "Roti Butter",
+          "price": "₹19"
+        },
+        {
+          "desc": "Soft and chewy leavened flatbread baked fresh on tandoor walls.",
+          "hasHalfFull": false,
+          "image": "https://thefoodtravellers.com/wp-content/uploads/2025/01/garlic-butter-naan-basket-with-curry.jpg",
+          "name": "Plan Naan",
+          "price": "₹35"
+        },
+        {
+          "desc": "Puffy clay baked naan generously glazed with melted butter.",
+          "hasHalfFull": false,
+          "image": "https://foodess.com/wp-content/uploads/2023/02/Butter-Naan-2.jpg",
+          "name": "Butter Naan",
+          "price": "₹39"
+        },
+        {
+          "desc": "Gram flour and wheat bread flavored with ajwain and onions.",
+          "hasHalfFull": false,
+          "image": "https://www.whiskaffair.com/wp-content/uploads/2018/12/Missi-Roti-2-3.jpg",
+          "name": "Missi Roti",
+          "price": "₹49"
+        },
+        {
+          "desc": "Multi-layered flaky tandoori flatbread with crispy folds.",
+          "hasHalfFull": false,
+          "image": "https://www.foodie-trail.com/wp-content/uploads/2020/06/20220328_183319874_iOS-scaled.jpg",
+          "name": "Lachha Paratha",
+          "price": "₹49"
+        },
+        {
+          "desc": "Tandoor baked bread stuffed with spiced chopped onions.",
+          "hasHalfFull": false,
+          "image": "https://s.alicdn.com/@sc02/kf/Ha6423cc93a594cf19d13e5d18a3ca338F.jpg",
+          "name": "Onion Kulcha",
+          "price": "₹49"
+        },
+        {
+          "desc": "Fluffy tandoori naan studded with roasted minced garlic and coriander.",
+          "hasHalfFull": false,
+          "image": "https://img.freepik.com/premium-photo/tandoori-green-garlic-naan-bread-served-basket-isolated-table-top-view-asian-indian-food_689047-3544.jpg?w=2000",
+          "name": "Garlic Naan",
+          "price": "₹59"
+        },
+        {
+          "desc": "Oven baked paratha filled with hearty spiced potato mixture.",
+          "hasHalfFull": false,
+          "image": "https://biancazapatka.com/wp-content/uploads/2019/07/crispy-stuffed-flatbread-indian-aloo-paratha-720x1080.jpg",
+          "name": "Stuffed Paratha",
+          "price": "₹69"
+        },
+        {
+          "desc": "Leavened refined flour kulcha stuffed with seasoned vegetables.",
+          "hasHalfFull": false,
+          "image": "https://www.indianhealthyrecipes.com/wp-content/uploads/2025/12/kulcha-recipe.webp",
+          "name": "Stuffed Kulcha",
+          "price": "₹69"
+        },
+        {
+          "desc": "Soft tandoori kulcha stuffed with spiced cottage cheese filling.",
+          "hasHalfFull": false,
+          "image": "https://aroma-grill.com/wp-content/uploads/2024/11/Paneer-Paratha-is-an-unleavened-wheat-flatbread-stuffed-with-paneer-aka-Indian-cottage-cheese-spices-and-herbs.jpg",
+          "name": "Paneer Stuffed Kulcha",
+          "price": "₹79"
+        },
+        {
+          "desc": "House special multi-layered crispy tandoori paratha smeared with rich desi ghee.",
+          "hasHalfFull": false,
+          "image": "https://www.foodie-trail.com/wp-content/uploads/2020/06/20220328_183319874_iOS-scaled.jpg",
+          "name": "Avyukt Special Laccha Paratha",
+          "price": "₹89"
+        }
+      ]
+    },
+    {
+      "title": "Tandoor Snacks",
+      "items": [
+        {
+          "desc": "Charcoal grilled cottage cheese skewers marinated in spiced yogurt.",
+          "hasHalfFull": false,
+          "image": "https://myfoodstory.com/wp-content/uploads/2017/02/Oven-Baked-Tandoori-Paneer-Tikka-2.jpg",
+          "name": "Paneer Tikka",
+          "price": "₹269"
+        },
+        {
+          "desc": "Smoky paneer cubes marinated with fresh mint and coriander paste.",
+          "hasHalfFull": false,
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRM72XL2JxK5g7q_UiAx5RhnDEeUfajF6zg2_FX2eqvyA&s=10",
+          "name": "Paneer Pudina Tikka",
+          "price": "₹289"
+        },
+        {
+          "desc": "Tandoor roasted paneer infused with pungent roasted garlic marinade.",
+          "hasHalfFull": false,
+          "image": "https://www.indianhealthyrecipe.com/wp-content/uploads/2024/01/tandoori_paneer_tikka_restaurant_style.jpg",
+          "name": "Paneer Lesuni Tikka",
+          "price": "₹299"
+        },
+        {
+          "desc": "Paneer cubes marinated in zesty pickling spices and charred in clay tandoor.",
+          "hasHalfFull": false,
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7dSETL6f442wDvbwckXL_PV80EfZtOdkF2Fw91FseCdMPba_37fFd5yc&s=10",
+          "name": "Paneer Achari Tikka",
+          "price": "₹299"
+        }
+      ]
+    }
+  ],
+  "updatedAt": "2026-10-02T15:14:57.443Z"
+}

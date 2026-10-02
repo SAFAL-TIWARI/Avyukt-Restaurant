@@ -25,4 +25,4 @@ dist-ssr
 *.sw?
 
 uploadmenu.mjs
-fullmenu.json
+# fullmenu.json
