@@ -1,5 +1,5 @@
 // Centralized menu data for search and display across the website
-import fallbackMenu from '../../fullmenu.json';
+// import fallbackMenu from '../../fullmenu.json';
 
 export const menuCategories = fallbackMenu?.categories || [];
 
