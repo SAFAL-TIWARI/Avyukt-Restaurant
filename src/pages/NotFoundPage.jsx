@@ -186,12 +186,12 @@ const NotFoundPage = () => {
               className="w-16 h-16 sm:w-20 sm:h-20   relative group overflow-hidden"
             >
               <img
-                src="/favicon.png"
+                src="/favicon_old.png"
                 alt="Avyukt Restaurant Logo"
                 className="w-full h-full object-cover rounded-xl select-none"
                 onError={(e) => {
                   e.currentTarget.onerror = null;
-                  e.currentTarget.src = '/assets/favicon.png';
+                  e.currentTarget.src = '/assets/favicon_old.png';
                 }}
               />
 

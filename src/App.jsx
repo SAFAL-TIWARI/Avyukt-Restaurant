@@ -10,6 +10,7 @@ import Footer from './components/Footer';
 import MobileBottomNav from './components/MobileBottomNav';
 // import PWAInstallPrompt from './components/PWAInstallPrompt';
 import ScrollToTop from './components/ScrollToTop';
+import SmoothScrollProvider from './components/SmoothScroll';
 
 // Eagerly loaded critical landing page
 import Home from './pages/Home';
@@ -65,9 +66,10 @@ function App() {
       <ToastProvider>
         <AuthProvider>
           <CartProvider>
-            <div className="min-h-screen bg-body dark:bg-zinc-950 transition-colors duration-300">
-              <ScrollToTop />
-              <Header />
+            <SmoothScrollProvider>
+              <div className="min-h-screen bg-body dark:bg-zinc-950 transition-colors duration-300">
+                <ScrollToTop />
+                <Header />
               <main className="pb-20 lg:pb-0">
                 <Suspense fallback={<PageSkeleton />}>
                   <Routes>
@@ -154,8 +156,9 @@ function App() {
               <MobileBottomNav />
               {/* <PWAInstallPrompt /> */}
             </div>
-          </CartProvider>
-        </AuthProvider>
+          </SmoothScrollProvider>
+        </CartProvider>
+      </AuthProvider>
       </ToastProvider>
     </ThemeProvider>
   );

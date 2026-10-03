@@ -9,9 +9,13 @@ const ScrollToTop = () => {
     if (hash) {
       const id = hash.replace('#', '');
       const timer = setTimeout(() => {
-        const el = document.getElementById(id);
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth' });
+        if (window.__lenis) {
+          window.__lenis.scrollTo(`#${id}`, { offset: -80, duration: 1.2 });
+        } else {
+          const el = document.getElementById(id);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth' });
+          }
         }
       }, 100);
       return () => clearTimeout(timer);
@@ -52,6 +56,9 @@ const ScrollToTop = () => {
 
     // Force instant top scroll by temporarily disabling smooth scroll on <html>
     const resetScroll = () => {
+      if (window.__lenis) {
+        window.__lenis.scrollTo(0, { immediate: true });
+      }
       const html = document.documentElement;
       const originalScrollBehavior = html ? html.style.scrollBehavior : '';
       if (html) html.style.scrollBehavior = 'auto';

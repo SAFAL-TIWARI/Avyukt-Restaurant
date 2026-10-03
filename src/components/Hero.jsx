@@ -151,7 +151,7 @@ const Hero = () => {
           Welcome to Avyukt
         </span>
         <h1 className="text-4xl lg:text-7xl mb-6 leading-tight drop-shadow-lg text-white font-serif">
-          Authentic Flavours.<br /> <span className="text-secondary italic">Modern</span> Ambience.
+          Authentic Flavours.<br /> <span className="text-primary italic">Modern</span> Ambience.
         </h1>
         <p className="text-sm lg:text-lg mb-10 max-w-2xl mx-auto opacity-90 drop-shadow-md text-gray-200">
           Experience a symphony of taste with our exquisite North Indian, Chinese, and Fusion cuisine in a warm, inviting atmosphere.

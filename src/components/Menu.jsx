@@ -478,7 +478,7 @@ const Menu = () => {
         )}
 
         <div className="text-center mt-12">
-          <Link to="/menu" className="btn btn-secondary text-white shadow-lg shadow-secondary/20">
+          <Link to="/menu" className="btn btn-secondary text-primary shadow-lg shadow-secondary/20">
             View Full Menu
           </Link>
         </div>
