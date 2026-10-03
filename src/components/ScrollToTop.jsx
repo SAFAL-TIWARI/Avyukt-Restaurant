@@ -21,6 +21,35 @@ const ScrollToTop = () => {
       window.history.scrollRestoration = 'manual';
     }
 
+    // Dynamic Page Title Synchronization for SEO & Browser Tabs
+    const routeTitles = {
+      '/': 'Avyukt Restaurant | Authentic Flavours & Modern Ambience',
+      '/about': 'About Us | Avyukt Restaurant',
+      '/menu': 'Our Complete Menu | Avyukt Restaurant',
+      '/gallery': 'Gallery Showcase | Avyukt Restaurant',
+      '/recipes': 'Signature Recipes | Avyukt Restaurant',
+      '/contact': 'Contact & Reservations | Avyukt Restaurant',
+      '/cart': 'Your Food Cart | Avyukt Restaurant',
+      '/profile': 'My Profile | Avyukt Restaurant',
+      '/orders': 'My Orders | Avyukt Restaurant',
+      '/notifications': 'Notifications | Avyukt Restaurant',
+      '/help': 'Help & Support | Avyukt Restaurant',
+      '/feedback': 'Dining Feedback | Avyukt Restaurant',
+      '/login': 'Sign In | Avyukt Restaurant',
+      '/signup': 'Create Account | Avyukt Restaurant',
+      '/register': 'Create Account | Avyukt Restaurant',
+      '/admin': 'Admin Dashboard | Avyukt Restaurant',
+      '/404': '404 - Page Not Found | Avyukt Restaurant',
+    };
+
+    if (pathname.startsWith('/orders/') || pathname.startsWith('/track-order/')) {
+      document.title = 'Track Order | Avyukt Restaurant';
+    } else if (routeTitles[pathname]) {
+      document.title = routeTitles[pathname];
+    } else {
+      document.title = '404 - Page Not Found | Avyukt Restaurant';
+    }
+
     // Force instant top scroll by temporarily disabling smooth scroll on <html>
     const resetScroll = () => {
       const html = document.documentElement;

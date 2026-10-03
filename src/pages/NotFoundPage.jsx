@@ -50,7 +50,7 @@ const NotFoundPage = () => {
   // Trigger professional bottom cracker confetti
   const launchCrackerConfetti = useCallback(() => {
     // Professional bottom burst crackers (from bottom left, center, and right)
-    const end = Date.now() +1500; // 2.5 seconds short duration
+    const end = Date.now() + 1500; // 2.5 seconds short duration
     const colors = ['#800000', '#D4AF37', '#FBBF24', '#F59E0B', '#FFFFFF', '#DC2626'];
 
     const frame = () => {
@@ -121,8 +121,6 @@ const NotFoundPage = () => {
   }, []);
 
   useEffect(() => {
-    // Document title for SEO and UX
-    document.title = '404 - Page Not Found | Avyukt Restaurant';
     initGame();
 
     return () => {
@@ -176,12 +174,12 @@ const NotFoundPage = () => {
     <div className="min-h-[85vh] pt-28 lg:pt-36 pb-20 flex items-center justify-center bg-body dark:bg-zinc-950 transition-colors duration-300">
       <div className="container max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
-          
+
           {/* Left Column: 404 Info & Navigation */}
           <div className="lg:col-span-5 flex flex-col items-center lg:items-start text-center lg:text-left space-y-6">
-            
+
             {/* Avyukt Brand Emblem Badge */}
-            <motion.div 
+            <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.4 }}
@@ -196,7 +194,7 @@ const NotFoundPage = () => {
                   e.currentTarget.src = '/assets/favicon.png';
                 }}
               />
-             
+
             </motion.div>
 
             {/* Headline */}
@@ -241,7 +239,7 @@ const NotFoundPage = () => {
             {/* Victory Callout if won */}
             <AnimatePresence>
               {gameWon && (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 10, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9 }}
@@ -289,7 +287,7 @@ const NotFoundPage = () => {
           {/* Right Column: 3x4 Circular Grid Food Memory Game */}
           <div className="lg:col-span-7 flex justify-center items-center">
             <div className="w-full max-w-lg sm:max-w-xl p-3 sm:p-5 rounded-3xl bg-neutral-50/50 dark:bg-zinc-900/40 border border-neutral-200/40 dark:border-white/5 backdrop-blur-sm shadow-xl">
-              
+
               {/* 3 rows x 4 columns = 12 circular blocks */}
               <div className="grid grid-cols-4 gap-3 sm:gap-4 md:gap-5">
                 {cards.map((card) => {
@@ -317,11 +315,10 @@ const NotFoundPage = () => {
                               animate={{ rotateY: 0, scale: 1, opacity: 1 }}
                               exit={{ rotateY: -90, scale: 0.85, opacity: 0 }}
                               transition={{ duration: 0.28, ease: 'easeOut' }}
-                              className={`w-full h-full rounded-full flex items-center justify-center p-1 sm:p-1.5 shadow-md relative overflow-hidden transition-all ${
-                                isMatched
+                              className={`w-full h-full rounded-full flex items-center justify-center p-1 sm:p-1.5 shadow-md relative overflow-hidden transition-all ${isMatched
                                   ? 'bg-gradient-to-br from-amber-400 via-amber-500 to-yellow-500 ring-2 ring-amber-300 dark:ring-amber-500/70 shadow-amber-500/20'
                                   : 'bg-gradient-to-br from-amber-300 via-amber-400 to-amber-500 shadow-amber-400/20'
-                              }`}
+                                }`}
                             >
                               {/* Inner dish circular picture */}
                               <div className="w-full h-full rounded-full overflow-hidden bg-white/30 backdrop-blur-xs flex items-center justify-center border border-white/40 shadow-inner">

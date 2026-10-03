@@ -70,15 +70,14 @@ function App() {
               <Header />
               <main className="pb-20 lg:pb-0">
                 <Suspense fallback={<PageSkeleton />}>
-                  <AnimatePresence mode="wait">
-                    <Routes location={location} key={location.pathname}>
-                      <Route path="/" element={<Home />} />
+                  <Routes>
+                    <Route path="/" element={<Home />} />
                       <Route path="/about" element={<AboutPage />} />
                       <Route path="/menu" element={<MenuPage />} />
                       <Route path="/gallery" element={<GalleryPage />} />
                       <Route path="/recipes" element={<RecipesPage />} />
                       <Route path="/contact" element={<ContactPage />} />
-                      
+
                       {/* Admin Portal Routes */}
                       <Route path="/admin" element={<DashboardPage />} />
 
@@ -88,68 +87,67 @@ function App() {
                       <Route path="/help" element={<HelpPage />} />
 
                       {/* Protected User Pages */}
-                      <Route 
-                        path="/cart" 
+                      <Route
+                        path="/cart"
                         element={
                           <ProtectedRoute message="Please sign in to view and checkout your cart.">
                             <CartPage />
                           </ProtectedRoute>
-                        } 
+                        }
                       />
-                      <Route 
-                        path="/profile" 
+                      <Route
+                        path="/profile"
                         element={
                           <ProtectedRoute message="Please sign in to view your profile settings.">
                             <ProfilePage />
                           </ProtectedRoute>
-                        } 
+                        }
                       />
-                      <Route 
-                        path="/orders" 
+                      <Route
+                        path="/orders"
                         element={
                           <ProtectedRoute message="Please sign in to view your live orders.">
                             <OrdersPage />
                           </ProtectedRoute>
-                        } 
+                        }
                       />
-                      <Route 
-                        path="/orders/:orderId" 
+                      <Route
+                        path="/orders/:orderId"
                         element={
                           <ProtectedRoute message="Please sign in to track your order.">
                             <OrderTrackingPage />
                           </ProtectedRoute>
-                        } 
+                        }
                       />
-                      <Route 
-                        path="/track-order/:orderId" 
+                      <Route
+                        path="/track-order/:orderId"
                         element={
                           <ProtectedRoute message="Please sign in to track your order.">
                             <OrderTrackingPage />
                           </ProtectedRoute>
-                        } 
+                        }
                       />
-                      <Route 
-                        path="/notifications" 
+                      <Route
+                        path="/notifications"
                         element={
                           <ProtectedRoute message="Please sign in to view your notifications.">
                             <NotificationsPage />
                           </ProtectedRoute>
-                        } 
+                        }
                       />
-                      <Route 
-                        path="/feedback" 
+                      <Route
+                        path="/feedback"
                         element={
                           <ProtectedRoute message="Please sign in to share your valuable dining feedback.">
                             <FeedbackPage />
                           </ProtectedRoute>
-                        } 
+                        }
                       />
 
                       {/* 404 Not Found Game Page */}
                       <Route path="/404" element={<NotFoundPage />} />
                       <Route path="*" element={<NotFoundPage />} />
                     </Routes>
-                  </AnimatePresence>
                 </Suspense>
               </main>
               <Footer />
