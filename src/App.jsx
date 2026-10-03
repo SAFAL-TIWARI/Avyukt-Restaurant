@@ -30,6 +30,7 @@ const OrderTrackingPage = lazy(() => import('./pages/OrderTrackingPage'));
 const NotificationsPage = lazy(() => import('./pages/NotificationsPage'));
 const HelpPage = lazy(() => import('./pages/HelpPage'));
 const FeedbackPage = lazy(() => import('./pages/FeedbackPage'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 import { PageSkeleton } from './components/common/Skeleton';
 
@@ -143,6 +144,10 @@ function App() {
                           </ProtectedRoute>
                         } 
                       />
+
+                      {/* 404 Not Found Game Page */}
+                      <Route path="/404" element={<NotFoundPage />} />
+                      <Route path="*" element={<NotFoundPage />} />
                     </Routes>
                   </AnimatePresence>
                 </Suspense>
